@@ -72,7 +72,7 @@ const Login = () => {
                 }
                 {/* Btn */}
                 <Button type="submit">
-                    <RiLoginBoxLine className='text-purple-500 hover:text-purple-900'/>                    
+                    <RiLoginBoxLine className='text-secondary-500'/>                    
                     Iniciar Sesión                                    
                 </Button>
                 <div className="p-2 mt-3 flex flex-col gap-3">

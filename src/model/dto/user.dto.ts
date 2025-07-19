@@ -3,7 +3,7 @@ export interface CreateUserDto {
     apellido: string;
     email: string;
     password: string;
-    rol?: string;
+    rol?: string[];
     idinstitucion?: number | null;
 };
 

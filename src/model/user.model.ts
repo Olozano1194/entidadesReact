@@ -5,6 +5,6 @@ export interface User {
     email: string;
     password: string;
     repeatPassword?: string;
-    rol?: string;
+    rol?: string[];
     idinstitucion?: number | null;
 };
