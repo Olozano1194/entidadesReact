@@ -14,22 +14,27 @@ import NotificationMenu from "../../components/headerNav/NotificationMenu"
 
 function NavHeader() {
     const navigate = useNavigate();
-    const [user, setUser] = useState({ name: '', lastName: '', email: '', avatar: ''});
+    const [user, setUser] = useState({ nombre: '', apellido: '', email: ''});
     const [_, setLoggedOut] = useState<boolean>(false);    
 
     useEffect(() => {
         const axiosUserData = async () => {
             try {
+                //Verificamos si existe un token
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    navigate('/');
+                    return;
+                };
                 const data = await getUserProfile();
                 //console.log('User data received:', data);
 
-                const avatarUrl = data.user.avatar instanceof File ? URL.createObjectURL(data.user.avatar) : data.user.avatar ?? '';
+                // const avatarUrl = data.user.avatar instanceof File ? URL.createObjectURL(data.user.avatar) : data.user.avatar ?? '';
                 
                 setUser({
-                    name: data.user.name,
-                    lastName: data.user.lastname,
-                    email: data.user.email,
-                    avatar: avatarUrl
+                    nombre: data.user.nombre,
+                    apellido: data.user.apellido,
+                    email: data.user.email                    
                 });
             }catch (error) {
                 const errorMessage = error instanceof Error ? error.message : 'Error al registrar el miembro';
@@ -40,7 +45,7 @@ function NavHeader() {
             }
         };
         axiosUserData();
-    }, []);
+    }, [navigate]);
 
     // Esta función nos sirve para cerrar la sesión    
     const handleLogOut = () => {
@@ -63,24 +68,24 @@ function NavHeader() {
                     src={user.avatar || "https://img.freepik.com/foto-gratis/feliz-optimista-guapo-gerente-ventas-latina-apuntando-lado-mirando-camara_1262-12679.jpg"} alt="img-user"
                     className="w-10 h-10 object-cover rounded-full"
                 />
-                <span className="text-gray-100 font-semibold">{user.name} {user.lastName}</span>
+                <span className="text-gray-100 font-semibold">{user.nombre} {user.apellido}</span>
                 <RiArrowDownSLine className="text-2xl" />
                 </MenuButton>
                 <MenuItems anchor='bottom' className='bg-primary mt-1 p-4 rounded-lg'>
                     <MenuItem as='div' className='p-0'>
-                            <Link to='#' className="rounded-lg transition-colors text-dark hover:bg-teal-400 flex items-center gap-x-4 py-2 px-4">
+                            <section className="rounded-lg transition-colors text-white flex items-center gap-x-4 py-2 px-4">
                                 <img 
                                     src={user.avatar || "https://img.freepik.com/foto-gratis/feliz-optimista-guapo-gerente-ventas-latina-apuntando-lado-mirando-camara_1262-12679.jpg"} alt="img-user"
                                     className="w-10 h-10 object-cover rounded-full"
                                 />
                                 <div className="flex flex-col gap-1 text-sm">
-                                    <span className="text-white text-sm">{user.name} {user.lastName}</span>
+                                    <span className="text-white text-sm">{user.nombre} {user.apellido}</span>
                                     <span className="text-white text-xm">{user.email}</span>
                                 </div>
-                            </Link>
+                            </section>
                             
                     </MenuItem>
-                    <hr className="my-4 border-gray-900/10" />
+                    <hr className="my-4 border-gray-500" />
 
                     <MenuItem as='div' className='p-0'>
                             <Link to='/dashboard/profile' className="rounded-lg transition-colors text-white hover:bg-teal-400 flex items-center gap-x-4 py-2 px-4 flex-1">
@@ -89,7 +94,7 @@ function NavHeader() {
                             </Link>
                             
                     </MenuItem>
-                    <hr className="my-4 border-gray-900/10" />
+                    <hr className="my-4 border-gray-500" />
 
                     <MenuItem as='div' className='p-0'>
                         <button

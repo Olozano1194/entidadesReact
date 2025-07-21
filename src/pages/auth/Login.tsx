@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 //form
 import { useForm } from "react-hook-form";
+//Apis
+import { login } from "../../api/user.api";
 //ui
 import Main from '../../components/ui/Main';
 import Form from "../../components/ui/Form";
@@ -9,17 +12,81 @@ import Span from "../../components/ui/Span";
 import Input from '../../components/ui/Input';
 import Button from '../../components/ui/Button';
 import ErrorSpan from "../../components/ui/ErrorSpan";
+//Mensajes
+import { toast } from 'react-hot-toast';
+//Models
+import type { LoginUserDto } from '../../model/dto/user.dto';
 //Icons
 import { RiLoginBoxLine, RiMailFill, RiLockFill } from "react-icons/ri";
 //img
 import icons from '../../assets/favicon-32x32.png'
 
 const Login = () => {
-    const {  register, handleSubmit, formState: {errors} } = useForm();
+    const navigate = useNavigate();
+    const {  register, handleSubmit, formState: {errors} } = useForm<LoginUserDto>();
 
-    const onSubmit = handleSubmit(async (data) => {
-        console.log(data);
-        
+    const onSubmit = handleSubmit(async (data: LoginUserDto) => {
+        try {
+            const response = await login(data);
+            //console.log('Login successful, result:', response);
+
+            if (response && response.token) {                
+                //console.log('Login successful, token:', response.token);
+
+                const response = await login({
+                    email: data.email.toLowerCase().trim(),
+                    password: data.password
+                });
+
+                console.log('Respuesta del login:', response);
+
+                if (response && response.token) {
+                    //El token ya se guardo en la función login
+                    
+                    toast.success('Inicio de sesión exitoso', {
+                        duration: 3000,
+                        position: 'bottom-right',
+                        style: {
+                            background: '#4b5563',
+                            color: '#fff',
+                            padding: '10px',
+                            borderRadius: '10px',
+                        },
+                    });
+                }
+                localStorage.setItem('token', response.token);
+
+                // Redirect to the dashboard
+                navigate('/admin');
+                                
+            }else {
+                //console.error('Token not found in response');
+                toast.success('Respuesta inválida del servidor', {
+                    duration: 3000,
+                    position: 'bottom-right',
+                    style: {
+                        background: '#4b5563',   // Fondo negro
+                        color: '#fff',           // Texto blanco
+                        padding: '16px',
+                        borderRadius: '8px',
+                    },
+                });                
+            }           
+                      
+            } catch (error) {
+                console.error('Error logging in:', error);
+                toast.success('Error al iniciar sesión', {
+                    duration: 3000,
+                    position: 'bottom-right',
+                    style: {
+                        background: '#4b5563',   // Fondo negro
+                        color: '#fff',           // Texto blanco
+                        padding: '16px',
+                        borderRadius: '8px',
+                    },
+                });
+            }
+     
     });
 
     return (
@@ -50,7 +117,7 @@ const Login = () => {
                 {/* Password */}
                 <label htmlFor="password">
                     <Span><RiLockFill className='lg:text-2xl xl:text-xl' />Contraseña</Span>
-                    <Input type="password" placeholder="Write your password"
+                    <Input type="password" placeholder="Escriba su contraseña"
                         {...register('password',{
                             required: {
                                 value: true,

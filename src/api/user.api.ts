@@ -92,24 +92,39 @@ export const CreateUsers = async (userData: CreateUserDto) => {
 
 //Inicio de sesión
 export const login = async (credentials: LoginUserDto) => {
-  try {
-      const response = await Api.post('/login/', credentials);            
-      return response.data;      
-  } catch (error) {      
-      throw handleApiError(error);      
-  }  
+    try {
+        console.log('Intentando login con:', credentials);
+        
+        const response = await Api.post('/usuario/login', credentials);
+        console.log('Respuesta del servidor:', response.data);
+
+        if (response.data.token) {
+            localStorage.setItem('token', response.data.token);
+
+            if (response.data.user) {
+                localStorage.setItem('user', JSON.stringify(response.data.user));            
+            }
+        }        
+                    
+        return response.data;
+        
+    }catch (error) {      
+        throw handleApiError(error);      
+    }
 }
 
 //function profile
-export const getUserProfile = async (): Promise<{user: User}> => {
-    //const token = localStorage.getItem('token');
+export const getUserProfile = async (): Promise<{user: User}> => {    
     try {
-        const response = await Api.get(`/me/`) //, {
-        //     headers: {
-        //         'Authorization': `Token ${token}`
-        //         },
-        //     }
-        // );
+        const token = localStorage.getItem('token');
+        if (!token) {
+            throw new Error('No hay token de autenticación');
+        }
+        const response = await Api.get(`/usuario/me`, {
+            headers: {
+                'Authorization': `Token ${token}`
+            }
+        });
         //console.log('User profile response:', response.data)        
         return response.data;        
     } catch (error) {

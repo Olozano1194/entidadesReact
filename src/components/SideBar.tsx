@@ -297,7 +297,7 @@ const SideBar = () => {
             </div>
             <button 
                 onClick={() => setToggleMenu(!toggleMenu)} 
-                className="xl:hidden fixed bottom-4 right-4 bg-secondary-500 text-sky-900 font-bold p-3 rounded-full z-50">
+                className="xl:hidden fixed bottom-4 right-4 cursor-pointer bg-primary text-white font-bold p-3 rounded-full z-50">
                 {
                     toggleMenu ? <RiCloseLine /> : <RiMenu3Line />
                 }
