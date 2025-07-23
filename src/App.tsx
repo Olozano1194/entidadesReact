@@ -7,6 +7,8 @@ import Error404 from './pages/Error404';
 import Login from './pages/auth/Login';
 //Pages admin
 import Home from './pages/admin/Home';
+//usuarios
+import Profile from './pages/admin/usuarios/ProfileAdmin';
 //import ForgetPassword from './pages/auth/ForgetPassword';
 //register
 import RegisterStudent from './pages/auth/register/RegisterStudent';
@@ -29,6 +31,8 @@ function App() {
         {/* Rutas protegidas */}
         <Route path="admin" element={<LayoutAdmin />}>
           <Route index element={<Home />} />
+          {/* Usuarios */}
+          <Route path="usuario" element={<Profile />} />
         </Route>
         {/* <Route element={<ProtectRoute />} >
         </Route> */}

@@ -68,7 +68,7 @@ function NavHeader() {
                     src={user.avatar || "https://img.freepik.com/foto-gratis/feliz-optimista-guapo-gerente-ventas-latina-apuntando-lado-mirando-camara_1262-12679.jpg"} alt="img-user"
                     className="w-10 h-10 object-cover rounded-full"
                 />
-                <span className="text-gray-100 font-semibold">{user.nombre} {user.apellido}</span>
+                <span className="text-white font-bold">{user.nombre} {user.apellido}</span>
                 <RiArrowDownSLine className="text-2xl" />
                 </MenuButton>
                 <MenuItems anchor='bottom' className='bg-primary mt-1 p-4 rounded-lg'>
@@ -88,7 +88,7 @@ function NavHeader() {
                     <hr className="my-4 border-gray-500" />
 
                     <MenuItem as='div' className='p-0'>
-                            <Link to='/dashboard/profile' className="rounded-lg transition-colors text-white hover:bg-teal-400 flex items-center gap-x-4 py-2 px-4 flex-1">
+                            <Link to='/admin/usuario' className="rounded-lg transition-colors text-white hover:bg-teal-400 flex items-center gap-x-4 py-2 px-4 flex-1">
                                 <RiSettings3Line className="text-2xl" />
                                 Configuración                                                
                             </Link>
