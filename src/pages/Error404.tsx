@@ -10,7 +10,7 @@ const Error404 = () => {
         //si esta autenticado redirige a la pagina de inicio
         const authenticated = localStorage.getItem('token');
         if (authenticated) {
-            navigate('/dashboard');
+            navigate('/admin');
             
         }
         //si no esta autenticado redirige a la pagina de login
