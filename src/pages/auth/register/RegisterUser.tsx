@@ -1,5 +1,6 @@
 import {useForm} from 'react-hook-form';
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from 'react';
 //Mensajes
 import { toast } from 'react-hot-toast';
 //ui
@@ -18,33 +19,54 @@ import { CiUser, CiMail } from "react-icons/ci";
 import { RiLockPasswordLine, RiLoginBoxLine } from "react-icons/ri";
 //Api
 import { CreateUsers } from '../../../api/user.api';
+import { getRoles } from '../../../api/roles.api';
 //Model
 import type { User } from '../../../model/user.model';
 import type { CreateUserDto } from '../../../model/dto/user.dto';
-
+import type { Rol } from '../../../model/rol.models';
 
 
 const RegisterUser = () => {
     const { register, handleSubmit, formState: {errors}, watch, reset } = useForm<User>();
+    const [ roles, setRoles ] = useState<Rol[]>([]);
     const navigate = useNavigate();
 
+    useEffect(() => {
+        const loadRoles = async () => {
+            try {
+                const rolesData = await getRoles();                
+                setRoles(rolesData);                            
+            } catch (error) {
+                console.error('Error al cargar roles:', error);            
+            }
+        }        
+        loadRoles();
+    }, []);
+
+    // const handleRolChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    //     const rolId = event.target.value;
+    //     console.log('ID del rol seleccionado:', rolId);
+    //     setValue('rol', rolId);
+    // };
+    
     const onSubmit = handleSubmit(async (data: User) => {        
-        try {
-            // console.log('Form data:', data);
+        try {            
+            if (!data.rol) {
+                toast.error('Debe seleccionar un rol válido');
+                return;
+            }            
             const requestData: CreateUserDto = {
-                nombre: data.nombre,
-                apellido: data.apellido,
+                nombre: data.nombre.trim(),
+                apellido: data.apellido.trim(),
                 email: data.email,
                 password: data.password,
-                rol: data.rol || 'estudiante',
+                rol: data.rol,
                 idinstitucion: data.idinstitucion,                
-            };
-            // console.log('Datos para crear usuario:', requestData);
-            
+            };           
 
-            await CreateUsers(requestData);
-            // console.log('Respuesta del servidor:', result);            
+            await CreateUsers(requestData);                        
             reset();
+
             toast.success('Usuario Creado', {
                 duration: 3000,
                 position: 'bottom-right',
@@ -64,8 +86,7 @@ const RegisterUser = () => {
                 duration: 3000,
                 position: 'bottom-right',
             });            
-        }
-        
+        }        
     });
 
     return (
@@ -144,19 +165,26 @@ const RegisterUser = () => {
                     errors.email && <ErrorSpan>{errors.email.message}</ErrorSpan>
                 }
                 {/* Roles */}
-                <label htmlFor="roles"><Span><CiUser/>Roles</Span><Select
-                {...register('rol',{
-                    required: {
-                        value: true,
-                        message: 'Roles requerido'
-                    },
-                })}>
-                        <option value="">Escoge un rol</option>
-                        <option value="admin">Administrador</option>
-                        <option value="estudiante">Estudiante</option>
-                        <option value="docente">Docente</option>                        
-
-                    </Select>
+                <label htmlFor="roles"><Span><CiUser/>Rol</Span>
+                <Select
+                    {...register('rol',{
+                        required: {
+                            value: true,
+                            message: 'Rol requerido'
+                        }                        
+                    })}
+                    // onChange={handleRolChange}
+                >
+                    <option value="">Seleccione un rol</option>
+                    { roles.map(rol => (                    
+                                                
+                            <option key={rol._id} value={rol._id}>
+                                {rol.nombre}
+                            </option>
+                            )
+                        )
+                    }                    
+                </Select>
                 </label>
                 {
                     errors.rol && <span className='text-red-500 text-sm'>{errors.rol.message}</span>

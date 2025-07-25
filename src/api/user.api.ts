@@ -2,6 +2,7 @@ import axios from 'axios';
 //import type { AxiosResponse } from 'axios';
 //Model
 import type { User } from "../model/user.model";
+import type { Rol } from '../model/rol.models';
 //Dto
 import type { CreateUserDto } from "../model/dto/user.dto";
 import type { LoginUserDto } from '../model/dto/user.dto';
@@ -34,7 +35,6 @@ export const Api = axios.create({
 //     }
 // );
 
-
 export const handleApiError = (error: unknown): never => {
   if (axios.isAxiosError(error)) {
     const errorMessage = error.response?.data?.message || 
@@ -53,50 +53,49 @@ export const handleApiError = (error: unknown): never => {
 
 // Creamos el usuario
 export const CreateUsers = async (userData: CreateUserDto) => {
-    try {
-        // Asegúrate de que idinstitucion sea un número o null
-        //const idinstitucion = userData.idinstitucion === 'recepcion' ? null : Number(userData.idinstitucion);
-        //console.log('Datos a enviar:', userData);        
-
+    try {                
         const requestData = {
             nombre: userData.nombre,
             apellido: userData.apellido,
             email: userData.email,
             password: userData.password,
-            rol: userData.rol || 'estudiante',
+            rol: userData.rol,
             idinstitucion: userData.idinstitucion
         };
 
-        //console.log('Enviando datos:', requestData);
+        // console.log('Enviando datos:', requestData);
 
         const response = await Api.post('/usuario', requestData);
+        // console.log('Respuesta del back:', response.data);
+        
 
         if (response.data.token) {
             localStorage.setItem('token', response.data.token);
         }
 
         return response.data;
-    } catch (error: any) {
-        console.error('Error detallado:', {
-            message: error.message,
-            response: error.response?.data,
-            status: error.response?.status
-        });
+    } catch (error) {        
+        // console.error('Error detallado:', {
+        //     message: error.message,
+        //     response: error.response?.data,
+        //     status: error.response?.status
+        // });
+        throw handleApiError(error);
 
         // Mejorar el mensaje de error
-        const errorMessage = error.response?.data?.message || 
-                           'Error al crear el usuario';
-        throw new Error(errorMessage);
+        //const errorMessage = error.response?.data?.message || 
+        //                   'Error al crear el usuario';
+        
     }
 };
 
 //Inicio de sesión
 export const login = async (credentials: LoginUserDto) => {
     try {
-        console.log('Intentando login con:', credentials);
+        // console.log('Intentando login con:', credentials);
         
         const response = await Api.post('/usuario/login', credentials);
-        console.log('Respuesta del servidor:', response.data);
+        // console.log('Respuesta del servidor:', response.data);
 
         if (response.data.token) {
             localStorage.setItem('token', response.data.token);
@@ -114,7 +113,7 @@ export const login = async (credentials: LoginUserDto) => {
 }
 
 //function profile
-export const getUserProfile = async (): Promise<{user: User}> => {    
+export const getUserProfile = async (): Promise<{ user: User & { rol?: Rol } }> => {    
     try {
         const token = localStorage.getItem('token');
         if (!token) {

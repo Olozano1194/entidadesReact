@@ -1,9 +1,11 @@
+import type { Rol } from "../rol.models";
+
 export interface CreateUserDto {
     nombre: string;
     apellido: string;
     email: string;
     password: string;
-    rol?: string[];
+    rol: Rol;
     idinstitucion?: number | null;
 };
 

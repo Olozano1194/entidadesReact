@@ -1,3 +1,5 @@
+import type { Rol } from "./rol.models";
+
 export interface User {
     id?: number;
     nombre: string;
@@ -5,6 +7,6 @@ export interface User {
     email: string;
     password: string;
     repeatPassword?: string;
-    rol?: string[];
+    rol: Rol;
     idinstitucion?: number | null;
 };

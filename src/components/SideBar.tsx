@@ -6,8 +6,12 @@ import { MdOutlineSupportAgent } from "react-icons/md";
 import { FaCreditCard } from 'react-icons/fa';
 //API
 import { getUserProfile } from '../api/user.api';
+import { getRoleById } from "../api/roles.api";
 //Mensajes
 import { toast } from 'react-hot-toast';
+//Models
+import type { User } from "../model/user.model";
+import type { Rol } from "../model/rol.models";
 
 interface SubMenuState {
     menu1: boolean,
@@ -27,18 +31,27 @@ const SideBar = () => {
         menu4: false,
         menu5: false,        
     });
-    const [userRole, setUserRole] = useState<string[]>([]);
-    const [_, setLoggedOut] = useState(false);
+    const [, setUser] = useState<User | null >(null);
+    const [userRole, setUserRole] = useState<string>('');
+    const [, setLoggedOut] = useState(false);
 
     //este useEfect es para obtener el rol del usuario
     useEffect(() => {
         const obtenerRol = async () => {
             try {
                 const { user } = await getUserProfile();
-                //console.log('User data received:', data);
-                const rolesArray = Array.isArray(user.rol) ? user.rol : [user.rol];
-                setUserRole(rolesArray);                                
-
+                //console.log('User data received:', user.rol);                
+                setUser(user);                
+                
+                //Si el rol viene como objeto
+                if (user.rol && typeof user.rol === 'object' && 'nombre' in user.rol) {
+                    setUserRole((user.rol as Rol).nombre);
+                }
+                //Si el rol viene como String
+                else if (typeof user.rol === 'string') {
+                    const rol = await getRoleById(user.rol);
+                    setUserRole(rol.nombre);
+                }
             }catch (error) {
                 const errorMessage = error instanceof Error ? error.message : 'Error al cargar los datos';
                 toast.error(errorMessage);
@@ -62,16 +75,14 @@ const SideBar = () => {
         console.log('Token removed:', localStorage.getItem('token'));
         navigate('/');        
     }
-
-    //función para capitalizar
-    const formatRole = (role: string): string => role.charAt(0).toUpperCase() + role.slice(1);
+    
        
     return (
         <>
             <div className={`xl:h-[100vh] bg-primary overflow-y-scroll fixed xl:static w-[60%] md:w-[40%] lg:w-[35%] xl:w-auto h-full top-0 p-3 flex flex-col justify-between z-50 ${toggleMenu ? "left-0" : "-left-full"} transition-all`}>
                 <div>
                     <h1 className="text-center text-2xl font-black text-white mb-10">
-                    {userRole.length > 0 ? formatRole(userRole[0]) : ''}
+                    {userRole || 'Cargando...'}
                     <span className="text-secondary-500">.</span>
                     </h1>
                     <nav>
@@ -80,7 +91,7 @@ const SideBar = () => {
                                 {/* Home */}
                                 <ul className="flex flex-col gap-2">
                                     <li>
-                                        <Link to='/dashboard' className="flex items-center gap-3 py-2 px-4 rounded-lg hover:bg-teal-400 text-white font-semibold transition-colors"><RiHome8Line className="text-secondary-500" /> Inicio
+                                        <Link to='/admin' className="flex items-center gap-3 py-2 px-4 rounded-lg hover:bg-teal-400 text-white font-semibold transition-colors"><RiHome8Line className="text-secondary-500" /> Inicio
                                         </Link>
                                     </li>                            
                                 </ul>
@@ -203,7 +214,7 @@ const SideBar = () => {
                                 {/* Home */}
                                 <ul className="flex flex-col gap-2">
                                     <li>
-                                        <Link to='/dashboard' className="flex items-center gap-3 py-2 px-4 rounded-lg hover:bg-teal-400 text-white font-semibold transition-colors"><RiHome8Line className="text-secondary-500" /> Inicio
+                                        <Link to='/admin' className="flex items-center gap-3 py-2 px-4 rounded-lg hover:bg-teal-400 text-white font-semibold transition-colors"><RiHome8Line className="text-secondary-500" /> Inicio
                                         </Link>
                                     </li>                            
                                 </ul>
