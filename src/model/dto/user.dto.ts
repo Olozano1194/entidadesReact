@@ -5,7 +5,7 @@ export interface CreateUserDto {
     apellido: string;
     email: string;
     password: string;
-    rol: Rol;
+    rol: Rol | string;
     idinstitucion?: number | null;
 };
 
