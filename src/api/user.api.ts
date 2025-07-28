@@ -133,14 +133,14 @@ export const getUserProfile = async (): Promise<{ user: User & { rol?: Rol } }> 
 
 //Lista de usuarios
 export const getUsers = async () => {
-    //const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token');
     try {
-        const response = await Api.get<User[]>('/usuario/') //, {
-            // headers: {
-            //     'Authorization': `Token ${token}`
-            //     },
-            // }
-        //);
+        const response = await Api.get<User[]>('/usuario', {
+            headers: {
+                'Authorization': `Token ${token}`
+                },
+            }
+        );
         //console.log('Users response:', response.data);        
         return response.data;        
     } catch (error) {
