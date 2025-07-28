@@ -38,11 +38,10 @@ const Login = () => {
                     password: data.password
                 });
 
-                console.log('Respuesta del login:', response);
+                //console.log('Respuesta del login:', response);
 
                 if (response && response.token) {
-                    //El token ya se guardo en la función login
-                    
+                    //El token ya se guardo en la función login                    
                     toast.success('Inicio de sesión exitoso', {
                         duration: 3000,
                         position: 'bottom-right',
@@ -55,10 +54,8 @@ const Login = () => {
                     });
                 }
                 localStorage.setItem('token', response.token);
-
                 // Redirect to the dashboard
-                navigate('/admin');
-                                
+                navigate('/admin');                                
             }else {
                 //console.error('Token not found in response');
                 toast.success('Respuesta inválida del servidor', {
@@ -85,8 +82,7 @@ const Login = () => {
                         borderRadius: '8px',
                     },
                 });
-            }
-     
+            }     
     });
 
     return (
