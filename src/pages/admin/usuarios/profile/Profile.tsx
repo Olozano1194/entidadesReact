@@ -3,31 +3,34 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 //Api
 import { getUserProfile, updateUser } from "../../../../api/user.api";
+import { getRoles } from "../../../../api/roles.api";
 //icons
 import { RiEdit2Line } from "react-icons/ri";
 //models
 import type { User } from "../../../../model/user.model";
+import type { Rol } from "../../../../model/rol.models";
 //Mensajes
 import { toast } from "react-hot-toast";
 
 interface FormData {
     nombre: string;
     apellido: string;
-    rol: string[];
+    rol: string;
     // avatar: string | File | undefined;
-    id: string;
+    id: string | undefined;
 };
 
 const Profile = () => {
     const navigate = useNavigate();    
-    const [_, setUser] = useState<User>();
+    const [, setUser] = useState<User>();
+    const [ roles, setRoles ] = useState<Rol[]>([]);
     const [ editingUser, seteditingUser ] = useState(false);
     //const [loading, setLoading] = useState(true);
     //const { handleSubmit, setValue } = useForm();
     const [formData, setFormData] = useState<FormData>({
         nombre: '',
         apellido: '',
-        rol: [],
+        rol: '',
         // avatar: undefined,
         id: ''
     });
@@ -42,29 +45,39 @@ const Profile = () => {
                     navigate('/');
                     return;
                 };
-                const userData = await getUserProfile();
+                //obtenemos datos del usuario y rol
+                const [userData, rolesData] = await Promise.all([
+                    getUserProfile(),
+                    getRoles()
+                ]);
                 //console.log('Respuesta del servidor:', userData);
+                               
+                setRoles(rolesData);
 
-                // const avatarUrl = userData.user.avatar instanceof File ? URL.createObjectURL(userData.user.avatar) : userData.user.avatar ?? '';
-
-                const rolesArray = Array.isArray(userData.user.rol) ? userData.user.rol : [userData.user.rol];
+                // const avatarUrl = userData.user.avatar instanceof File ? URL.createObjectURL(userData.user.avatar) : userData.user.avatar ?? '';               
                 
                 if (userData && userData.user) {
                     setUser(userData.user);
                     //console.log('Datos de usuario:', userData.user);
+                    let rolId = '';
+                    if (typeof userData.user.rol === 'string') {
+                        rolId = userData.user.rol;
+                    } else if (userData.user.rol && '_id' in userData.user.rol) {
+                        rolId = userData.user.rol._id;
+                    }
+
                     setFormData({
                         nombre: userData.user.nombre,
                         apellido: userData.user.apellido,
-                        rol: rolesArray,
+                        rol: rolId,
                         //avatar: avatarUrl,
-                        id: userData.user.id.toString(),
+                        id: userData.user._id,
                     });
-                    //setLoading(false);
-                                
+                    //setLoading(false);                                
                 }else {
                     console.log('Datos de usuario faltantes:', userData);
-                }         
-                
+                    toast.error('Error al obtener datos del usuario');
+                }                
             }catch (error) {
                 const errorMessage = error instanceof Error ? error.message : 'Error al mostrar el perfil del usuario';
                 toast.error(errorMessage, {
@@ -99,12 +112,12 @@ const Profile = () => {
     //Función para guardar los cambios en el formulario
     const handleSave = async () => {
         try {
-            const rolesArray = Array.isArray(formData.rol) ? formData.rol : [formData.rol];
+            //const rolesArray = Array.isArray(formData.rol) ? formData.rol : [formData.rol];
             // Enviamos solo los campos necesarios
             const dataToUpdate = {
                 nombre: formData.nombre,
                 apellido: formData.apellido,
-                rol: rolesArray,
+                rol: formData.rol,
                 //avatar: formData.avatar instanceof File ? formData.avatar : undefined,
             };
 
@@ -119,7 +132,7 @@ const Profile = () => {
                     ...prev,
                     nombre: updatedProfile.nombre,
                     apellido: updatedProfile.apellido,
-                    rol: updatedProfile.roles,
+                    rol: updatedProfile.rol,
                     //avatar: updatedProfile.avatar,
                 }));
             }
@@ -146,7 +159,7 @@ const Profile = () => {
             <hr className="my-8 border-gray-500" />
             <form>
                 {/* Avatar */}
-                <div className="flex items-center">
+                <section className="flex items-center">
                     <div className="w-1/4">
                         <p>Avatar</p>
                     </div>                    
@@ -169,13 +182,13 @@ const Profile = () => {
                         </div>
                         <p className="text-gray-300 text-sm mb-5">Allowed file types: png, jpg, jpeg.</p>
                     </div>                       
-                </div>
+                </section>
                 {/* Nombre y apellidos */}
-                <div className="flex flex-col items-center mb-8 md:flex-row">
+                <section className="flex flex-col items-center mb-8 md:flex-row">
                     <div className="mb-4 md:w-1/4 md:mb-0">
                         <p>Nombre Completo <span className="text-red-500">*</span></p>
                     </div>
-                    <div className="flex-1 flex items-center gap-4">
+                    <section className="flex-1 flex items-center gap-4">
                         {/* Nombre */}
                         <div className="w-full">
                             <input 
@@ -202,10 +215,10 @@ const Profile = () => {
                                 disabled={!editingUser}                                   
                             />                                   
                         </div>
-                    </div>                                      
-                </div>
+                    </section>                                      
+                </section>
                 {/* Rol */}
-                <div className="flex flex-col items-center md:flex-row">                    
+                <section className="flex flex-col items-center md:flex-row">                    
                     <div className="mb-4 md:w-1/4 md:mb-0">
                         <p>Rol <span className="text-red-500">*</span></p>
                     </div>
@@ -218,15 +231,21 @@ const Profile = () => {
                                 disabled={!editingUser} 
                                 className="w-full py-2 px-4 outline-none rounded-lg bg-dark text-white appearance-none"                                   
                             >
-                                <option value="">Selecione el Rol</option>
-                                <option value='admin'>Administrador</option>
-                                <option value='recepcion'>Recepcionista</option>
+                                <option value="">Seleccione un rol</option>
+                                { roles.map(rol => (                    
+                                                            
+                                        <option key={rol._id} value={rol._id}>
+                                            {rol.nombre}
+                                        </option>
+                                        )
+                                    )
+                                }     
                             </select>                                   
                         </div>                                                
                     </div>
-                </div>
+                </section>
                 {/* Botones de acción */}
-                <div className='flex justify-end items-center'>
+                <section className='flex justify-end items-center'>
                     {editingUser ? (
                     <button
                         type="button"
@@ -244,7 +263,7 @@ const Profile = () => {
                         Editar Perfil
                     </button>
                     )}          
-                </div>                                
+                </section>                                
             </form>
         </section>
     );
