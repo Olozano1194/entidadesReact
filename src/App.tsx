@@ -9,6 +9,7 @@ import Login from './pages/auth/Login';
 import Home from './pages/admin/Home';
 //usuarios
 import Profile from './pages/admin/usuarios/ProfileAdmin';
+import ListUser from './pages/admin/usuarios/ListUser';
 //import ForgetPassword from './pages/auth/ForgetPassword';
 //register
 import RegisterStudent from './pages/auth/register/RegisterStudent';
@@ -32,7 +33,9 @@ function App() {
         <Route path="admin" element={<LayoutAdmin />}>
           <Route index element={<Home />} />
           {/* Usuarios */}
+          <Route path="registerUser" element={<RegisterUser />} />
           <Route path="usuario" element={<Profile />} />
+          <Route path="usuarios" element={<ListUser />} />
         </Route>
         {/* <Route element={<ProtectRoute />} >
         </Route> */}
