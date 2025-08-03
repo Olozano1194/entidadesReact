@@ -6,6 +6,7 @@ export interface CreateUserDto {
     email: string;
     password: string;
     rol: Rol | string;
+    fotoPerfil?: { url: string, publicId: string };
     idinstitucion?: number | null;
 };
 

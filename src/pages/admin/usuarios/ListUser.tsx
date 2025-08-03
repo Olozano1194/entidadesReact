@@ -49,51 +49,7 @@ const ListUser = () => {
         };
         fetchUserData();
     }, []);
-
-    // useEffect(() => {
-    //         const fetchData = async () => {
-    //             setIsLoading(true);
-    //             try {                    
-    //                 //obtenemos datos del usuario y rol
-    //                 const [userData, rolesData] = await Promise.all([
-    //                     getUsers(),
-    //                     getRoles()
-    //                 ]);
-    //                 //console.log('Respuesta del servidor:', userData);                                   
-    //                 setRoles(rolesData);                              
-                    
-    //                 if (userData && userData.user) {                        
-    //                     //console.log('Datos de usuario:', userData.user);
-    //                     let rolId = '';
-    //                     if (typeof userData.user.rol === 'string') {
-    //                         rolId = userData.user.rol;
-    //                     } else if (userData.user.rol && '_id' in userData.user.rol) {
-    //                         rolId = userData.user.rol._id;
-    //                     }
-
-    //                     setUser(prevUsers => [
-    //                         ...prevUsers,
-    //                         {
-    //                             ...userData.user,
-    //                             rol: rolId
-    //                         }
-    //                     ]);                                                        
-    //                 }else {
-    //                     console.log('Datos de usuario faltantes:', userData);
-    //                     toast.error('Error al obtener datos del usuario');
-    //                 }                
-    //             }catch (error) {
-    //                 const errorMessage = error instanceof Error ? error.message : 'Error al mostrar el perfil del usuario';
-    //                 toast.error(errorMessage, {
-    //                     duration: 3000,
-    //                     position: 'bottom-right',
-    //                 });  
-    //             } finally {
-    //                 setIsLoading(false);
-    //             }
-    //         };
-    //         fetchData();
-    //     }, []);
+  
 
     const columnHelper = createColumnHelper<User>();
 
@@ -136,7 +92,7 @@ const ListUser = () => {
     ] as ColumnDef<User>[];
 
     return (
-        <main className="cards bg-secondary w-full flex flex-col justify-center items-center gap-y-4 p-4 rounded-xl">
+        <main className="cards bg-primary w-full flex flex-col justify-center items-center gap-y-4 p-4 rounded-xl">
             <h1 className='text-xl text-white font-bold pb-4 md:text-2xl' >Listado de Usuarios</h1>
             {
                 isLoading ? (

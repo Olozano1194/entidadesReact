@@ -14,7 +14,7 @@ export const Api = axios.create({
     // ? 'http://localhost:5000/api'
     // : 'https://gimnasioreactdjango.onrender.com/gym/api/v1',
     headers: {
-        'Content-Type': 'application/json',       
+        // 'Content-Type': 'application/json',       
     },    
 });
 
@@ -121,7 +121,7 @@ export const getUserProfile = async (): Promise<{ user: User & { rol?: Rol } }> 
         }
         const response = await Api.get(`/usuario/me`, {
             headers: {
-                'Authorization': `Token ${token}`
+                'Authorization': `Bearer ${token}`
             }
         });
         //console.log('User profile response:', response.data)        
@@ -137,7 +137,7 @@ export const getUsers = async () => {
     try {
         const response = await Api.get<User[]>('/usuario', {
             headers: {
-                'Authorization': `Token ${token}`
+                'Authorization': `Bearer ${token}`
                 },
             }
         );
@@ -149,22 +149,25 @@ export const getUsers = async () => {
 };
 
 //Actualizar Usuario
-export const updateUser = async (id: number, user: CreateUserDto): Promise<User> => {
-    //const token = localStorage.getItem('token');
-    //const formData = new FormData();
-
-    // if (user.nombre) formData.append('nombre', user.nombre);
-    // if (user.apellido) formData.append('apellido', user.apellido);
-    // if (typeof user.idrole === 'string') formData.append('idrole', user.idrole);        
-
+export const updateUser = async (id: string, formData: FormData): Promise<User> => {
     try {
-        const response = await Api.put<User>(`/usuario/${id}/`, user) //, {
-        //     headers: {
-        //         'Authorization': `Token ${token}`,
-        //         'Content-Type': 'multipart/form-data',
-        //     },
-        // });
-        return response.data;        
+        const token = localStorage.getItem('token');
+        if (!token) throw new Error('No hay token de autenticación');
+
+        console.log('Enviamos datos de actualización:', {
+            id,
+            formData: Object.fromEntries(formData.entries())
+        });
+        
+
+        const response = await Api.put(`/usuario/${id}`, formData, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                // 'Content-Type': 'multipart/form-data'
+            }
+        });
+        
+        return response.data.usuario;
     } catch (error) {
         throw handleApiError(error);             
     }    

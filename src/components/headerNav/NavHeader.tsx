@@ -10,12 +10,13 @@ import { getUserProfile } from '../../api/user.api';
 //Mensajes
 import { toast } from 'react-hot-toast';
 //Component
-import NotificationMenu from "../../components/headerNav/NotificationMenu"
+import NotificationMenu from "../../components/headerNav/NotificationMenu";
+
 
 function NavHeader() {
     const navigate = useNavigate();
-    const [user, setUser] = useState({ nombre: '', apellido: '', email: ''});
-    const [_, setLoggedOut] = useState<boolean>(false);    
+    const [user, setUser] = useState({ nombre: '', apellido: '', email: '', fotoPerfil: ''});
+    const [ , setLoggedOut] = useState<boolean>(false);    
 
     useEffect(() => {
         const axiosUserData = async () => {
@@ -27,14 +28,24 @@ function NavHeader() {
                     return;
                 };
                 const data = await getUserProfile();
-                //console.log('User data received:', data);
+                //console.log('User data received:', data);                
 
-                // const avatarUrl = data.user.avatar instanceof File ? URL.createObjectURL(data.user.avatar) : data.user.avatar ?? '';
+                let avatarUrl = '';
+                if (data.user.fotoPerfil instanceof File) {
+                    avatarUrl = URL.createObjectURL(data.user.fotoPerfil);
+                } else if (data.user.fotoPerfil?.url) {
+                    const url = data.user.fotoPerfil.url;
+                    avatarUrl = url.startsWith('/')
+                    ? `http://localhost:5000${data.user.fotoPerfil.url}`
+                    : url;
+
+                }               
                 
                 setUser({
                     nombre: data.user.nombre,
                     apellido: data.user.apellido,
-                    email: data.user.email                    
+                    email: data.user.email,
+                    fotoPerfil: avatarUrl
                 });
             }catch (error) {
                 const errorMessage = error instanceof Error ? error.message : 'Error al registrar el miembro';
@@ -54,6 +65,8 @@ function NavHeader() {
         console.log('Token removed:', localStorage.getItem('token'));
         navigate('/');        
     }
+
+    const defaultAvatar = "https://img.freepik.com/foto-gratis/feliz-optimista-guapo-gerente-ventas-latina-apuntando-lado-mirando-camara_1262-12679.jpg";
     
     return (
         <nav className="flex items-center gap-x-2 mr-8">
@@ -65,7 +78,7 @@ function NavHeader() {
             <Menu>
                 <MenuButton className="flex cursor-pointer items-center gap-x-2 hover:bg-primary p-2 rounded-lg transition-colors">
                 <img 
-                    src={user.avatar || "https://img.freepik.com/foto-gratis/feliz-optimista-guapo-gerente-ventas-latina-apuntando-lado-mirando-camara_1262-12679.jpg"} alt="img-user"
+                    src={user.fotoPerfil || defaultAvatar } alt="img-user"
                     className="w-10 h-10 object-cover rounded-full"
                 />
                 <span className="text-white font-bold">{user.nombre} {user.apellido}</span>
@@ -75,7 +88,7 @@ function NavHeader() {
                     <MenuItem as='div' className='p-0'>
                             <section className="rounded-lg transition-colors text-white flex items-center gap-x-4 py-2 px-4">
                                 <img 
-                                    src={user.avatar || "https://img.freepik.com/foto-gratis/feliz-optimista-guapo-gerente-ventas-latina-apuntando-lado-mirando-camara_1262-12679.jpg"} alt="img-user"
+                                    src={user.fotoPerfil || defaultAvatar } alt="img-user"
                                     className="w-10 h-10 object-cover rounded-full"
                                 />
                                 <div className="flex flex-col gap-1 text-sm">

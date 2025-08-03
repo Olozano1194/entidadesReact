@@ -48,7 +48,7 @@ const Table = <T,> ({ data, columns, totalRow }: TableProps<T>) => {
     };
 
     return (
-        <main className="cards bg-primary w-full flex flex-col justify-center items-center gap-y-4 p-4 rounded-xl">
+        <main className="cards w-full flex flex-col justify-center items-center gap-y-4 p-4 rounded-xl">
             <div className="overflow-x-auto w-full">                
                 <table className="min-w-full border"> 
                     <thead className="bg-secondary-500 text-white text-sm lg:text-lg">

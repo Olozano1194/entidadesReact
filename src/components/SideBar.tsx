@@ -135,7 +135,7 @@ const SideBar = () => {
                                     <ul className="flex flex-col gap-2">
                                         <li>
                                             <button onClick={() => handleToggleSubMenu('menu3')}  
-                                                    className="w-full flex items-center justify-between py-2 px-4 rounded-lg hover:bg-teal-400 text-white font-semibold transition-colors"><span className="flex items-center gap-2"><BiSolidInstitution className="text-secondary-500" />Instituciones</span>
+                                                    className="w-full cursor-pointer flex items-center justify-between py-2 px-4 rounded-lg hover:bg-teal-400 text-white font-semibold transition-colors"><span className="flex items-center gap-2"><BiSolidInstitution className="text-secondary-500" />Instituciones</span>
                                                     <RiArrowRightSLine className={`mt-1 ${showSubMenu.menu3 ? 'rotate-90' : ''} transition-all`} />
                                             </button>
                                             <ul className={`mt-2 ${!showSubMenu.menu3 ? 'hidden' : ''} transition-all`} >
@@ -152,7 +152,7 @@ const SideBar = () => {
                                     <ul className="flex flex-col gap-2">
                                         <li>
                                             <button onClick={() => handleToggleSubMenu('menu4')}  
-                                                    className="w-full flex items-center justify-between py-2 px-4 rounded-lg hover:bg-teal-400 text-white font-semibold transition-colors"><span className="flex items-center gap-2"><RiUserLine className="text-secondary-500" />Usuario</span>
+                                                    className="w-full cursor-pointer flex items-center justify-between py-2 px-4 rounded-lg hover:bg-teal-400 text-white font-semibold transition-colors"><span className="flex items-center gap-2"><RiUserLine className="text-secondary-500" />Usuario</span>
                                                     <RiArrowRightSLine className={`mt-1 ${showSubMenu.menu4 ? 'rotate-90' : ''} transition-all`} />
                                             </button>
                                             <ul className={`mt-2 ${!showSubMenu.menu4 ? 'hidden' : ''} transition-all`} >
@@ -169,7 +169,7 @@ const SideBar = () => {
                                     <ul className="flex flex-col gap-2">
                                         <li>
                                             <button onClick={() => handleToggleSubMenu('menu5')}  
-                                                    className="w-full flex items-center justify-between py-2 px-4 rounded-lg hover:bg-teal-400 text-white font-semibold transition-colors"><span className="flex items-center gap-2"><RiUserLine className="text-secondary-500" />Roles</span>
+                                                    className="w-full cursor-pointer flex items-center justify-between py-2 px-4 rounded-lg hover:bg-teal-400 text-white font-semibold transition-colors"><span className="flex items-center gap-2"><RiUserLine className="text-secondary-500" />Roles</span>
                                                     <RiArrowRightSLine className={`mt-1 ${showSubMenu.menu5 ? 'rotate-90' : ''} transition-all`} />
                                             </button>
                                             <ul className={`mt-2 ${!showSubMenu.menu5 ? 'hidden' : ''} transition-all`} >
