@@ -154,11 +154,10 @@ export const updateUser = async (id: string, formData: FormData): Promise<User> 
         const token = localStorage.getItem('token');
         if (!token) throw new Error('No hay token de autenticación');
 
-        console.log('Enviamos datos de actualización:', {
-            id,
-            formData: Object.fromEntries(formData.entries())
-        });
-        
+        // console.log('Enviamos datos de actualización:', {
+        //     id,
+        //     formData: Object.fromEntries(formData.entries())
+        // });        
 
         const response = await Api.put(`/usuario/${id}`, formData, {
             headers: {

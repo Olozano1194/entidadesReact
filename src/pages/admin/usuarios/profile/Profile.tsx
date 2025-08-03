@@ -51,8 +51,7 @@ const Profile = () => {
                     getUserProfile(),
                     getRoles()
                 ]);
-                //console.log('Respuesta del servidor:', userData);
-                               
+                //console.log('Respuesta del servidor:', userData);                               
                 setRoles(rolesData);                   
                 
                 if (userData?.user) {
@@ -101,10 +100,10 @@ const Profile = () => {
     //Función donde manejamos los cambios en el formulario
     const handleChanges = (data: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>): void => {
         const { name, value } = data.target;
-        console.log('Cambio en campo:', name, value);
+        // console.log('Cambio en campo:', name, value);
         setFormData((prevData) => {
             const newData = { ...prevData, [name]: value };
-            console.log('Nuevo estado del formulario:', newData);
+            // console.log('Nuevo estado del formulario:', newData);
             return newData;
         });
     };    
@@ -132,7 +131,7 @@ const Profile = () => {
     //Función para guardar los cambios en el formulario
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log('Iniciando guardado....', formData );        
+        // console.log('Iniciando guardado....', formData );        
         
         // setIsSubmitting(true);
 
@@ -150,15 +149,15 @@ const Profile = () => {
                 data.append('fotoPerfil', selectedFile, selectedFile.name);
             }
 
-            console.log('Datos a enviar:', {
-                nombre: formData.nombre,
-                apellido: formData.apellido,
-                rol: formData.rol,
-                tieneImagen: !!selectedFile
-            });                        
+            // console.log('Datos a enviar:', {
+            //     nombre: formData.nombre,
+            //     apellido: formData.apellido,
+            //     rol: formData.rol,
+            //     tieneImagen: !!selectedFile
+            // });                        
 
             const updatedUser = await updateUser(formData.id, data);
-            console.log('Respuesta del servidor:', updatedUser);
+            // console.log('Respuesta del servidor:', updatedUser);
 
             setUser(updatedUser);
             setSelectedFile(null);
@@ -186,11 +185,11 @@ const Profile = () => {
     };
 
     const resetForm = () => {
-        console.log('Reseteando form...');        
+        // console.log('Reseteando form...');        
         if (user) {
             const rolId = typeof user.rol === 'string' ? user.rol : user.rol._id;
             const userId = user._id;
-            console.log('Rol Id para resetear:', rolId);
+            // console.log('Rol Id para resetear:', rolId);
              
             setFormData({
                 nombre: user.nombre,
@@ -330,8 +329,7 @@ const Profile = () => {
                             <button
                                 type="button"
                                 className="mt-4 py-2 px-4 bg-sky-700 cursor-pointer font-bold text-white rounded hover:scale-105 hover:bg-sky-500"
-                                onClick={() => {console.log('Clic en editar Perfil');
-                                 setEditingUser(true)}}                           
+                                onClick={() => {setEditingUser(true) } }                           
                             >
                                 Editar Perfil
                             </button>
