@@ -58,7 +58,7 @@ const RegisterUser = () => {
             const requestData: CreateUserDto = {
                 nombre: data.nombre.trim(),
                 apellido: data.apellido.trim(),
-                email: data.email,
+                email: data.email.toLowerCase(),
                 password: data.password,
                 rol: data.rol,
                 idinstitucion: data.idinstitucion,                
@@ -78,7 +78,7 @@ const RegisterUser = () => {
                 },
 
             });
-            navigate('/registerUser');
+            navigate('/admin');
             
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error al registrar el usuario';

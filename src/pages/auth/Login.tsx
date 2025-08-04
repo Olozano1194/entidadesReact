@@ -139,9 +139,9 @@ const Login = () => {
                     Iniciar Sesión                                    
                 </Button>
                 <div className="p-2 mt-3 flex flex-col gap-3">
-                    <p className="text-center text-stone-700">Olvido la contraseña? <a href="#" className="text-teal-600 font-bold hover:text-teal-800 transition-colors">Restablecer</a></p>
+                    <p className="text-center text-stone-700">Olvido la contraseña? <Link to='/' className="text-teal-600 font-bold hover:text-teal-800 transition-colors">Restablecer</Link></p>
 
-                    <p className="text-center text-stone-700">No tienes cuenta? <Link to='/registerUser' className="text-sky-600 font-bold hover:text-sky-700 transition-colors">Registrarse</Link></p>
+                    {/* <p className="text-center text-stone-700">No tienes cuenta? <Link to='/registerUser' className="text-sky-600 font-bold hover:text-sky-700 transition-colors">Registrarse</Link></p> */}
                 </div>
             </Form>            
        </Main>

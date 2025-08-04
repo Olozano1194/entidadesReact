@@ -123,7 +123,7 @@ const SideBar = () => {
                                             </button>
                                             <ul className={`mt-2 ${!showSubMenu.menu2 ? 'hidden' : ''}`}>
                                                 <li>
-                                                    <Link to='registrar-miembro-day' className="py-2 px-4 border-l border-slate-400 block ml-6 text-white font-semibold relative before:w-3 before:h-3 before:absolute before:bg-primary before:rounded-full before:-left-[6.5px] before:top-1/2 before:-translate-y-1/2 before:border-4 before:border-secondary hover:text-gray-400 transition-colors">Registrar Estudiante</Link>
+                                                    <Link to='registerStudent' className="py-2 px-4 border-l border-slate-400 block ml-6 text-white font-semibold relative before:w-3 before:h-3 before:absolute before:bg-primary before:rounded-full before:-left-[6.5px] before:top-1/2 before:-translate-y-1/2 before:border-4 before:border-secondary hover:text-gray-400 transition-colors">Registrar Estudiante</Link>
                                                 </li>
                                                 <li>
                                                     <Link to='miembros-day' className="py-2 px-4 border-l border-slate-400 block ml-6 text-white font-semibold relative before:w-3 before:h-3 before:absolute before:bg-primary before:rounded-full before:-left-[6.5px] before:top-1/2 before:-translate-y-1/2 before:border-4 before:border-secondary hover:text-gray-400 transition-colors">Ver Estudiante</Link>
