@@ -89,7 +89,7 @@ export const CreateUsers = async (userData: CreateUserDto) => {
     }
 };
 
-//Inicio de sesión
+// Inicio de sesión
 export const login = async (credentials: LoginUserDto) => {
     try {
         // console.log('Intentando login con:', credentials);
@@ -112,7 +112,7 @@ export const login = async (credentials: LoginUserDto) => {
     }
 }
 
-//function profile
+// function profile
 export const getUserProfile = async (): Promise<{ user: User & { rol?: Rol } }> => {    
     try {
         const token = localStorage.getItem('token');
@@ -131,7 +131,7 @@ export const getUserProfile = async (): Promise<{ user: User & { rol?: Rol } }> 
     }
 };
 
-//Lista de usuarios
+// Lista de usuarios
 export const getUsers = async () => {
     const token = localStorage.getItem('token');
     try {
@@ -148,7 +148,7 @@ export const getUsers = async () => {
     }
 };
 
-//Actualizar Usuario
+// Actualizar Usuario
 export const updateUser = async (id: string, formData: FormData): Promise<User> => {
     try {
         const token = localStorage.getItem('token');

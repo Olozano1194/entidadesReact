@@ -14,6 +14,7 @@ import ListUser from './pages/admin/usuarios/ListUser';
 //register
 import RegisterStudent from './pages/auth/register/RegisterStudent';
 import RegisterUser from './pages/auth/register/RegisterUser';
+import RegisterInstitutions from './pages/auth/register/RegisterInstitutions';
 //admin
 //import ProtectRoute from './pages/admin/protectedRoute/ProtectRoute';
 //Notificaciones
@@ -36,6 +37,8 @@ function App() {
           <Route path="registerUser" element={<RegisterUser />} />
           <Route path="usuario" element={<Profile />} />
           <Route path="usuarios" element={<ListUser />} />
+          {/* Institutions */}
+          <Route path="registerInstitutions" element={<RegisterInstitutions />} />
         </Route>
         {/* <Route element={<ProtectRoute />} >
         </Route> */}
