@@ -10,4 +10,5 @@ export interface User {
     rol: Rol | string;
     fotoPerfil?: { url: string, publicId: string };
     idinstitucion?: number | null;
+    id?: string;
 };

@@ -3,27 +3,34 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 //Api
 import { getUserProfile, updateUser } from "../../../../api/user.api";
+import { getStudentById, updateStudent } from "../../../../api/student.api";
 import { getRoles } from "../../../../api/roles.api";
 //icons
 import { RiEdit2Line } from "react-icons/ri";
 //models
 import type { User } from "../../../../model/user.model";
+import type { Student } from "../../../../model/student.model";
 import type { Rol } from "../../../../model/rol.models";
 //Mensajes
 import { toast } from "react-hot-toast";
+import type { UpdateStudentDto } from "../../../../model/dto/student.dto";
 
-interface FormData {
-    nombre: string;
-    apellido: string;
+interface FormData {    
     rol: string;
     fotoPerfil?: File | string;
     id: string | undefined;
+    nombre: string;
+    apellido: string;
+    fechanacimiento: string;
+    telefono: string;
+    direccion: string;    
 };
 
 const Profile = () => {
     const navigate = useNavigate();    
     const [ user, setUser ] = useState<User | null>(null);
     const [ roles, setRoles ] = useState<Rol[]>([]);
+    const [ student, setStudent ] = useState<Student | null>(null);
     const [ editingUser, setEditingUser ] = useState(false);
     const [ loading, setLoading ] = useState(true);
     const [ selectedFile, setSelectedFile ] = useState<File | null>(null);
@@ -32,7 +39,11 @@ const Profile = () => {
         nombre: '',
         apellido: '',
         rol: '',        
-        id: ''
+        id: '',
+        fechanacimiento: '',
+        telefono: '',
+        direccion: '',
+        
     });
 
     //hook para vizualizar los datos de la bd
@@ -47,43 +58,62 @@ const Profile = () => {
                     return;
                 };
                 //obtenemos datos del usuario y rol
-                const [userData, rolesData] = await Promise.all([
+                const [ userData, rolesData ] = await Promise.all([
                     getUserProfile(),
-                    getRoles()
+                    getRoles(),                    
                 ]);
                 //console.log('Respuesta del servidor:', userData);                               
-                setRoles(rolesData);                   
+                setRoles(rolesData);
+                setUser(userData.user);                
                 
-                if (userData?.user) {
-                    setUser(userData.user);
-                    //console.log('Datos de usuario:', userData.user);
-                    let rolId = '';
-                    if (typeof userData.user.rol === 'string') {
-                        rolId = userData.user.rol;
-                    } else if (userData.user.rol && '_id' in userData.user.rol) {
-                        rolId = userData.user.rol._id;
-                    }
+                let studentData = null;
+                
+                try {
+                    const response = await getStudentById();                   
+                    studentData = response?.student ?? null;
+                    setStudent(studentData);
+                } catch (error) {                    
+                    const errorMessage = error instanceof Error ? error.message : 'Error al actualizar el Usuario';
+                    toast.error(errorMessage, {
+                        duration: 3000,
+                        position: 'bottom-right',
+                    });                                       
+                }
+                // console.log('Datos de usuario:', studentData.student);
+                let rolId = '';
+                if (typeof userData.user.rol === 'string') {
+                    rolId = userData.user.rol;
+                } else if (userData.user.rol && '_id' in userData.user.rol) {
+                    rolId = userData.user.rol._id;
+                }
+                // Asegurarse de que el Id del usuario este presente
+                const userId = userData.user._id || userData.user.id;
+                
+                if (!userId) {
+                    throw new Error('No se encontró el Id del usuario');
+                }
 
-                    // Asegurarse de que el Id del usuario este presente
-                    const userId = userData.user._id || userData.user.id;
-                    if (!userId) {
-                        throw new Error('No se encontró el Id del usuario');
-                    }
-
-                    setFormData({
-                        nombre: userData.user.nombre,
-                        apellido: userData.user.apellido,
-                        rol: rolId,                        
-                        id: userId,
-                    });
+                //formateamos la fecha antes de pasarla al formulario
+                if (studentData?.fechanacimiento) {
+                    const original = new Date(studentData.fechanacimiento);
+                    const formatted = formatDate(original);
                     
-                    if (userData.user.fotoPerfil?.url) {
-                        setPreviewUrl(userData.user.fotoPerfil.url);
-                    }
-                }else {
-                    console.log('Datos de usuario faltantes:', userData);
-                    toast.error('Error al obtener datos del usuario');
-                }               
+                    setFormData({
+                    nombre: studentData?.nombre ?? '',
+                    apellido: studentData?.apellido ?? '',
+                    rol: rolId,                        
+                    id: userId,
+                    fechanacimiento: formatted,
+                    telefono: studentData?.telefono ?? '',
+                    direccion: studentData?.direccion ?? '',
+                });
+                }                   
+
+                
+                    
+                if (userData.user.fotoPerfil?.url) {
+                    setPreviewUrl(userData.user.fotoPerfil.url);
+                }                              
             }catch (error) {
                 const errorMessage = error instanceof Error ? error.message : 'Error al mostrar el perfil del usuario';
                 toast.error(errorMessage, {
@@ -100,12 +130,13 @@ const Profile = () => {
     //Función donde manejamos los cambios en el formulario
     const handleChanges = (data: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>): void => {
         const { name, value } = data.target;
-        // console.log('Cambio en campo:', name, value);
-        setFormData((prevData) => {
-            const newData = { ...prevData, [name]: value };
-            // console.log('Nuevo estado del formulario:', newData);
-            return newData;
-        });
+        // console.log('Cambio en campo:', name, value);       
+        
+        setFormData((prevData) => ({
+            ...prevData, 
+            [name]: value
+            // console.log('Nuevo estado del formulario:', newData);            
+        }));
     };    
 
     //Función para las imagenes
@@ -134,7 +165,6 @@ const Profile = () => {
         // console.log('Iniciando guardado....', formData );        
         
         // setIsSubmitting(true);
-
         try {
             if(!formData.id) {console.error('ID de usuario no definido');
              return;}
@@ -154,12 +184,23 @@ const Profile = () => {
             //     apellido: formData.apellido,
             //     rol: formData.rol,
             //     tieneImagen: !!selectedFile
-            // });                        
-
+            // });
             const updatedUser = await updateUser(formData.id, data);
             // console.log('Respuesta del servidor:', updatedUser);
+            
+            if (student) {
+                const studentUpdates: Partial<UpdateStudentDto> = {
+                    nombre: formData.nombre,
+                    apellido: formData.apellido,
+                    fechanacimiento: new Date(formData.fechanacimiento),
+                    telefono: formData.telefono,
+                    direccion: formData.direccion 
+                };
+                const updatedStudent = await updateStudent(student._id!, studentUpdates);
+                setStudent(updatedStudent);                
+            }            
 
-            setUser(updatedUser);
+            setUser(updatedUser);            
             setSelectedFile(null);
             setEditingUser(false);
 
@@ -186,21 +227,26 @@ const Profile = () => {
 
     const resetForm = () => {
         // console.log('Reseteando form...');        
-        if (user) {
-            const rolId = typeof user.rol === 'string' ? user.rol : user.rol._id;
-            const userId = user._id;
-            // console.log('Rol Id para resetear:', rolId);
-             
+        if (user || student) {
+            const rolId = typeof user?.rol === 'string' ? user.rol : user?.rol._id ?? '';
             setFormData({
-                nombre: user.nombre,
-                apellido: user.apellido,
-                rol: rolId,
-                id: userId
+            nombre: student?.nombre ?? user?.nombre ?? '',
+            apellido: student?.apellido ?? user?.apellido ?? '',
+            rol: rolId,
+            id: user?._id ?? '',
+            fechanacimiento: student?.fechanacimiento 
+                ? new Date(student.fechanacimiento).toISOString().split("T")[0]
+                : new Date(formData.fechanacimiento).toISOString().split("T")[0],
+            telefono: student?.telefono ?? '',
+            direccion: student?.direccion ?? ''
             });
-            setPreviewUrl(user.fotoPerfil?.url || null);
-        }
-        setSelectedFile(null);
-        setEditingUser(false);        
+            setSelectedFile(null);
+            setEditingUser(false);
+        }        
+    };
+
+    const formatDate = (date: Date): string => {
+        return date.toISOString().slice(0,10);
     };
 
     const defaultAvatar = 'https://img.freepik.com/foto-gratis/negocios-finanzas-empleo-concepto-mujeres-emprendedoras-exitosas-joven-empresaria-segura-anteojos-mostrando-gesto-pulga-arriba-sostenga-computadora-portatil-garantice-mejor-calidad-servicio_1258-59118.jpg';
@@ -278,8 +324,50 @@ const Profile = () => {
                         </div>
                     </section>                                      
                 </section>
+                {/* Fecha de nacimiento */}
+                <section className="flex flex-col items-center mb-8 md:flex-row">                    
+                    <div className="mb-4 md:w-1/4 md:mb-0">
+                        <p>Fecha de nacimiento <span className="text-red-500">*</span></p>
+                    </div>
+                    <div className="w-full flex-1 flex items-center gap-4">
+                        <div className="w-full md:w-1/2">
+                            <input 
+                                type="date"
+                                className="w-full py-2 px-4 outline-none rounded-lg bg-dark text-white"                                 
+                                id="birthdate"
+                                name='fechanacimiento'
+                                value={formData.fechanacimiento
+                                    ? new Date(formData.fechanacimiento).toISOString().split('T')[0]
+                                    : ''
+                                }
+                                onChange={handleChanges}
+                                disabled={!editingUser}
+                            />                                   
+                        </div>                                                
+                    </div>
+                </section>  
+                {/* Telefono */}
+                <section className="flex flex-col items-center mb-8 md:flex-row">                    
+                    <div className="mb-4 md:w-1/4 md:mb-0">
+                        <p>Teléfono <span className="text-red-500">*</span></p>
+                    </div>
+                    <div className="w-full flex-1 flex items-center gap-4">
+                        <div className="w-full md:w-1/2">
+                            <input 
+                                type="tel"
+                                className="w-full py-2 px-4 outline-none rounded-lg bg-dark text-white"                                 
+                                id="phone"
+                                name='telefono'
+                                placeholder="3003213215"
+                                value={formData.telefono}
+                                onChange={handleChanges}
+                                disabled={!editingUser}
+                            />                                       
+                        </div>                                                
+                    </div>
+                </section>
                 {/* Rol */}
-                <section className="flex flex-col items-center md:flex-row">                    
+                <section className="flex flex-col items-center mb-8 md:flex-row">                    
                     <div className="mb-4 md:w-1/4 md:mb-0">
                         <p>Rol <span className="text-red-500">*</span></p>
                     </div>
@@ -304,6 +392,26 @@ const Profile = () => {
                         </div>                                                
                     </div>
                 </section>
+                {/* Dirección */}
+                <section className="flex flex-col items-center md:flex-row">                    
+                    <div className="mb-4 md:w-1/4 md:mb-0">
+                        <p>Dirección <span className="text-red-500">*</span></p>
+                    </div>
+                    <div className="w-full flex-1 flex items-center gap-4">
+                        <div className="w-full md:w-1/2">
+                            <input 
+                                type="text"
+                                className="w-full py-2 px-4 outline-none rounded-lg bg-dark text-white"                                 
+                                id="address"
+                                name='direccion'
+                                placeholder="Cra 15 No 15-15"
+                                value={formData.direccion}
+                                onChange={handleChanges}
+                                disabled={!editingUser}
+                            />                                       
+                        </div>                                                
+                    </div>
+                </section>                
                 {/* Botones de acción */}
                 <section className='flex justify-end items-center'>
                     {editingUser ? (
