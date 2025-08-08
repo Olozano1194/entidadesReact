@@ -7,15 +7,22 @@ import { Link, useNavigate } from "react-router-dom";
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 //API
 import { getUserProfile } from '../../api/user.api';
+import { getRoleById } from "../../api/roles.api";
+import { getStudentById } from "../../api/student.api";
 //Mensajes
 import { toast } from 'react-hot-toast';
 //Component
 import NotificationMenu from "../../components/headerNav/NotificationMenu";
+// Model
+import type { Rol } from "../../model/rol.models";
+import type { Student } from "../../model/student.model";
 
 
 function NavHeader() {
     const navigate = useNavigate();
-    const [user, setUser] = useState({ nombre: '', apellido: '', email: '', fotoPerfil: ''});
+    const [user, setUser] = useState({ email: '', fotoPerfil: ''});
+    const [userRole, setUserRole] = useState<string>('');
+    const [ student, setStudent ] = useState< Student | null>(null);
     const [ , setLoggedOut] = useState<boolean>(false);    
 
     useEffect(() => {
@@ -27,24 +34,32 @@ function NavHeader() {
                     navigate('/');
                     return;
                 };
-                const data = await getUserProfile();
-                //console.log('User data received:', data);                
+                const [ userData, studentData ] = await Promise.all([ getUserProfile(), getStudentById() ]);
+                //console.log('User data received:', data);
+                if (studentData.student) setStudent(studentData.student);                
+                
+                //Si el rol viene como objeto
+                if (userData.user.rol && typeof userData.user.rol === 'object' && 'nombre' in userData.user.rol) {
+                    setUserRole((userData.user.rol as Rol).nombre);
+                }
+                //Si el rol viene como String
+                else if (typeof userData.user.rol === 'string') {
+                        const rol = await getRoleById(userData.user.rol);
+                        setUserRole(rol.nombre);
+                }
 
                 let avatarUrl = '';
-                if (data.user.fotoPerfil instanceof File) {
-                    avatarUrl = URL.createObjectURL(data.user.fotoPerfil);
-                } else if (data.user.fotoPerfil?.url) {
-                    const url = data.user.fotoPerfil.url;
+                if (userData.user.fotoPerfil instanceof File) {
+                    avatarUrl = URL.createObjectURL(userData.user.fotoPerfil);
+                } else if (userData.user.fotoPerfil?.url) {
+                    const url = userData.user.fotoPerfil.url;
                     avatarUrl = url.startsWith('/')
-                    ? `http://localhost:5000${data.user.fotoPerfil.url}`
+                    ? `http://localhost:5000${userData.user.fotoPerfil.url}`
                     : url;
-
-                }               
+                }
                 
-                setUser({
-                    nombre: data.user.nombre,
-                    apellido: data.user.apellido,
-                    email: data.user.email,
+                setUser({                    
+                    email: userData.user.email,                    
                     fotoPerfil: avatarUrl
                 });
             }catch (error) {
@@ -81,7 +96,7 @@ function NavHeader() {
                     src={user.fotoPerfil || defaultAvatar } alt="img-user"
                     className="w-10 h-10 object-cover rounded-full"
                 />
-                <span className="text-white font-bold">{user.nombre} {user.apellido}</span>
+                <span className="text-white font-bold">{student?.nombre || userRole.charAt(0).toUpperCase() + userRole.slice(1)} {student?.apellido}</span>
                 <RiArrowDownSLine className="text-2xl" />
                 </MenuButton>
                 <MenuItems anchor='bottom' className='bg-primary mt-1 p-4 rounded-lg'>
@@ -92,7 +107,7 @@ function NavHeader() {
                                     className="w-10 h-10 object-cover rounded-full"
                                 />
                                 <div className="flex flex-col gap-1 text-sm">
-                                    <span className="text-white text-sm">{user.nombre} {user.apellido}</span>
+                                    <span className="text-white text-sm">{student?.nombre || userRole.charAt(0).toUpperCase() + userRole.slice(1)} {student?.apellido}</span>
                                     <span className="text-white text-xm">{user.email}</span>
                                 </div>
                             </section>
