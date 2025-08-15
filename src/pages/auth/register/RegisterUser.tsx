@@ -55,9 +55,7 @@ const RegisterUser = () => {
                 toast.error('Debe seleccionar un rol válido');
                 return;
             }            
-            const requestData: CreateUserDto = {
-                nombre: data.nombre.trim(),
-                apellido: data.apellido.trim(),
+            const requestData: CreateUserDto = {                
                 email: data.email.toLowerCase(),
                 password: data.password,
                 rol: data.rol,
@@ -94,57 +92,7 @@ const RegisterUser = () => {
             <Form onSubmit={onSubmit}>
                 <div className='w-full flex justify-center'>
                     <Title><img className="w-8 h-6 rounded-lg" src={icons} alt="logo del desarrollador" />Crear <span className="pl-2 text-teal-800">Usuario</span></Title>
-                </div>                
-                {/* name */}
-                <label htmlFor="name">
-                    <Span><CiUser className='lg:text-2xl' />Nombre</Span>
-                    <Input type="text" placeholder="Escribe su nombre"
-                        {...register('nombre',{
-                            required: {
-                                value: true,
-                                message: 'Nombre requerido'
-                                },
-                                    minLength: {
-                                            value: 4,
-                                            message: 'El nombre debe tener minimo 4 carácteres'
-                                        },
-                                        maxLength: {
-                                            value: 20,
-                                            message: 'El nombre debe tener como máximo 20 carácteres'
-                                        },
-                                pattern: {
-                                    value: /^[A-Za-z]+(?:\s[A-Za-z]+)?$/,
-                                    message: 'Nombre invalido'
-                                },
-                        })}  
-                    />
-                </label>
-                {
-                    errors.nombre && <ErrorSpan>{errors.nombre.message}</ErrorSpan>
-                }
-                {/* lastname */}
-                <label htmlFor="lastname">
-                    <Span><CiUser className='lg:text-2xl'/>Apellido</Span>
-                    <Input type="text" placeholder="Escribe su apellido"
-                        {...register('apellido',{
-                            required: {
-                                value: true,
-                                message: 'Apellido requerido'
-                                },
-                            minLength: {
-                                value: 4,
-                                message: 'El apellido debe tener minimo 7 carácteres'
-                            },
-                            pattern: {
-                                value: /^[A-Za-z]+(?:\s[A-Za-z]+)?$/,
-                                message: 'Apellido invalido'
-                            },
-                        })}  
-                    />
-                </label>
-                {
-                    errors.apellido && <ErrorSpan>{errors.apellido.message}</ErrorSpan>
-                }                
+                </div>                              
                 {/* email */}
                 <label htmlFor="email">
                     <Span><CiMail className='lg:text-2xl' />Correo</Span>

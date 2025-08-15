@@ -54,9 +54,7 @@ export const handleApiError = (error: unknown): never => {
 // Creamos el usuario
 export const CreateUsers = async (userData: CreateUserDto) => {
     try {                
-        const requestData = {
-            nombre: userData.nombre,
-            apellido: userData.apellido,
+        const requestData = {            
             email: userData.email,
             password: userData.password,
             rol: userData.rol,
@@ -97,12 +95,9 @@ export const login = async (credentials: LoginUserDto) => {
         const response = await Api.post('/usuario/login', credentials);
         // console.log('Respuesta del servidor:', response.data);
 
-        if (response.data.token) {
+        if (response.data.token && response.data.user) {
             localStorage.setItem('token', response.data.token);
-
-            if (response.data.user) {
-                localStorage.setItem('user', JSON.stringify(response.data.user));            
-            }
+            localStorage.setItem('user', JSON.stringify(response.data.user));            
         }        
                     
         return response.data;

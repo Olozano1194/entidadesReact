@@ -9,6 +9,7 @@ import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { getUserProfile } from '../../api/user.api';
 import { getRoleById } from "../../api/roles.api";
 import { getStudentById } from "../../api/student.api";
+import { getTeacherById } from "../../api/teacher.api";
 //Mensajes
 import { toast } from 'react-hot-toast';
 //Component
@@ -16,6 +17,7 @@ import NotificationMenu from "../../components/headerNav/NotificationMenu";
 // Model
 import type { Rol } from "../../model/rol.models";
 import type { Student } from "../../model/student.model";
+import type { Teacher } from "../../model/teacher.model";
 
 
 function NavHeader() {
@@ -23,6 +25,7 @@ function NavHeader() {
     const [user, setUser] = useState({ email: '', fotoPerfil: ''});
     const [userRole, setUserRole] = useState<string>('');
     const [ student, setStudent ] = useState< Student | null>(null);
+    const [ teacher, setTeacher ] = useState< Teacher | null>(null);
     const [ , setLoggedOut] = useState<boolean>(false);    
 
     useEffect(() => {
@@ -34,19 +37,43 @@ function NavHeader() {
                     navigate('/');
                     return;
                 };
-                const [ userData, studentData ] = await Promise.all([ getUserProfile(), getStudentById() ]);
-                //console.log('User data received:', data);
-                if (studentData.student) setStudent(studentData.student);                
-                
-                //Si el rol viene como objeto
+                const userData = await getUserProfile();
+
+                // determinamos el rol
+                let rolNombre = '';
                 if (userData.user.rol && typeof userData.user.rol === 'object' && 'nombre' in userData.user.rol) {
+                    rolNombre = (userData.user.rol as Rol).nombre.toLowerCase();
                     setUserRole((userData.user.rol as Rol).nombre);
+                } else if (typeof userData.user.rol === 'string') {
+                    const rol = await getRoleById(userData.user.rol);
+                    rolNombre = rol.nombre.toLowerCase();
+                    setUserRole(rol.nombre);
                 }
-                //Si el rol viene como String
-                else if (typeof userData.user.rol === 'string') {
-                        const rol = await getRoleById(userData.user.rol);
-                        setUserRole(rol.nombre);
-                }
+
+                // llamada condicional segun el rol
+                // let profileData = null;
+
+                if (rolNombre === 'estudiante') {
+                    try {
+                        const studentData = await getStudentById();
+                        if (studentData.student) {
+                            setStudent(studentData.student);
+                            // profileData = studentData.student;
+                        }
+                    } catch (error) {
+                        console.error('No se encontró perfil de estudiante', error);
+                    }
+                } else if (rolNombre === 'docente') {
+                    try {
+                        const teacherData = await getTeacherById();
+                        if (teacherData.teacher) {
+                            setTeacher(teacherData.teacher);
+                            // profileData = teacherData.teacher;
+                        }
+                    } catch (error) {
+                        console.error('No se encontro perfil de docente', error);                        
+                    }
+                }                
 
                 let avatarUrl = '';
                 if (userData.user.fotoPerfil instanceof File) {
@@ -77,7 +104,7 @@ function NavHeader() {
     const handleLogOut = () => {
         localStorage.removeItem('token');
         setLoggedOut(true);
-        console.log('Token removed:', localStorage.getItem('token'));
+        // console.log('Token removed:', localStorage.getItem('token'));
         navigate('/');        
     }
 
@@ -96,7 +123,7 @@ function NavHeader() {
                     src={user.fotoPerfil || defaultAvatar } alt="img-user"
                     className="w-10 h-10 object-cover rounded-full"
                 />
-                <span className="text-white font-bold">{student?.nombre || userRole.charAt(0).toUpperCase() + userRole.slice(1)} {student?.apellido}</span>
+                <span className="text-white font-bold">{student?.nombre || teacher?.nombre || userRole.charAt(0).toUpperCase() + userRole.slice(1)} {student?.apellido || teacher?.apellido}</span>
                 <RiArrowDownSLine className="text-2xl" />
                 </MenuButton>
                 <MenuItems anchor='bottom' className='bg-primary mt-1 p-4 rounded-lg'>
@@ -107,7 +134,7 @@ function NavHeader() {
                                     className="w-10 h-10 object-cover rounded-full"
                                 />
                                 <div className="flex flex-col gap-1 text-sm">
-                                    <span className="text-white text-sm">{student?.nombre || userRole.charAt(0).toUpperCase() + userRole.slice(1)} {student?.apellido}</span>
+                                    <span className="text-white text-sm">{student?.nombre || teacher?.nombre || userRole.charAt(0).toUpperCase() + userRole.slice(1)} {student?.apellido || teacher?.apellido}</span>
                                     <span className="text-white text-xm">{user.email}</span>
                                 </div>
                             </section>

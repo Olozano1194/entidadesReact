@@ -61,17 +61,7 @@ const ListUser = () => {
                 // Solo mostrar el número si no es la fila de total
                 return info.row.index + 1;
             },
-        }),
-        columnHelper.accessor(row => `${row.nombre}`, {
-            id: 'name',
-            header: 'Nombre',
-            cell: (info) => info.getValue(),
-        }),
-        columnHelper.accessor(row => row.apellido, {
-            id: 'lastname',
-            header: 'Apellido',
-            cell: (info) => info.getValue(),
-        }),
+        }),        
         columnHelper.accessor(row => row.email, {
             id: 'email',
             header: 'Correo',
