@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import StudentProfile from "./student/StudentProfile";
 import TeacherProfile from "./teacher/TeacherProfile";
+import AdminProfile from "./admin/AdminProfile";
 
 const Profile = () => {
     const navigate = useNavigate();
@@ -37,6 +38,7 @@ const Profile = () => {
     return (
         <main>  {userRole === 'estudiante' && <StudentProfile />} 
                 {userRole === 'docente' && <TeacherProfile />} 
+                {userRole === 'admin' && <AdminProfile />} 
         </main>
     );
   

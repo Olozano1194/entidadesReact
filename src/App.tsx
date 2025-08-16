@@ -12,7 +12,6 @@ import Profile from './pages/admin/usuarios/ProfileAdmin';
 import ListUser from './pages/admin/usuarios/ListUser';
 //import ForgetPassword from './pages/auth/ForgetPassword';
 //register
-import RegisterStudent from './pages/auth/register/RegisterStudent';
 import RegisterUser from './pages/auth/register/RegisterUser';
 import RegisterInstitutions from './pages/auth/register/RegisterInstitutions';
 //admin
@@ -27,8 +26,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Navigate to='/login' />} />
-        <Route path="login" element={<Login />} />
-        <Route path="registerStudent" element={<RegisterStudent />} />
+        <Route path="login" element={<Login />} />        
         <Route path="registerUser" element={<RegisterUser />} />
         {/* Rutas protegidas */}
         <Route path="admin" element={<LayoutAdmin />}>

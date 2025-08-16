@@ -10,6 +10,7 @@ import { getUserProfile } from '../../api/user.api';
 import { getRoleById } from "../../api/roles.api";
 import { getStudentById } from "../../api/student.api";
 import { getTeacherById } from "../../api/teacher.api";
+import { getAdminById } from "../../api/admin.api";
 //Mensajes
 import { toast } from 'react-hot-toast';
 //Component
@@ -18,6 +19,7 @@ import NotificationMenu from "../../components/headerNav/NotificationMenu";
 import type { Rol } from "../../model/rol.models";
 import type { Student } from "../../model/student.model";
 import type { Teacher } from "../../model/teacher.model";
+import type { AdminModel } from "../../model/admin.model";
 
 
 function NavHeader() {
@@ -26,6 +28,7 @@ function NavHeader() {
     const [userRole, setUserRole] = useState<string>('');
     const [ student, setStudent ] = useState< Student | null>(null);
     const [ teacher, setTeacher ] = useState< Teacher | null>(null);
+    const [ admin, setAdmin ] = useState< AdminModel | null>(null);
     const [ , setLoggedOut] = useState<boolean>(false);    
 
     useEffect(() => {
@@ -73,7 +76,17 @@ function NavHeader() {
                     } catch (error) {
                         console.error('No se encontro perfil de docente', error);                        
                     }
-                }                
+                } else if (rolNombre === 'admin') {
+                    try {
+                        const adminData = await getAdminById();
+                        if (adminData.admin) {
+                            setAdmin(adminData.admin);                                                        
+                            // profileData = teacherData.teacher;
+                        }
+                    } catch (error) {
+                        console.error('No se encontro perfil del admin', error);                        
+                    }
+                }               
 
                 let avatarUrl = '';
                 if (userData.user.fotoPerfil instanceof File) {
@@ -90,7 +103,7 @@ function NavHeader() {
                     fotoPerfil: avatarUrl
                 });
             }catch (error) {
-                const errorMessage = error instanceof Error ? error.message : 'Error al registrar el miembro';
+                const errorMessage = error instanceof Error ? error.message : 'Error al mostrar el miembro';
                 toast.error(errorMessage, {
                     duration: 3000,
                     position: 'bottom-right',
@@ -123,7 +136,7 @@ function NavHeader() {
                     src={user.fotoPerfil || defaultAvatar } alt="img-user"
                     className="w-10 h-10 object-cover rounded-full"
                 />
-                <span className="text-white font-bold">{student?.nombre || teacher?.nombre || userRole.charAt(0).toUpperCase() + userRole.slice(1)} {student?.apellido || teacher?.apellido}</span>
+                <span className="text-white font-bold">{student?.nombre || teacher?.nombre || admin?.nombre || userRole.charAt(0).toUpperCase() + userRole.slice(1)} {student?.apellido || teacher?.apellido || admin?.apellido}</span>
                 <RiArrowDownSLine className="text-2xl" />
                 </MenuButton>
                 <MenuItems anchor='bottom' className='bg-primary mt-1 p-4 rounded-lg'>
@@ -134,7 +147,7 @@ function NavHeader() {
                                     className="w-10 h-10 object-cover rounded-full"
                                 />
                                 <div className="flex flex-col gap-1 text-sm">
-                                    <span className="text-white text-sm">{student?.nombre || teacher?.nombre || userRole.charAt(0).toUpperCase() + userRole.slice(1)} {student?.apellido || teacher?.apellido}</span>
+                                    <span className="text-white text-sm">{student?.nombre || teacher?.nombre || admin?.nombre || userRole.charAt(0).toUpperCase() + userRole.slice(1)} {student?.apellido || teacher?.apellido || admin?.apellido}</span>
                                     <span className="text-white text-xm">{user.email}</span>
                                 </div>
                             </section>
@@ -162,7 +175,6 @@ function NavHeader() {
                 </MenuItems>                   
             </Menu>
         </nav>        
-    );
-    
+    );    
 }
 export default NavHeader;
