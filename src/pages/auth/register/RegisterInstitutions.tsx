@@ -15,12 +15,16 @@ import Button from '../../../components/ui/Button';
 //img
 import icons from '../../../assets/favicon-32x32.png'
 //icons
-import { CiUser, CiMail } from "react-icons/ci";
-import { RiLoginBoxLine } from "react-icons/ri";
+import { RiLoginBoxLine, RiUser3Line } from "react-icons/ri";
+import { FaMapMarkerAlt, FaHome, FaSchool, FaMobileAlt } from "react-icons/fa";
+import { GiVillage } from "react-icons/gi";
+import { AiOutlineMail } from 'react-icons/ai';
 //Api
 import { CreateInstitution } from '../../../api/institution.api';
 import { getDepartment } from '../../../api/department.api';
 import { getMunicipalityByDepto } from '../../../api/municipality.api';
+import { getStudent } from '../../../api/student.api';
+import { getTeacher } from '../../../api/teacher.api';
 //Model
 import type { InstitucionModel } from '../../../model/institution.model';
 import type { CreateInstitucionDto } from '../../../model/dto/institution.dto';
@@ -32,6 +36,10 @@ const RegisterInstitutions = () => {
     const [ departament, setDepartement ] = useState<DepartamentModel[]>([]);
     const [ filteredMunicipality, setFilteredMunicipality] = useState<MunicipalityModel[]> ([]);   
     const [ selectedDepto, setSelectedDepto ] = useState<string>('');
+    const [ totalStudent, setTotalStudent ] = useState<number>(0);
+    const [ totalTeacher, setTotalTeacher ] = useState<number>(0);
+    const [ asignarTodosStudent, setAsignarTodosStudent ] = useState<boolean>(false);
+    const [ asignarTodosTeacher, setAsignarTodosTeacher ] = useState<boolean>(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -47,6 +55,24 @@ const RegisterInstitutions = () => {
         load();
     }, []);
 
+    useEffect(() => {
+        const fetchStudentandTeacher = async () => {
+            try {
+                const [ studentData, teacherData ] = await Promise.all([
+                    getStudent(),
+                    getTeacher()
+                ]);
+
+                setTotalStudent(studentData.length);
+                setTotalTeacher(teacherData.length);
+            } catch (error) {
+                console.error('Error al cargar estudiantes y profesores:', error);
+                toast.error('Error al cargar estudiantes y profesores');                
+            } 
+        };
+        fetchStudentandTeacher();
+    }, []);
+    
     const handleDeptoChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
         const deptoId = e.target.value;
         setSelectedDepto(deptoId);
@@ -65,11 +91,20 @@ const RegisterInstitutions = () => {
     };
 
     const onSubmit = handleSubmit(async (data: InstitucionModel) => {        
-        try {            
-            // if (!data.rol) {
-            //     toast.error('Debe seleccionar un rol válido');
-            //     return;
-            // }            
+        try {
+            let studentIds: string[] = [];
+            let teacherIds: string[] = [];
+            
+            if (asignarTodosStudent) {
+                const todosStudent = await getStudent();
+                studentIds = todosStudent.map((student) => student._id ?? '');
+            }
+
+            if (asignarTodosTeacher) {
+                const todosTeacher = await getTeacher();
+                teacherIds = todosTeacher.map((teacher) => teacher._id ?? '');
+            }
+
             const requestData: CreateInstitucionDto = {
                 nombre: data.nombre.trim(),
                 direccion: data.direccion.trim(),
@@ -79,14 +114,16 @@ const RegisterInstitutions = () => {
                 id_departamento: data.id_departamento,
                 id_municipio: data.id_municipio,
                 nosede: data.nosede,
-                idestudiante: data.idestudiante,
-                iddocente: data.iddocente,
+                idestudiante: studentIds,
+                iddocente: teacherIds
             };           
 
             await CreateInstitution(requestData);                        
             reset();
+            setAsignarTodosStudent(false);
+            setAsignarTodosTeacher(false);
 
-            toast.success('Usuario Creado', {
+            toast.success('Institución Creada Exitosamente', {
                 duration: 3000,
                 position: 'bottom-right',
                 style: {
@@ -100,14 +137,13 @@ const RegisterInstitutions = () => {
             navigate('/admin');
             
         } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : 'Error al registrar el usuario';
+            const errorMessage = error instanceof Error ? error.message : 'Error al registrar la institución';
             toast.error(errorMessage, {
                 duration: 3000,
                 position: 'bottom-right',
             });            
         }        
     });
-
     
     return (
         <Main>
@@ -117,7 +153,7 @@ const RegisterInstitutions = () => {
                 </div>                
                 {/* name */}
                 <label htmlFor="name">
-                    <Span><CiUser className='lg:text-2xl' />Nombre</Span>
+                    <Span><FaSchool className='lg:text-2xl' />Nombre</Span>
                     <Input type="text" placeholder="Escribe el nombre de la institución"
                         {...register('nombre',{
                             required: {
@@ -129,11 +165,11 @@ const RegisterInstitutions = () => {
                                             message: 'El nombre de la institución debe tener minimo 4 carácteres'
                                         },
                                         maxLength: {
-                                            value: 20,
+                                            value: 70,
                                             message: 'El nombre de la institución debe tener como máximo 20 carácteres'
                                         },
                                 pattern: {
-                                    value: /^[A-Za-z]+(?:\s[A-Za-z]+)?$/,
+                                    value: /^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s'-]+(?:\s+[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s'-]+)*$/,
                                     message: 'Nombre de la institución invalido'
                                 },
                         })}  
@@ -144,7 +180,7 @@ const RegisterInstitutions = () => {
                 }
                 {/* address */}
                 <label htmlFor="address">
-                    <Span><CiUser className='lg:text-2xl'/>Dirección</Span>
+                    <Span><FaHome className='lg:text-2xl'/>Dirección</Span>
                     <Input type="text" placeholder="Escribe la dirección"
                         {...register('direccion',{
                             required: {
@@ -154,11 +190,7 @@ const RegisterInstitutions = () => {
                             minLength: {
                                 value: 8,
                                 message: 'La dirección debe tener minimo 8 carácteres'
-                            },
-                            pattern: {
-                                value: /^[A-Za-z]+(?:\s[A-Za-z]+)?$/,
-                                message: 'Dirección invalido'
-                            },
+                            },                            
                         })}  
                     />
                 </label>
@@ -167,7 +199,7 @@ const RegisterInstitutions = () => {
                 }
                 {/* phone */}
                 <label htmlFor="phone">
-                    <Span><CiUser className='lg:text-2xl'/>Teléfono</Span>
+                    <Span><FaMobileAlt className='lg:text-2xl'/>Teléfono</Span>
                     <Input type="tel" placeholder="Escribe el teléfono"
                         {...register('telefono',{
                             required: {
@@ -176,10 +208,14 @@ const RegisterInstitutions = () => {
                                 },
                             minLength: {
                                 value: 10,
-                                message: 'El telefono debe tener minimo 10 carácteres'
+                                message: 'El telefono debe tener minimo 10 números'
+                            },
+                            maxLength: {
+                                value: 10,
+                                message: 'El telefono debe tener maximo 10 números'
                             },
                             pattern: {
-                                value: /^[A-Za-z]+(?:\s[A-Za-z]+)?$/,
+                                value: /^[0-9]+$/,
                                 message: 'Telefono invalido'
                             },
                         })}  
@@ -190,7 +226,7 @@ const RegisterInstitutions = () => {
                 }                                    
                 {/* email */}
                 <label htmlFor="email">
-                    <Span><CiMail className='lg:text-2xl' />Correo</Span>
+                    <Span><AiOutlineMail className='lg:text-2xl' />Correo</Span>
                     <Input type="email" placeholder="Escribe su correo"
                         {...register('email',{
                             required: {
@@ -209,7 +245,7 @@ const RegisterInstitutions = () => {
                 }
                 {/* director */}
                 <label htmlFor="director">
-                    <Span><CiUser className='lg:text-2xl'/>Director</Span>
+                    <Span><RiUser3Line className='lg:text-2xl'/>Director</Span>
                     <Input type="text" placeholder="Escribe el nombre del director"
                         {...register('director',{
                             required: {
@@ -231,7 +267,7 @@ const RegisterInstitutions = () => {
                     errors.director && <ErrorSpan>{errors.director.message}</ErrorSpan>
                 }
                 {/* department */}
-                <label htmlFor="department"><Span><CiUser/>Departamento</Span>
+                <label htmlFor="department"><Span><FaMapMarkerAlt className='lg:text-2xl' />Departamento</Span>
                 <Select
                     {...register('id_departamento',{
                         required: {
@@ -256,7 +292,7 @@ const RegisterInstitutions = () => {
                     errors.id_departamento && <span className='text-red-500 text-sm'>{errors.id_departamento.message}</span>
                 }
                 {/* municipality */}
-                <label htmlFor="municipality"><Span><CiUser/>Municipio</Span>
+                <label htmlFor="municipality"><Span><FaMapMarkerAlt className='lg:text-2xl' />Municipio</Span>
                 <Select
                     {...register('id_municipio',{
                         required: {
@@ -281,80 +317,72 @@ const RegisterInstitutions = () => {
                     errors.id_municipio && <span className='text-red-500 text-sm'>{errors.id_municipio.message}</span>
                 }
                 {/* sedes */}
-                <label htmlFor="sedes"><Span><CiUser/>NoSede</Span>
-                <Select
-                    {...register('nosede',{
-                        required: {
-                            value: true,
-                            message: 'Sede requerido'
-                        }                        
-                    })}
-                    // onChange={handleRolChange}
-                >
-                    <option value="">Seleccione la sede</option>
-                    {/* { roles.map(rol => (                    
-                                                
-                            <option key={rol._id} value={rol._id}>
-                                {rol.nombre}
-                            </option>
-                            )
-                        )
-                    }                     */}
-                </Select>
+                <label htmlFor="sedes">
+                    <Span><GiVillage className='lg:text-2xl' />NoSede</Span>
+                    <Input type="text" placeholder="Escribe El número de sedes"
+                        {...register('nosede',{
+                            required: {
+                                value: true,
+                                message: 'Numero de sede requerido'
+                                },
+                            minLength: {
+                                value: 1,
+                                message: 'El número de sedes debe tener minimo 1 carácteres'
+                            },
+                            pattern: {
+                                value: /^[0-9]+$/,
+                                message: 'Numero de sede invalido'
+                            },
+                        })}  
+                    />                
                 </label>
                 {
                     errors.nosede && <span className='text-red-500 text-sm'>{errors.nosede.message}</span>
-                }                    
-                {/* Student */}
-                <label htmlFor="student"><Span><CiUser/>Estudiante</Span>
-                <Select
-                    {...register('idestudiante',{
-                        required: {
-                            value: true,
-                            message: 'Estudiante requerido'
-                        }                        
-                    })}
-                    // onChange={handleRolChange}
-                >
-                    <option value="">Seleccione el estudiante</option>
-                    {/* { roles.map(rol => (                    
-                                                
-                            <option key={rol._id} value={rol._id}>
-                                {rol.nombre}
-                            </option>
-                            )
-                        )
-                    }                     */}
-                </Select>
-                </label>
-                {
-                    errors.idestudiante && <span className='text-red-500 text-sm'>{errors.idestudiante.message}</span>
                 }
+                {/* Student  */}
+                <label htmlFor="estudiantes">
+                    <Span><RiUser3Line className='lg:text-2xl' />Estudiantes</Span>
+                    <div className="space-y-2">
+                        <div className="p-3 border border-gray-300 rounded-lg bg-gray-50">
+                            <div className="text-sm text-gray-600 mb-2">
+                                Total de estudiantes disponibles: <strong>{totalStudent}</strong>
+                            </div>
+                            <label className="flex items-center gap-2">
+                                <input
+                                    type="checkbox"
+                                    checked={asignarTodosStudent}
+                                    onChange={(e) => setAsignarTodosStudent(e.target.checked)}
+                                    className="w-4 h-4 text-blue-600"
+                                />
+                                <span className="text-sm">
+                                    Asignar todos los estudiantes ({totalStudent}) a esta institución
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                </label>
                 {/* Teacher */}
-                <label htmlFor="Teacher"><Span><CiUser/>Docente</Span>
-                <Select
-                    {...register('iddocente',{
-                        required: {
-                            value: true,
-                            message: 'Docente requerido'
-                        }                        
-                    })}
-                    // onChange={handleRolChange}
-                >
-                    <option value="">Seleccione el docente</option>
-                    {/* { roles.map(rol => (                    
-                                                
-                            <option key={rol._id} value={rol._id}>
-                                {rol.nombre}
-                            </option>
-                            )
-                        )
-                    }                     */}
-                </Select>
+                <label htmlFor="profesores">
+                    <Span><RiUser3Line className='lg:text-2xl' />Profesores</Span>
+                    <div className="space-y-2">
+                        <div className="p-3 border border-gray-300 rounded-lg bg-gray-50">
+                            <div className="text-sm text-gray-600 mb-2">
+                                Total de profesores disponibles: <strong>{totalTeacher}</strong>
+                            </div>
+                            <label className="flex items-center gap-2">
+                                <input
+                                    type="checkbox"
+                                    checked={asignarTodosTeacher}
+                                    onChange={(e) => setAsignarTodosTeacher(e.target.checked)}
+                                    className="w-4 h-4 text-blue-600"
+                                />
+                                <span className="text-sm">
+                                    Asignar todos los profesores ({totalTeacher}) a esta institución
+                                </span>
+                            </label>
+                        </div>
+                    </div>
                 </label>
-                {
-                    errors.iddocente && <span className='text-red-500 text-sm'>{errors.iddocente.message}</span>
-                }
                 {/* Btn */}
                 <Button type="submit">
                     <RiLoginBoxLine className='text-purple-500 hover:text-purple-900'/>                    

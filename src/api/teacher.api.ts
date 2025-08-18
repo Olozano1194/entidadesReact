@@ -8,14 +8,15 @@ import type { UpdateTeacherDto } from '../model/dto/teacher.dto';
 // Obtenemos todos los Profesores
 export const getTeacher = async (): Promise<Teacher[]> => {
     try {
-        // console.log('Solicitando roles al seridor...');        
-        const response = await Api.get('/profesor');
+         const token = localStorage.getItem('token');         
+        const response = await Api.get('/profesor', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
         // console.log('Roles recibidos:', response.data);
         
-        return response.data.map((teacher: Teacher) => ({
-            ...teacher,
-            id: teacher._id
-        }));
+        return response.data;
     } catch (error) {
         throw handleApiError(error);
     };

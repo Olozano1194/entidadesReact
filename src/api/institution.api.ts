@@ -9,15 +9,16 @@ import type { CreateInstitucionDto } from "../model/dto/institution.dto";
 
 // Creamos el usuario
 export const CreateInstitution = async (userData: CreateInstitucionDto) => {
-    try {                
+    try {
+        const token = localStorage.getItem('token');                
         const requestData = {
             nombre: userData.nombre,
             direccion: userData.direccion,
             email: userData.email,
             telefono: userData.telefono,
             director: userData.director,
-            departamento: userData.iddepartamento,
-            municipio: userData.idmunicipio,
+            departamento: userData.id_departamento,
+            municipio: userData.id_municipio,
             sede: userData.nosede,
             estudiante: userData.idestudiante,
             docente: userData.iddocente,
@@ -25,10 +26,13 @@ export const CreateInstitution = async (userData: CreateInstitucionDto) => {
 
         // console.log('Enviando datos:', requestData);
 
-        const response = await Api.post('/instituciones', requestData);
+        const response = await Api.post('/instituciones', requestData,  {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
         // console.log('Respuesta del back:', response.data);
         
-
         if (response.data.token) {
             localStorage.setItem('token', response.data.token);
         }
@@ -41,11 +45,9 @@ export const CreateInstitution = async (userData: CreateInstitucionDto) => {
         //     status: error.response?.status
         // });
         throw handleApiError(error);
-
         // Mejorar el mensaje de error
         //const errorMessage = error.response?.data?.message || 
-        //                   'Error al crear el usuario';
-        
+        //                   'Error al crear el usuario';        
     }
 };
 

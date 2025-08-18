@@ -8,14 +8,15 @@ import type { UpdateStudentDto } from '../model/dto/student.dto';
 // Obtenemos todos los Estudiantes
 export const getStudent = async (): Promise<Student[]> => {
     try {
-        // console.log('Solicitando roles al seridor...');        
-        const response = await Api.get('/estudiante');
+        const token = localStorage.getItem('token');       
+        const response = await Api.get('/estudiante', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
         // console.log('Roles recibidos:', response.data);
         
-        return response.data.map((student: Student) => ({
-            ...student,
-            id: student._id
-        }));
+        return response.data;
     } catch (error) {
         throw handleApiError(error);
     };

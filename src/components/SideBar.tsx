@@ -71,6 +71,7 @@ const SideBar = () => {
     // Esta función nos sirve para cerrar la sesión    
     const handleLogOut = () => {
         localStorage.removeItem('token');
+        localStorage.removeItem('user');
         setLoggedOut(true);
         console.log('Token removed:', localStorage.getItem('token'));
         navigate('/');        
