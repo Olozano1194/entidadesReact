@@ -14,6 +14,10 @@ import ListUser from './pages/admin/usuarios/ListUser';
 //register
 import RegisterUser from './pages/auth/register/RegisterUser';
 import RegisterInstitutions from './pages/auth/register/RegisterInstitutions';
+// Teacher
+import ListTeacher from './pages/admin/docentes/ListTeacher';
+// Student
+import ListStudent from './pages/admin/estudiantes/ListStudent';
 //admin
 //import ProtectRoute from './pages/admin/protectedRoute/ProtectRoute';
 //Notificaciones
@@ -37,6 +41,10 @@ function App() {
           <Route path="usuarios" element={<ListUser />} />
           {/* Institutions */}
           <Route path="registerInstitutions" element={<RegisterInstitutions />} />
+          {/* Docentes */}
+          <Route path="docentes" element={<ListTeacher />} />
+          {/* Estudiantes */}
+          <Route path="alumnos" element={<ListStudent />} />
         </Route>
         {/* <Route element={<ProtectRoute />} >
         </Route> */}

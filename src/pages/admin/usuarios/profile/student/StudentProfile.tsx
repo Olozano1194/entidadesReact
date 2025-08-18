@@ -100,7 +100,7 @@ const StudentProfile = () => {
                     formatted = formatDate(original);                  
                 }
                 
-                 setFormData({
+                setFormData({
                     nombre: studentData?.nombre || '',
                     apellido: studentData?.apellido || '',
                     rol: rolId,                        
