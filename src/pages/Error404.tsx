@@ -1,5 +1,4 @@
 import { useNavigate } from 'react-router-dom';
-
 // Icons
 import { FaExclamationTriangle } from 'react-icons/fa';
 
@@ -10,15 +9,14 @@ const Error404 = () => {
         //si esta autenticado redirige a la pagina de inicio
         const authenticated = localStorage.getItem('token');
         if (authenticated) {
-            navigate('/admin');
-            
+            navigate('/admin');            
         }
         //si no esta autenticado redirige a la pagina de login
         else {
             navigate('/');
         }
-
     };
+    
     return (
         <main className="w-full min-h-screen flex flex-col justify-center items-center">
             <div className="text-center text-gray-900 font-bold items-center flex flex-col">
