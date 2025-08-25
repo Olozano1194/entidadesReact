@@ -77,7 +77,7 @@ const Table = <T,> ({ data, columns, totalRow }: TableProps<T>) => {
                                 <tr key={row.id}>
                                     {
                                         row.getVisibleCells().map(cell => (
-                                            <td key={cell.id} className="border p-2">{flexRender(cell.column.columnDef.cell, cell.getContext())
+                                            <td key={cell.id} className="border p-2 text-center">{flexRender(cell.column.columnDef.cell, cell.getContext())
                                             }</td>
                                         ))
                                     }

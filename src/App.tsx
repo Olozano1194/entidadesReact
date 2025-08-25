@@ -18,6 +18,8 @@ import RegisterInstitutions from './pages/auth/register/RegisterInstitutions';
 import ListTeacher from './pages/admin/docentes/ListTeacher';
 // Student
 import ListStudent from './pages/admin/estudiantes/ListStudent';
+// Institutions
+import ListInstitutions from './pages/admin/instituciones/ListInstitutions';
 //admin
 //import ProtectRoute from './pages/admin/protectedRoute/ProtectRoute';
 //Notificaciones
@@ -41,6 +43,7 @@ function App() {
           <Route path="usuarios" element={<ListUser />} />
           {/* Institutions */}
           <Route path="registerInstitutions" element={<RegisterInstitutions />} />
+          <Route path="instituciones" element={<ListInstitutions />} />
           {/* Docentes */}
           <Route path="docentes" element={<ListTeacher />} />
           {/* Estudiantes */}
