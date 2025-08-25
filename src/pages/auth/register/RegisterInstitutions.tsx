@@ -39,54 +39,48 @@ const RegisterInstitutions = () => {
     const [ totalStudent, setTotalStudent ] = useState<number>(0);
     const [ totalTeacher, setTotalTeacher ] = useState<number>(0);
     const [ asignarTodosStudent, setAsignarTodosStudent ] = useState<boolean>(false);
-    const [ asignarTodosTeacher, setAsignarTodosTeacher ] = useState<boolean>(false);
+    const [ asignarTodosTeacher, setAsignarTodosTeacher ] = useState<boolean>(false);    
     const navigate = useNavigate();
 
     useEffect(() => {
-        const load = async () => {
+        const fetchdate = async () => {
             try {
-                const departamentData = await getDepartment();                
-                setDepartement(departamentData);             
+                const [ departmentData, studentData, teacherData ] = await Promise.all([
+                    getDepartment(), getStudent(), getTeacher()
+                ]);                 
+                setDepartement(departmentData);
+                setTotalStudent(studentData.length);
+                setTotalTeacher(teacherData.length);             
                                             
             } catch (error) {
                 console.error('Error al cargar roles:', error);            
             }
         }        
-        load();
-    }, []);
-
-    useEffect(() => {
-        const fetchStudentandTeacher = async () => {
-            try {
-                const [ studentData, teacherData ] = await Promise.all([
-                    getStudent(),
-                    getTeacher()
-                ]);
-
-                setTotalStudent(studentData.length);
-                setTotalTeacher(teacherData.length);
-            } catch (error) {
-                console.error('Error al cargar estudiantes y profesores:', error);
-                toast.error('Error al cargar estudiantes y profesores');                
-            } 
-        };
-        fetchStudentandTeacher();
-    }, []);
+        fetchdate();
+    }, []);    
     
     const handleDeptoChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const deptoId = e.target.value;
-        setSelectedDepto(deptoId);
-        setValue('id_municipio', '');
+        const objectId = e.target.value;
+        
+        setSelectedDepto(objectId);
+        setValue('iddepartamento', objectId);
+        setValue('idmunicipio', '');
 
-        if (deptoId) {
-             try {
-                const response = await getMunicipalityByDepto(deptoId);               
-                setFilteredMunicipality(response);
-                          
-            } catch (error) {
-                console.error('Error cargando municipios:', error);
-                setFilteredMunicipality([]);                
-            }           
+        if (objectId) {
+            const selectedDepartment = departament.find(depto => depto._id === objectId);
+            const numericalId = selectedDepartment?.id_departamento;
+
+            if (numericalId) {
+                 try {
+                    const response = await getMunicipalityByDepto(numericalId);
+                    // console.log('🏘️ Municipios cargados:', response);               
+                    setFilteredMunicipality(response);
+                            
+                } catch (error) {
+                    console.error('Error cargando municipios:', error);
+                    setFilteredMunicipality([]);                
+                }                 
+            }                      
         }                    
     };
 
@@ -95,12 +89,12 @@ const RegisterInstitutions = () => {
             let studentIds: string[] = [];
             let teacherIds: string[] = [];
             
-            if (asignarTodosStudent) {
+            if (data.asignarTodosStudent || asignarTodosStudent) {
                 const todosStudent = await getStudent();
                 studentIds = todosStudent.map((student) => student._id ?? '');
             }
 
-            if (asignarTodosTeacher) {
+            if (data.asignarTodosTeacher || asignarTodosTeacher) {
                 const todosTeacher = await getTeacher();
                 teacherIds = todosTeacher.map((teacher) => teacher._id ?? '');
             }
@@ -111,12 +105,20 @@ const RegisterInstitutions = () => {
                 email: data.email.toLowerCase(),
                 telefono: data.telefono,
                 director: data.director,
-                id_departamento: data.id_departamento,
-                id_municipio: data.id_municipio,
-                nosede: data.nosede,
-                idestudiante: studentIds,
-                iddocente: teacherIds
-            };           
+                iddepartamento: data.iddepartamento,
+                idmunicipio: data.idmunicipio,
+                nosedes: parseInt(data.nosedes),
+                estudiantes: studentIds,
+                profesores: teacherIds
+            };            
+            
+            // Validar antes de enviar
+            if (!requestData.iddepartamento) {
+                throw new Error('Departamento no seleccionado correctamente');
+            }
+            if (!requestData.idmunicipio) {
+                throw new Error('Municipio no seleccionado correctamente');
+            }
 
             await CreateInstitution(requestData);                        
             reset();
@@ -269,18 +271,19 @@ const RegisterInstitutions = () => {
                 {/* department */}
                 <label htmlFor="department"><Span><FaMapMarkerAlt className='lg:text-2xl' />Departamento</Span>
                 <Select
-                    {...register('id_departamento',{
+                    {...register('iddepartamento',{
                         required: {
                             value: true,
                             message: 'Departamento requerido'
                         }                        
                     })}
+                    // value={selectedDepto}
                     onChange={handleDeptoChange}
                 >
                     <option value="">Seleccione el departamento</option>
                     { departament.map(depto => (                    
                                                 
-                            <option key={depto._id} value={depto.id_departamento}>
+                            <option key={depto._id} value={depto._id}>
                                 {depto.descripcion}
                             </option>
                             )
@@ -289,12 +292,12 @@ const RegisterInstitutions = () => {
                 </Select>
                 </label>
                 {
-                    errors.id_departamento && <span className='text-red-500 text-sm'>{errors.id_departamento.message}</span>
+                    errors.iddepartamento && <span className='text-red-500 text-sm'>{errors.iddepartamento.message}</span>
                 }
                 {/* municipality */}
                 <label htmlFor="municipality"><Span><FaMapMarkerAlt className='lg:text-2xl' />Municipio</Span>
                 <Select
-                    {...register('id_municipio',{
+                    {...register('idmunicipio',{
                         required: {
                             value: true,
                             message: 'Municipio requerido'
@@ -314,13 +317,13 @@ const RegisterInstitutions = () => {
                 </Select>
                 </label>
                 {
-                    errors.id_municipio && <span className='text-red-500 text-sm'>{errors.id_municipio.message}</span>
+                    errors.idmunicipio && <span className='text-red-500 text-sm'>{errors.idmunicipio.message}</span>
                 }
                 {/* sedes */}
                 <label htmlFor="sedes">
                     <Span><GiVillage className='lg:text-2xl' />NoSede</Span>
                     <Input type="text" placeholder="Escribe El número de sedes"
-                        {...register('nosede',{
+                        {...register('nosedes',{
                             required: {
                                 value: true,
                                 message: 'Numero de sede requerido'
@@ -337,7 +340,7 @@ const RegisterInstitutions = () => {
                     />                
                 </label>
                 {
-                    errors.nosede && <span className='text-red-500 text-sm'>{errors.nosede.message}</span>
+                    errors.nosedes && <span className='text-red-500 text-sm'>{errors.nosedes.message}</span>
                 }
                 {/* Student  */}
                 <label htmlFor="estudiantes">
@@ -350,8 +353,11 @@ const RegisterInstitutions = () => {
                             <label className="flex items-center gap-2">
                                 <input
                                     type="checkbox"
-                                    checked={asignarTodosStudent}
-                                    onChange={(e) => setAsignarTodosStudent(e.target.checked)}
+                                    {...register('asignarTodosStudent')}
+                                    onChange={(e) => {
+                                        setAsignarTodosStudent(e.target.checked);
+                                        setValue('asignarTodosStudent', e.target.checked);
+                                    }}
                                     className="w-4 h-4 text-blue-600"
                                 />
                                 <span className="text-sm">
@@ -372,8 +378,11 @@ const RegisterInstitutions = () => {
                             <label className="flex items-center gap-2">
                                 <input
                                     type="checkbox"
-                                    checked={asignarTodosTeacher}
-                                    onChange={(e) => setAsignarTodosTeacher(e.target.checked)}
+                                    {...register('asignarTodosTeacher')}
+                                    onChange={(e) => {
+                                        setAsignarTodosTeacher(e.target.checked);
+                                        setValue('asignarTodosTeacher', e.target.checked);
+                                    }}
                                     className="w-4 h-4 text-blue-600"
                                 />
                                 <span className="text-sm">
