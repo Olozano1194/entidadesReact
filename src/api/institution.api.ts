@@ -17,14 +17,14 @@ export const CreateInstitution = async (userData: CreateInstitucionDto) => {
             email: userData.email,
             telefono: userData.telefono,
             director: userData.director,
-            departamento: userData.id_departamento,
-            municipio: userData.id_municipio,
-            sede: userData.nosede,
-            estudiante: userData.idestudiante,
-            docente: userData.iddocente,
+            iddepartamento: userData.iddepartamento,
+            idmunicipio: userData.idmunicipio,
+            nosedes: userData.nosedes,
+            estudiantes: userData.estudiantes,
+            profesores: userData.profesores,
         };
 
-        // console.log('Enviando datos:', requestData);
+        // console.log('Enviando datos al backend:', requestData);
 
         const response = await Api.post('/instituciones', requestData,  {
                 headers: {
@@ -39,11 +39,10 @@ export const CreateInstitution = async (userData: CreateInstitucionDto) => {
 
         return response.data;
     } catch (error) {        
-        // console.error('Error detallado:', {
-        //     message: error.message,
-        //     response: error.response?.data,
-        //     status: error.response?.status
-        // });
+        // console.error('❌ Error completo en CreateInstitution:', error);
+        // console.error('❌ Error response:', error.response);
+        // console.error('❌ Error response data:', error.response?.data);
+        // console.error('❌ Error status:', error.response?.status);
         throw handleApiError(error);
         // Mejorar el mensaje de error
         //const errorMessage = error.response?.data?.message || 
