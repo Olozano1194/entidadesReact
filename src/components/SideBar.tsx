@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 // icons
-import { RiMenu3Line, RiCloseLine, RiMessage3Fill, RiCalendarTodoLine, RiLogoutCircleLine, RiHome8Line, RiUserLine, RiArrowRightSLine } from "react-icons/ri";
+import { RiMenu3Line, RiCloseLine, RiMessage3Fill, RiCalendarTodoLine, RiLogoutCircleLine, RiHome8Line, RiUserLine, RiArrowRightSLine, RiShieldUserLine } from "react-icons/ri";
 import { MdOutlineSupportAgent } from "react-icons/md";
 import { BiSolidInstitution } from "react-icons/bi";
 //API
@@ -10,8 +10,8 @@ import { getRoleById } from "../api/roles.api";
 //Mensajes
 import { toast } from 'react-hot-toast';
 //Models
-import type { User } from "../model/user.model";
-import type { Rol } from "../model/rol.models";
+import type { User } from "../types/user.model";
+import type { Rol } from "../types/rol.models";
 
 interface SubMenuState {
     menu1: boolean,
@@ -170,7 +170,7 @@ const SideBar = () => {
                                     <ul className="flex flex-col gap-2">
                                         <li>
                                             <button onClick={() => handleToggleSubMenu('menu5')}  
-                                                    className="w-full cursor-pointer flex items-center justify-between py-2 px-4 rounded-lg hover:bg-teal-400 text-white font-semibold transition-colors"><span className="flex items-center gap-2"><RiUserLine className="text-secondary-500" />Roles</span>
+                                                    className="w-full cursor-pointer flex items-center justify-between py-2 px-4 rounded-lg hover:bg-teal-400 text-white font-semibold transition-colors"><span className="flex items-center gap-2"><RiShieldUserLine className="text-secondary-500" />Roles</span>
                                                     <RiArrowRightSLine className={`mt-1 ${showSubMenu.menu5 ? 'rotate-90' : ''} transition-all`} />
                                             </button>
                                             <ul className={`mt-2 ${!showSubMenu.menu5 ? 'hidden' : ''} transition-all`} >

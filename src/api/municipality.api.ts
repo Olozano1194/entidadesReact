@@ -2,7 +2,7 @@
 import { Api } from "./user.api";
 import { handleApiError } from "./user.api";
 //Model
-import type { MunicipalityModel } from "../model/municipality.model";
+import type { MunicipalityModel } from "../types/municipality.model";
 
 // function Municipality
 export const getMunicipalityByDepto = async (idDepto: string): Promise<MunicipalityModel[]> => {    

@@ -2,7 +2,7 @@
 import { Api } from "./user.api";
 import { handleApiError } from "./user.api";
 //Model
-import type { DepartamentModel } from "../model/department.model";
+import type { DepartamentModel } from "../types/department.model";
 
 
 //Lista de usuarios

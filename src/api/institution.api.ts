@@ -2,9 +2,9 @@
 import { Api } from "./user.api";
 import { handleApiError } from "./user.api";
 //Model
-import type { InstitucionModel } from "../model/institution.model";
+import type { InstitucionModel } from "../types/institution.model";
 //Dto
-import type { CreateInstitucionDto } from "../model/dto/institution.dto";
+import type { CreateInstitucionDto } from "../types/dto/institution.dto";
 
 
 // Creamos el usuario

@@ -8,11 +8,11 @@ import { getRoles } from "../../../../../api/roles.api";
 //icons
 import { RiEdit2Line } from "react-icons/ri";
 //models
-import type { User } from "../../../../../model/user.model";
-import type { AdminModel } from "../../../../../model/admin.model";
-import type { Rol } from "../../../../../model/rol.models";
+import type { User } from "../../../../../types/user.model";
+import type { AdminModel } from "../../../../../types/admin.model";
+import type { Rol } from "../../../../../types/rol.models";
 // Dto
-import type { UpdateAdminDto } from "../../../../../model/dto/admin.dto";
+import type { UpdateAdminDto } from "../../../../../types/dto/admin.dto";
 //Mensajes
 import { toast } from "react-hot-toast";
 

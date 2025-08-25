@@ -26,10 +26,10 @@ import { getMunicipalityByDepto } from '../../../api/municipality.api';
 import { getStudent } from '../../../api/student.api';
 import { getTeacher } from '../../../api/teacher.api';
 //Model
-import type { InstitucionModel } from '../../../model/institution.model';
-import type { CreateInstitucionDto } from '../../../model/dto/institution.dto';
-import type { DepartamentModel } from '../../../model/department.model';
-import type { MunicipalityModel } from '../../../model/municipality.model';
+import type { InstitucionModel } from '../../../types/institution.model';
+import type { CreateInstitucionDto } from '../../../types/dto/institution.dto';
+import type { DepartamentModel } from '../../../types/department.model';
+import type { MunicipalityModel } from '../../../types/municipality.model';
 
 const RegisterInstitutions = () => {
     const { register, handleSubmit, formState: {errors}, reset, setValue } = useForm<InstitucionModel>();

@@ -10,7 +10,7 @@ import Table from '../../../components/Table';
 //Mensajes
 import { toast } from 'react-hot-toast';
 //Models
-import type { Student } from '../../../model/student.model';
+import type { Student } from '../../../types/student.model';
 
 
 const ListStudent = () => {

@@ -1,9 +1,9 @@
 import { Api } from '../api/user.api';
 import { handleApiError } from '../api/user.api';
 //Models
-import type { Student } from '../model/student.model';
+import type { Student } from '../types/student.model';
 //Dto
-import type { UpdateStudentDto } from '../model/dto/student.dto';
+import type { UpdateStudentDto } from '../types/dto/student.dto';
 
 // Obtenemos todos los Estudiantes
 export const getStudent = async (): Promise<Student[]> => {

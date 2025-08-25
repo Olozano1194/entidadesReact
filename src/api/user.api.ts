@@ -1,11 +1,11 @@
 import axios from 'axios';
 //import type { AxiosResponse } from 'axios';
 //Model
-import type { User } from "../model/user.model";
-import type { Rol } from '../model/rol.models';
+import type { User } from "../types/user.model";
+import type { Rol } from '../types/rol.models';
 //Dto
-import type { CreateUserDto } from "../model/dto/user.dto";
-import type { LoginUserDto } from '../model/dto/user.dto';
+import type { CreateUserDto } from "../types/dto/user.dto";
+import type { LoginUserDto } from '../types/dto/user.dto';
 
 
 export const Api = axios.create({

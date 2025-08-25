@@ -15,7 +15,7 @@ import ErrorSpan from "../../components/ui/ErrorSpan";
 //Mensajes
 import { toast } from 'react-hot-toast';
 //Models
-import type { LoginUserDto } from '../../model/dto/user.dto';
+import type { LoginUserDto } from '../../types/dto/user.dto';
 //Icons
 import { RiLoginBoxLine, RiMailFill, RiLockFill } from "react-icons/ri";
 //img

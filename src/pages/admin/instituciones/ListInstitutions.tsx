@@ -10,7 +10,7 @@ import Table from '../../../components/Table';
 //Mensajes
 import { toast } from 'react-hot-toast';
 //Models
-import type { InstitucionModel } from "../../../model/institution.model";
+import type { InstitucionModel } from "../../../types/institution.model";
 
 
 const ListInstitutions = () => {

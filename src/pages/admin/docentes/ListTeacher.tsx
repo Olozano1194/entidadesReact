@@ -9,7 +9,7 @@ import Table from '../../../components/Table';
 //Mensajes
 import { toast } from 'react-hot-toast';
 //Models
-import type { Teacher } from '../../../model/teacher.model';
+import type { Teacher } from '../../../types/teacher.model';
 
 
 const ListTeacher = () => {
