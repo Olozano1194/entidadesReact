@@ -60,28 +60,28 @@ const RegisterInstitutions = () => {
     }, []);    
     
     const handleDeptoChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const selectedOption = e.target.selectedOptions[0];
         const objectId = e.target.value;
+        const numericalId = selectedOption.getAttribute('data-numerical-id') ?? ''; 
+
         
-        setSelectedDepto(objectId);
-        setValue('iddepartamento', objectId);
-        setValue('idmunicipio', '');
+        setSelectedDepto(numericalId);
+        setValue('iddepartamento', objectId, { shouldValidate: true });
+        setValue('idmunicipio', '', { shouldValidate: true }); 
 
-        if (objectId) {
-            const selectedDepartment = departament.find(depto => depto._id === objectId);
-            const numericalId = selectedDepartment?.id_departamento;
-
-            if (numericalId) {
-                 try {
-                    const response = await getMunicipalityByDepto(numericalId);
-                    // console.log('🏘️ Municipios cargados:', response);               
-                    setFilteredMunicipality(response);
-                            
-                } catch (error) {
-                    console.error('Error cargando municipios:', error);
-                    setFilteredMunicipality([]);                
-                }                 
-            }                      
-        }                    
+        if (numericalId) {
+            try {
+                const response = await getMunicipalityByDepto(numericalId);
+                // console.log('🏘️ Municipios cargados:', response);               
+                setFilteredMunicipality(response);
+                         
+            } catch (error) {
+                console.error('Error cargando municipios:', error);
+                setFilteredMunicipality([]);                
+            }                 
+        } else {
+            setFilteredMunicipality([]);                
+        }                       
     };
 
     const onSubmit = handleSubmit(async (data: InstitucionModel) => {        
@@ -283,7 +283,7 @@ const RegisterInstitutions = () => {
                     <option value="">Seleccione el departamento</option>
                     { departament.map(depto => (                    
                                                 
-                            <option key={depto._id} value={depto._id}>
+                            <option key={depto._id} value={depto._id} data-numerical-id={depto.id_departamento}>
                                 {depto.descripcion}
                             </option>
                             )

@@ -5,7 +5,7 @@ export interface InstitucionModel {
     telefono: string;
     email: string;
     director: string;
-    iddepartamento: string | { _id: string; descripcion: string };
+    iddepartamento: string;
     idmunicipio: string;
     nosedes: string;
     estudiantes: string[];

@@ -4,7 +4,7 @@ import { handleApiError } from "./user.api";
 //Model
 import type { InstitucionModel } from "../types/institution.model";
 //Dto
-import type { CreateInstitucionDto } from "../types/dto/institution.dto";
+import type { CreateInstitucionDto, ListInstitucionDto } from "../types/dto/institution.dto";
 
 
 // Creamos el usuario
@@ -73,7 +73,7 @@ export const getInstitutionProfile = async (): Promise<{ user: InstitucionModel 
 export const getInstitutions = async () => {
     const token = localStorage.getItem('token');
     try {
-        const response = await Api.get<InstitucionModel[]>('/instituciones', {
+        const response = await Api.get<ListInstitucionDto[]>('/instituciones', {
             headers: {
                 'Authorization': `Bearer ${token}`
                 },

@@ -9,12 +9,12 @@ import type { ColumnDef } from "@tanstack/react-table";
 import Table from '../../../components/Table';
 //Mensajes
 import { toast } from 'react-hot-toast';
-//Models
-import type { InstitucionModel } from "../../../types/institution.model";
+//Dtos
+import type { ListInstitucionDto } from "../../../types/dto/institution.dto";
 
 
 const ListInstitutions = () => {
-    const [ institution, setInstitution ] = useState<InstitucionModel[]>([]);
+    const [ institution, setInstitution ] = useState<ListInstitucionDto[]>([]);
     const [ isLoading, setIsLoading ] = useState(false);
 
     useEffect(() => {
@@ -34,7 +34,7 @@ const ListInstitutions = () => {
         fetchUserData();
     }, []);    
 
-    const columnHelper = createColumnHelper<InstitucionModel>();
+    const columnHelper = createColumnHelper<ListInstitucionDto>();
 
     const columns = [
         columnHelper.accessor((_, index) => index + 1, {
@@ -69,11 +69,19 @@ const ListInstitutions = () => {
             id: 'direccion',
             header: 'Dirección',
         }),
-        columnHelper.accessor(row => row.iddepartamento, {
+        columnHelper.accessor(row =>{ 
+            if (typeof row.iddepartamento === 'object' && row.iddepartamento !== null) {
+                return row.iddepartamento.descripcion;                
+            }
+        }, {
             id: 'iddepartamento',
             header: 'Departamento',
         }),
-        columnHelper.accessor(row => row.idmunicipio, {
+        columnHelper.accessor(row => {
+            if (typeof row.idmunicipio === 'object' && row.idmunicipio !== null) {
+                return row.idmunicipio.descripcion;                
+            }
+        }, {
             id: 'idmunicipio',
             header: 'Municipio',
         }),
@@ -86,11 +94,11 @@ const ListInstitutions = () => {
         //         </div>
         //     )),
         // }),
-    ] as ColumnDef<InstitucionModel>[];
+    ] as ColumnDef<ListInstitucionDto>[];
 
     return (
         <main className="cards bg-primary w-full flex flex-col justify-center items-center gap-y-4 p-4 rounded-xl">
-            <h1 className='text-xl text-white font-bold pb-4 md:text-2xl' >Listado de Estudiantes</h1>
+            <h1 className='text-xl text-white font-bold pb-4 md:text-2xl' >Listado de Instituciones</h1>
             {
                 isLoading ? (
                     <div className="text-center py-4">Cargando...</div>
