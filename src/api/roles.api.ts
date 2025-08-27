@@ -43,7 +43,12 @@ export const getRoleById = async (id: string): Promise<Rol> => {
 // Crear un nuevo rol
 export const createRol = async (rol: CreateRolDto): Promise<Rol> => {
     try {
-        const response = await Api.post('/roles', rol);
+        const token = localStorage.getItem('token');
+        const response = await Api.post('/roles', rol, {
+            headers: {
+                Authorization: `Bearer ${token}`, 
+            }
+        });
         return response.data;
     } catch (error) {
         throw handleApiError(error);
