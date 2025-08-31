@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from 'react';
 //Mensajes
 import { toast } from 'react-hot-toast';
@@ -20,7 +20,7 @@ import { FaMapMarkerAlt, FaHome, FaSchool, FaMobileAlt } from "react-icons/fa";
 import { GiVillage } from "react-icons/gi";
 import { AiOutlineMail } from 'react-icons/ai';
 //Api
-import { CreateInstitution } from '../../../api/institution.api';
+import { CreateInstitution, updateInstitution } from '../../../api/institution.api';
 import { getDepartment } from '../../../api/department.api';
 import { getMunicipalityByDepto } from '../../../api/municipality.api';
 import { getStudent } from '../../../api/student.api';
@@ -32,6 +32,7 @@ import type { DepartamentModel } from '../../../types/department.model';
 import type { MunicipalityModel } from '../../../types/municipality.model';
 
 const RegisterInstitutions = () => {
+    const params = useParams<{ id?: string }>();
     const { register, handleSubmit, formState: {errors}, reset, setValue } = useForm<InstitucionModel>();
     const [ departament, setDepartement ] = useState<DepartamentModel[]>([]);
     const [ filteredMunicipality, setFilteredMunicipality] = useState<MunicipalityModel[]> ([]);   
@@ -98,46 +99,57 @@ const RegisterInstitutions = () => {
                 const todosTeacher = await getTeacher();
                 teacherIds = todosTeacher.map((teacher) => teacher._id ?? '');
             }
-
             const requestData: CreateInstitucionDto = {
-                nombre: data.nombre.trim(),
-                direccion: data.direccion.trim(),
-                email: data.email.toLowerCase(),
-                telefono: data.telefono,
-                director: data.director,
-                iddepartamento: data.iddepartamento,
-                idmunicipio: data.idmunicipio,
-                nosedes: parseInt(data.nosedes),
-                estudiantes: studentIds,
-                profesores: teacherIds
-            };            
-            
-            // Validar antes de enviar
-            if (!requestData.iddepartamento) {
-                throw new Error('Departamento no seleccionado correctamente');
+                    nombre: data.nombre.trim(),
+                    direccion: data.direccion.trim(),
+                    email: data.email.toLowerCase(),
+                    telefono: data.telefono,
+                    director: data.director,
+                    iddepartamento: data.iddepartamento,
+                    idmunicipio: data.idmunicipio,
+                    nosedes: parseInt(data.nosedes),
+                    estudiantes: studentIds,
+                    profesores: teacherIds
+            };  
+
+            if (params.id) {
+                await updateInstitution(params.id!, requestData);
+                //console.log('Actualizando miembro:', params.id);
+                toast.success('Institución actualizada Actualizada', {
+                    duration: 3000,
+                    position: 'bottom-right',
+                    style: {
+                        background: '#4b5563',   // Fondo negro
+                        color: '#fff',           // Texto blanco
+                        padding: '16px',
+                        borderRadius: '8px',
+                    },
+                });                           
+            } else {
+                // Validar antes de enviar
+                if (!requestData.iddepartamento) {
+                    throw new Error('Departamento no seleccionado correctamente');
+                }
+                if (!requestData.idmunicipio) {
+                    throw new Error('Municipio no seleccionado correctamente');
+                }
+                await CreateInstitution(requestData);                        
+                reset();
+                setAsignarTodosStudent(false);
+                setAsignarTodosTeacher(false);
+
+                toast.success('Institución Creada Exitosamente', {
+                    duration: 3000,
+                    position: 'bottom-right',
+                    style: {
+                        background: '#4b5563',   // Fondo negro
+                        color: '#fff',           // Texto blanco
+                        padding: '16px',
+                        borderRadius: '8px',
+                    },
+                });
             }
-            if (!requestData.idmunicipio) {
-                throw new Error('Municipio no seleccionado correctamente');
-            }
-
-            await CreateInstitution(requestData);                        
-            reset();
-            setAsignarTodosStudent(false);
-            setAsignarTodosTeacher(false);
-
-            toast.success('Institución Creada Exitosamente', {
-                duration: 3000,
-                position: 'bottom-right',
-                style: {
-                    background: '#4b5563',   // Fondo negro
-                    color: '#fff',           // Texto blanco
-                    padding: '16px',
-                    borderRadius: '8px',
-                },
-
-            });
             navigate('/admin');
-            
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error al registrar la institución';
             toast.error(errorMessage, {
@@ -151,7 +163,21 @@ const RegisterInstitutions = () => {
         <Main>
             <Form onSubmit={onSubmit}>
                 <div className='w-full flex justify-center'>
-                    <Title><img className="w-8 h-6 rounded-lg" src={icons} alt="logo del desarrollador" />Crear <span className="pl-2 text-teal-800">institución</span></Title>
+                    <Title><img className="w-8 h-6 rounded-lg" src={icons} alt="logo del desarrollador" />
+                    { 
+                        params.id ? (
+                            <>
+                            Actualizar
+                            <span className='pl-2 text-teal-800'>Membresía</span>
+                            </>) 
+                            : (
+                            <>
+                            Registrar
+                            <span className='pl-2 text-teal-800'>Membresía</span>
+                            </>
+                        )
+                    }
+                    </Title>
                 </div>                
                 {/* name */}
                 <label htmlFor="name">

@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 //API
-import { getInstitutions } from "../../../api/institution.api";
-
+import { getInstitutions,  } from "../../../api/institution.api";
+//Icons
+import { RiPencilLine } from "react-icons/ri";
 //Table
 import { createColumnHelper } from '@tanstack/react-table';
 import type { ColumnDef } from "@tanstack/react-table";
@@ -85,15 +87,47 @@ const ListInstitutions = () => {
             id: 'idmunicipio',
             header: 'Municipio',
         }),
-        // columnHelper.accessor('actions', {
-        //     header: 'Acciones',
-        //     cell: (({ row }) => (
-        //         <div className="flex justify-center items-center gap-x-4">
-        //             <Link to={`/edit/usuarios/${row.original.id}`} className="bg-green-500 text-white p-2 rounded-md">Editar</Link>
-        //             <button className="bg-red-500 text-white p-2 rounded-md">Eliminar</button>
-        //         </div>
-        //     )),
-        // }),
+        columnHelper.display({
+            id: 'actions',
+            header: 'Acciones',
+            cell: props => {
+                const id = props.row.original._id;
+                return (
+                    <div className="flex justify-center items-center gap-x-4">
+                        <Link to={`/admin/instituciones/${id}`} className="bg-green-500 text-white p-2 rounded-md hover:scale-110">
+                            <RiPencilLine />
+                        </Link>
+                        {/* <button 
+                            onClick={ async () => {
+                                if (window.confirm('¿Estás seguro de eliminar este miembro?')){
+                                    try {
+                                        await deleteMember(id);
+                                        setUser(users.filter(user => user.id !== id));
+                                        toast.success('Miembro Eliminado', {
+                                            duration: 3000,
+                                            position: 'bottom-right',
+                                            style: {
+                                                background: '#4b5563',   // Fondo negro
+                                                color: '#fff',           // Texto blanco
+                                                padding: '16px',
+                                                borderRadius: '8px',
+                                            },
+                        
+                                        });   
+                                        
+                                    } catch (error) {
+                                        const errorMessage = error instanceof Error ? error.message : 'Error al eliminar la membresía';
+                                        toast.error(errorMessage);                                    
+                                    }
+                                }                                                          
+                            }}
+                            className="bg-red-500 text-white p-2 rounded-md hover:scale-110">
+                            <RiDeleteBinLine />
+                        </button> */}
+                    </div>
+                );
+            },           
+        }),
     ] as ColumnDef<ListInstitucionDto>[];
 
     return (

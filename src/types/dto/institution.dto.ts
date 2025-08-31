@@ -12,6 +12,7 @@ export interface CreateInstitucionDto {
 }
 
 export interface ListInstitucionDto {
+    _id?: string;
     nombre: string;
     direccion: string;
     telefono: string;

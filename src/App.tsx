@@ -47,6 +47,7 @@ function App() {
           {/* Institutions */}
           <Route path="registerInstitutions" element={<RegisterInstitutions />} />
           <Route path="instituciones" element={<ListInstitutions />} />
+          <Route path="instituciones/:id" element={<RegisterInstitutions />} />
           {/* Docentes */}
           <Route path="docentes" element={<ListTeacher />} />
           {/* Estudiantes */}
