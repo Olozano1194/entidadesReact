@@ -1,7 +1,7 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 // icons
-import { RiMenu3Line, RiCloseLine, RiMessage3Fill, RiCalendarTodoLine, RiLogoutCircleLine, RiHome8Line, RiUserLine, RiArrowRightSLine } from "react-icons/ri";
+import { RiMenu3Line, RiCloseLine, RiLogoutCircleLine } from "react-icons/ri";
 //API
 import { getUserProfile } from '../api/user.api';
 import { getRoleById } from "../api/roles.api";
@@ -13,6 +13,7 @@ import type { Rol } from "../types/rol.models";
 // Components
 import SidebarAdmin from "./sidebar/admin/SidebarAdmin";
 import SidebarStudent from "./sidebar/student/SidebarStudent";
+import SidebarTeacher from "./sidebar/teacher/SidebarTeacher";
 
 export interface SubMenuState {
     menu1: boolean,
@@ -96,53 +97,10 @@ const SideBar = () => {
                                     showSubmenu={showSubMenu} 
                                 />
                             ) : userRole.includes('docente') ? (
-                                <ul className="">
-                                    {/* Home */}
-                                    <ul className="flex flex-col gap-2">
-                                        <li>
-                                            <Link to='/admin' className="flex items-center gap-3 py-2 px-4 rounded-lg hover:bg-teal-400 text-white font-semibold transition-colors"><RiHome8Line className="text-secondary-500" /> Inicio
-                                            </Link>
-                                        </li>                            
-                                    </ul>                                    
-                                    {/* Students */}
-                                    <ul className="flex flex-col gap-2">
-                                        <li>
-                                            <button onClick={() => handleToggleSubMenu('menu2')} 
-                                                    className="w-full flex items-center justify-between cursor-pointer py-2 px-4 rounded-lg hover:bg-teal-400 text-white font-semibold transition-colors">      <span className="flex items-center gap-2"><RiUserLine className="text-secondary-500" />Estudiantes</span>
-                                                    <RiArrowRightSLine className={`mt-1 ${showSubMenu.menu2 ? 'rotate-90' : ''} transition-all`} />
-                                            </button>
-                                            <ul className={`mt-2 ${!showSubMenu.menu2 ? 'hidden' : ''}`}>
-                                                <li>
-                                                    <Link to='registrar-miembro-day' className="py-2 px-4 border-l border-slate-400 block ml-6 text-white font-semibold relative before:w-3 before:h-3 before:absolute before:bg-primary before:rounded-full before:-left-[6.5px] before:top-1/2 before:-translate-y-1/2 before:border-4 before:border-secondary hover:text-gray-400 transition-colors">Registrar estudiante</Link>
-                                                </li>
-                                                <li>
-                                                    <Link to='miembros-day' className="py-2 px-4 border-l border-slate-400 block ml-6 text-white font-semibold relative before:w-3 before:h-3 before:absolute before:bg-primary before:rounded-full before:-left-[6.5px] before:top-1/2 before:-translate-y-1/2 before:border-4 before:border-secondary hover:text-gray-400 transition-colors">Ver estudiante</Link>
-                                                </li>
-                                            </ul>
-                                        </li>                           
-                                    </ul>                                    
-                                    {/* Message */}
-                                    <ul className="flex flex-col gap-2">
-                                        <li>
-                                            <Link to='/' 
-                                                className="flex items-center gap-3 py-2 px-4 rounded-lg hover:bg-teal-400 text-white font-semibold transition-colors">
-                                                <RiMessage3Fill className="text-secondary-500" />
-                                                Mensajes
-                                            </Link>
-                                        </li>
-                                    </ul>
-                                    {/* Calendar */}
-                                    <ul className="flex flex-col gap-2">
-                                        <li>
-                                            <Link to='/'
-                                                className="flex items-center gap-3 py-2 px-4 rounded-lg hover:bg-teal-400 text-white font-semibold transition-colors">
-                                                <RiCalendarTodoLine className="text-secondary-500" />
-                                                Calendario
-                                            </Link>
-
-                                        </li>
-                                    </ul> 
-                                </ul>
+                                <SidebarTeacher
+                                   handleToggleSubMenu={handleToggleSubMenu}
+                                   showSubmenu={showSubMenu} 
+                                />
                             ) : (
                                 <SidebarStudent
                                     handleToggleSubMenu={handleToggleSubMenu} 
