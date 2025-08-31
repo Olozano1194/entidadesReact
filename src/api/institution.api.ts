@@ -2,12 +2,12 @@
 import { Api } from "./user.api";
 import { handleApiError } from "./user.api";
 //Model
-import type { InstitucionModel } from "../model/institution.model";
+import type { InstitucionModel } from "../types/institution.model";
 //Dto
-import type { CreateInstitucionDto } from "../model/dto/institution.dto";
+import type { CreateInstitucionDto, ListInstitucionDto } from "../types/dto/institution.dto";
 
 
-// Creamos el usuario
+// Creamos el Institcione
 export const CreateInstitution = async (userData: CreateInstitucionDto) => {
     try {
         const token = localStorage.getItem('token');                
@@ -69,11 +69,11 @@ export const getInstitutionProfile = async (): Promise<{ user: InstitucionModel 
     }
 };
 
-//Lista de usuarios
+//Lista de  Institciones
 export const getInstitutions = async () => {
     const token = localStorage.getItem('token');
     try {
-        const response = await Api.get<InstitucionModel[]>('/instituciones', {
+        const response = await Api.get<ListInstitucionDto[]>('/instituciones', {
             headers: {
                 'Authorization': `Bearer ${token}`
                 },
@@ -86,10 +86,10 @@ export const getInstitutions = async () => {
     }
 };
 
-//Actualizar Usuario
-export const updateRol = async (rol: Partial<CreateInstitucionDto>, id: string): Promise<InstitucionModel> => {
+//Actualizar Institucione
+export const updateInstitution = async (id: string, institutions: Partial<CreateInstitucionDto>): Promise<InstitucionModel> => {
     try {
-        const response = await Api.put(`/instituciones/${id}`, rol);
+        const response = await Api.put(`/instituciones/${id}`, institutions);
         return response.data;
     } catch (error) {
         throw handleApiError(error);

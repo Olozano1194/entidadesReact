@@ -4,6 +4,6 @@ export interface Rol {
     descripcion?: string;
     permisos?: string[];
     activo: boolean;
-    createdAt: Date;
-    updatedAt: Date;
+    // createdAt: Date;
+    // updatedAt: Date;
 };

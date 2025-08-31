@@ -1,9 +1,9 @@
 import { Api } from '../api/user.api';
 import { handleApiError } from '../api/user.api';
 //Models
-import type { Rol } from '../model/rol.models';
+import type { Rol } from '../types/rol.models';
 //Dto
-import type { CreateRolDto } from '../model/dto/rol.dto';
+import type { CreateRolDto } from '../types/dto/rol.dto';
 
 // Obtenemos todos los roles
 export const getRoles = async (): Promise<Rol[]> => {
@@ -43,7 +43,12 @@ export const getRoleById = async (id: string): Promise<Rol> => {
 // Crear un nuevo rol
 export const createRol = async (rol: CreateRolDto): Promise<Rol> => {
     try {
-        const response = await Api.post('/roles', rol);
+        const token = localStorage.getItem('token');
+        const response = await Api.post('/roles', rol, {
+            headers: {
+                Authorization: `Bearer ${token}`, 
+            }
+        });
         return response.data;
     } catch (error) {
         throw handleApiError(error);

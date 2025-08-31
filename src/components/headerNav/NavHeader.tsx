@@ -16,10 +16,10 @@ import { toast } from 'react-hot-toast';
 //Component
 import NotificationMenu from "../../components/headerNav/NotificationMenu";
 // Model
-import type { Rol } from "../../model/rol.models";
-import type { Student } from "../../model/student.model";
-import type { Teacher } from "../../model/teacher.model";
-import type { AdminModel } from "../../model/admin.model";
+import type { Rol } from "../../types/rol.models";
+import type { Student } from "../../types/student.model";
+import type { Teacher } from "../../types/teacher.model";
+import type { AdminModel } from "../../types/admin.model";
 
 
 function NavHeader() {

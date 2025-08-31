@@ -15,15 +15,15 @@ import Button from '../../../components/ui/Button';
 //img
 import icons from '../../../assets/favicon-32x32.png'
 //icons
-import { CiUser, CiMail } from "react-icons/ci";
-import { RiLockPasswordLine, RiLoginBoxLine } from "react-icons/ri";
+import { CiMail } from "react-icons/ci";
+import { RiLockPasswordLine, RiLoginBoxLine, RiUserSettingsLine } from "react-icons/ri";
 //Api
 import { CreateUsers } from '../../../api/user.api';
 import { getRoles } from '../../../api/roles.api';
 //Model
-import type { User } from '../../../model/user.model';
-import type { CreateUserDto } from '../../../model/dto/user.dto';
-import type { Rol } from '../../../model/rol.models';
+import type { User } from '../../../types/user.model';
+import type { CreateUserDto } from '../../../types/dto/user.dto';
+import type { Rol } from '../../../types/rol.models';
 
 
 const RegisterUser = () => {
@@ -113,7 +113,7 @@ const RegisterUser = () => {
                     errors.email && <ErrorSpan>{errors.email.message}</ErrorSpan>
                 }
                 {/* Roles */}
-                <label htmlFor="roles"><Span><CiUser/>Rol</Span>
+                <label htmlFor="roles"><Span><RiUserSettingsLine/>Rol</Span>
                 <Select
                     {...register('rol',{
                         required: {

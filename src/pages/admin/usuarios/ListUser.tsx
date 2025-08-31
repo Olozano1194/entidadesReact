@@ -10,8 +10,8 @@ import Table from '../../../components/Table';
 //Mensajes
 import { toast } from 'react-hot-toast';
 //Models
-import type { User } from '../../../model/user.model';
-import type { Rol } from "../../../model/rol.models";
+import type { User } from '../../../types/user.model';
+import type { Rol } from "../../../types/rol.models";
 
 
 

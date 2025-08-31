@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 //API
-import { getTeacher } from '../../../api/teacher.api';
+import { getRoles } from "../../../api/roles.api";
 //Table
 import { createColumnHelper } from '@tanstack/react-table';
 import type { ColumnDef } from "@tanstack/react-table";
@@ -9,20 +9,22 @@ import Table from '../../../components/Table';
 //Mensajes
 import { toast } from 'react-hot-toast';
 //Models
-import type { Teacher } from '../../../types/teacher.model';
+import type { Rol } from "../../../types/rol.models";
 
 
-const ListTeacher = () => {
-    const [ teacher, setTeacher ] = useState<Teacher[]>([]);    
+
+const ListRoles = () => {
+    const [ roles, setRoles ] = useState<Rol[]>([]);
     const [ isLoading, setIsLoading ] = useState(false);
 
     useEffect(() => {
         const fetchUserData = async () => {
             setIsLoading(true);
             try {
-                const teacherData = await getTeacher();
-                // console.log('User data received:', teacherData);
-                setTeacher(teacherData);                
+                const rolesData = await getRoles();
+                //console.log('User data received:', data);
+                setRoles(rolesData);               
+                                
             }catch (error) {
                 const errorMessage = error instanceof Error ? error.message : 'Error al cargar los datos';
                 toast.error(errorMessage);
@@ -34,7 +36,7 @@ const ListTeacher = () => {
     }, []);
   
 
-    const columnHelper = createColumnHelper<Teacher>();
+    const columnHelper = createColumnHelper<Rol>();
 
     const columns = [
         columnHelper.accessor((_, index) => index + 1, {
@@ -45,22 +47,18 @@ const ListTeacher = () => {
                 return info.row.index + 1;
             },
         }),        
-        columnHelper.accessor(row => `${row.nombre}`, {
+        columnHelper.accessor(row => row.nombre, {
             id: 'nombre',
             header: 'Nombre',
         }),
-        columnHelper.accessor(row => row.apellido, {
-            id: 'apellido',
-            header: 'Apellido',
+        columnHelper.accessor(row => row.descripcion, {
+            id: 'despcripcion',
+            header: 'Descripción',
         }),
-        columnHelper.accessor(row => row.telefono, {
-            id: 'telefono',
-            header: 'Telefono',
+        columnHelper.accessor(row => row.permisos, {
+            id: 'permisos',
+            header: 'Permisos',
         }),
-        columnHelper.accessor(row => row.especialidad, {
-            id: 'especialidad',
-            header: 'Especialidad',
-        })
         // columnHelper.accessor('actions', {
         //     header: 'Acciones',
         //     cell: (({ row }) => (
@@ -70,18 +68,18 @@ const ListTeacher = () => {
         //         </div>
         //     )),
         // }),
-    ] as ColumnDef<Teacher>[];
+    ] as ColumnDef<Rol>[];
 
     return (
         <main className="cards bg-primary w-full flex flex-col justify-center items-center gap-y-4 p-4 rounded-xl">
-            <h1 className='text-xl text-white font-bold pb-4 md:text-2xl' >Listado de Docentes</h1>
+            <h1 className='text-xl text-white font-bold pb-4 md:text-2xl' >Listado de Usuarios</h1>
             {
                 isLoading ? (
                     <div className="text-center py-4">Cargando...</div>
 
                 ): (
                     <Table 
-                        data={teacher} 
+                        data={roles} 
                         columns={columns}                          
                     />
                 )
@@ -89,4 +87,4 @@ const ListTeacher = () => {
         </main>
     );
 }
-export default ListTeacher;
+export default ListRoles;

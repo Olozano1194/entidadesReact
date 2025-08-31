@@ -8,12 +8,12 @@ import { getRoles } from "../../../../../api/roles.api";
 //icons
 import { RiEdit2Line } from "react-icons/ri";
 //models
-import type { User } from "../../../../../model/user.model";
-import type { Teacher } from "../../../../../model/teacher.model";
-import type { Rol } from "../../../../../model/rol.models";
+import type { User } from "../../../../../types/user.model";
+import type { Teacher } from "../../../../../types/teacher.model";
+import type { Rol } from "../../../../../types/rol.models";
 //Mensajes
 import { toast } from "react-hot-toast";
-import type { UpdateTeacherDto } from "../../../../../model/dto/teacher.dto";
+import type { UpdateTeacherDto } from "../../../../../types/dto/teacher.dto";
 
 interface FormData {    
     rol: string;

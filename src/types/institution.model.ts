@@ -1,12 +1,15 @@
-export interface CreateInstitucionDto {
+export interface InstitucionModel {
+    _id?: string;
     nombre: string;
     direccion: string;
     telefono: string;
     email: string;
     director: string;
-    iddepartamento: string | { _id: string; descripcion: string };
+    iddepartamento: string;
     idmunicipio: string;
-    nosedes: number;
+    nosedes: string;
     estudiantes: string[];
     profesores: string[];
+    asignarTodosStudent?: boolean;
+    asignarTodosTeacher?: boolean;
 }

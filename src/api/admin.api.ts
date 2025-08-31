@@ -1,9 +1,9 @@
 import { Api } from '../api/user.api';
 import { handleApiError } from '../api/user.api';
 //Models
-import type { AdminModel } from '../model/admin.model';
+import type { AdminModel } from '../types/admin.model';
 //Dto
-import type { UpdateAdminDto } from '../model/dto/admin.dto';
+import type { UpdateAdminDto } from '../types/dto/admin.dto';
 
 // Obtenemos todos los Profesores
 export const getAdmin = async (): Promise<AdminModel[]> => {
