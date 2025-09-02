@@ -6,7 +6,7 @@ import Error404 from './pages/Error404';
 //auth
 import Login from './pages/auth/Login';
 //Pages admin
-import Home from './pages/admin/Home';
+import Home from './components/Home';
 //usuarios
 import Profile from './pages/admin/usuarios/ProfileAdmin';
 import ListUser from './pages/admin/usuarios/ListUser';
