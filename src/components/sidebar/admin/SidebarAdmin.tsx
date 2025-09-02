@@ -51,14 +51,14 @@ const SidebarAdmin: React.FC<SidebarAdminProps> = ({ showSubmenu, handleToggleSu
             />
           </button>
           <ul className={`mt-2 ${!showSubmenu.menu1 ? "hidden" : ""}`}>
-            <li>
+            {/* <li>
               <Link
                 to="registrar-miembro/"
                 className="py-2 px-4 border-l border-slate-400 block ml-6 text-white font-semibold relative before:w-3 before:h-3 before:absolute before:bg-primary before:rounded-full before:-left-[6.5px] before:top-1/2 before:-translate-y-1/2 before:border-4 before:border-secondary hover:text-gray-400 transition-colors"
               >
                 Registrar Docente
               </Link>
-            </li>
+            </li> */}
             <li>
               <Link
                 to="docentes"
@@ -88,14 +88,14 @@ const SidebarAdmin: React.FC<SidebarAdminProps> = ({ showSubmenu, handleToggleSu
             />
           </button>
           <ul className={`mt-2 ${!showSubmenu.menu2 ? "hidden" : ""}`}>
-            <li>
+            {/* <li>
               <Link
                 to="registerStudent"
                 className="py-2 px-4 border-l border-slate-400 block ml-6 text-white font-semibold relative before:w-3 before:h-3 before:absolute before:bg-primary before:rounded-full before:-left-[6.5px] before:top-1/2 before:-translate-y-1/2 before:border-4 before:border-secondary hover:text-gray-400 transition-colors"
               >
                 Registrar Estudiante
               </Link>
-            </li>
+            </li> */}
             <li>
               <Link
                 to="alumnos"
