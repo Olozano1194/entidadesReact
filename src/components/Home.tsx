@@ -1,9 +1,9 @@
-
+import HomeAdmin from "./home/admin/HomeAdmin";
 
 const Home = () => {
     return (
         <div className="home">
-            <h1>Home Page</h1>
+            <HomeAdmin />
         </div>
     );
 };
