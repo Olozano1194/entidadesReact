@@ -52,8 +52,8 @@ const HomeAdmin = () => {
         <div className="space-y-6">
             {/* Header de bienvenida */}
             <div>
-                <h1 className="text-2xl font-bold text-white">Panel de Administración</h1>
-                <p className="text-primary">Resumen general del sistema</p>
+                <h1 className="text-2xl font-bold text-white md:text-3xl xl:text-4xl">Panel de Administración</h1>
+                <p className="text-primary lg:text-lg">Resumen general del sistema</p>
             </div>
             {/* Métricas principales */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -61,40 +61,40 @@ const HomeAdmin = () => {
                     title="Total Usuarios" 
                     value={stats.totalUsers} 
                     icon="👥" 
-                    color="blue"
-                    // subtitle="En el sistema"
+                    color="bg-gradient-to-tr from-teal-500 to-teal-700"
+                    trend="En el sistema"
                 />
                 <HomeCard 
                     title="Estudiantes" 
                     value={stats.totalStudents} 
                     icon="🎓" 
-                    color="green"
-                    // subtitle="Registrados"
+                    color="bg-gradient-to-tr from-emerald-400 to-emerald-600"
+                    trend="Registrados"
                 />
                 <HomeCard 
                     title="Docentes" 
                     value={stats.totalTeachers} 
                     icon="👨‍🏫" 
-                    color="purple"
-                    // subtitle="Activos"
+                    color="bg-gradient-to-tr from-cyan-400 to-cyan-600"
+                    trend="Activos"
                 />
                 <HomeCard 
                     title="Instituciones" 
                     value={stats.totalInstitutions} 
                     icon="🏫" 
-                    color="orange"
-                    // subtitle="Creadas"
+                    color="bg-gradient-to-tr from-indigo-400 to-indigo-600"
+                    trend="Creadas"
                 />
             </div>
             {/* Gráfico rápido */}
             <div className="w-full lg:grid lg:justify-center bg-primary shadow rounded p-4">
-                <h2 className="text-xl text-white font-semibold mb-2 lg:text-center">Usuarios últimos 7 días</h2>
+                <h2 className="text-xl text-white font-semibold mb-4 lg:text-center">Estadísticas mensuales</h2>
                 <LineChart stats={stats} />
             </div>
             {/* Acciones rápidas - Based on your Sidebar menus */}
             <div className="bg-primary p-6 rounded-lg shadow">
                 <h2 className="text-xl text-white font-semibold mb-4">Acciones Rápidas</h2>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 gap-4 md:grid-cols-4 ">
                     <ActionButton 
                         icon="➕" 
                         label="Crear Usuario" 
