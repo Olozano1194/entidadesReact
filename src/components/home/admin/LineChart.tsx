@@ -57,7 +57,7 @@ const LineChart: React.FC<LineChartProps> = ({ stats }) => {
       },
       title: {
         display: true,
-        text: "Distribución General",        
+        text: "Estadisticas del sistemas",        
       },
     },    
   };

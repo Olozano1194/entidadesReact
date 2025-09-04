@@ -17,7 +17,7 @@ const ActionButton = ({ icon, label, onClick, color = 'blue' }: ActionButtonProp
   return (
     <button
       onClick={onClick}
-      className={`flex flex-col items-center p-4 rounded-lg transition-all duration-200 ${colorClasses[color]} hover:shadow-md`}
+      className={`cursor-pointer flex flex-col items-center p-4 rounded-lg transition-all duration-200 ${colorClasses[color]} hover:shadow-md`}
     >
       <span className="text-2xl mb-2">{icon}</span>
       <span className="text-sm font-medium">{label}</span>
