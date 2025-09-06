@@ -10,13 +10,13 @@ import Table from '../../../components/Table';
 //Mensajes
 import { toast } from 'react-hot-toast';
 //Models
-import type { User } from '../../../types/user.model';
 import type { Rol } from "../../../types/rol.models";
-
+// Dto
+import type { ListUserDto } from "../../../types/dto/user.dto";
 
 
 const ListUser = () => {
-    const [ users, setUser ] = useState<User[]>([]);
+    const [ users, setUser ] = useState<ListUserDto[]>([]);
     const [ , setRoles ] = useState<Rol[]>([]);
     const [ isLoading, setIsLoading ] = useState(false);
 
@@ -26,20 +26,11 @@ const ListUser = () => {
             try {
                 const [ userData, rolesData ] = await Promise.all([
                     getUsers(),
-                    getRoles(),
+                    getRoles(),                    
                 ]);
-                //console.log('User data received:', data);
                 setRoles(rolesData);
-                
-                // Asignamos el nombre del rol
-                const usersWithRoles = userData.map((user) => {
-                    const rol = rolesData.find((rol) => rol._id === user.rol);
-                    return {
-                        ...user,
-                        rol: rol ? rol.nombre : 'Rol no encontrado',
-                    };
-                });
-                setUser(usersWithRoles);                
+                setUser(userData);
+                                              
             }catch (error) {
                 const errorMessage = error instanceof Error ? error.message : 'Error al cargar los datos';
                 toast.error(errorMessage);
@@ -51,7 +42,7 @@ const ListUser = () => {
     }, []);
   
 
-    const columnHelper = createColumnHelper<User>();
+    const columnHelper = createColumnHelper<ListUserDto>();
 
     const columns = [
         columnHelper.accessor((_, index) => index + 1, {
@@ -61,6 +52,10 @@ const ListUser = () => {
                 // Solo mostrar el número si no es la fila de total
                 return info.row.index + 1;
             },
+        }),
+        columnHelper.accessor(row => `${row.nombre} ${row.apellido}`, {
+            id: 'nombre',
+            header: 'Nombre Completo',
         }),        
         columnHelper.accessor(row => row.email, {
             id: 'email',
@@ -79,7 +74,7 @@ const ListUser = () => {
         //         </div>
         //     )),
         // }),
-    ] as ColumnDef<User>[];
+    ] as ColumnDef<ListUserDto>[];
 
     return (
         <main className="cards bg-primary w-full flex flex-col justify-center items-center gap-y-4 p-4 rounded-xl">

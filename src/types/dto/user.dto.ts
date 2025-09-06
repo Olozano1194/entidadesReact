@@ -12,3 +12,11 @@ export interface LoginUserDto {
     email: string;
     password: string;    
 };
+
+export interface ListUserDto {
+    _id?: string;
+    email: string;
+    rol: Rol | string;
+    nombre?: string;
+    apellido?: string;     
+}
