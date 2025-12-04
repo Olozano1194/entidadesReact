@@ -89,7 +89,7 @@ const Login = () => {
        <Main>              
             <Form onSubmit={onSubmit}>
                 <div className='w-full flex justify-center'>
-                    <Title><img className="w-8 h-6 rounded-lg" src={icons} alt="logo del desarrollador" />Plataforma <span className="text-teal-800 w-full">Educativa</span></Title>
+                    <Title><img className="w-8 h-6 rounded-lg" src={icons} alt="logo del desarrollador" />Plataforma <span className="text-teal-800">Educativa</span></Title>
                 </div>
                 {/* Email */}
                 <label htmlFor="email">
