@@ -116,3 +116,5 @@
     backdrop-filter: blur(10px);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
 }
+
+.chart-gradient { background: linear-gradient(180deg, rgba(15, 82, 56, 0.1) 0%, rgba(15, 82, 56, 0) 100%); }
