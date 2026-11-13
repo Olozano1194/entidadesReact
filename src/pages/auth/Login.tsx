@@ -30,60 +30,38 @@ const Login = () => {
 
     const onSubmit = handleSubmit(async (data: LoginUserDto) => {
         try {
-            const response = await login(data);
-            //console.log('Login successful, result:', response);
+            const response = await login({
+                email: data.email.toLowerCase().trim(),
+                password: data.password
+            });
 
-            if (response && response.token) {
-                //console.log('Login successful, token:', response.token);
+            // El backend envuelve la respuesta en { data: { token, user } }
+            const token = response?.data?.token ?? response?.token;
 
-                const response = await login({
-                    email: data.email.toLowerCase().trim(),
-                    password: data.password
-                });
-
-                //console.log('Respuesta del login:', response);
-
-                if (response && response.token) {
-                    //El token ya se guardo en la función login                    
-                    toast.success('Inicio de sesión exitoso', {
-                        duration: 3000,
-                        position: 'bottom-right',
-                        style: {
-                            background: '#4b5563',
-                            color: '#fff',
-                            padding: '10px',
-                            borderRadius: '10px',
-                        },
-                    });
-                }
-                localStorage.setItem('token', response.token);
-                // Redirect to the dashboard
-                navigate('/admin');
-            } else {
-                //console.error('Token not found in response');
-                toast.success('Respuesta inválida del servidor', {
+            if (token) {
+                localStorage.setItem('token', token);
+                toast.success('Inicio de sesión exitoso', {
                     duration: 3000,
                     position: 'bottom-right',
                     style: {
-                        background: '#4b5563',   // Fondo negro
-                        color: '#fff',           // Texto blanco
-                        padding: '16px',
-                        borderRadius: '8px',
+                        background: '#4b5563',
+                        color: '#fff',
+                        padding: '10px',
+                        borderRadius: '10px',
                     },
                 });
+                navigate('/admin');
+            } else {
+                toast.error('Respuesta inválida del servidor', {
+                    duration: 3000,
+                    position: 'bottom-right',
+                });
             }
-
         } catch (error) {
             console.error('Error logging in:', error);
-            toast.success('Error al iniciar sesión', {
+            toast.error('Error al iniciar sesión', {
                 duration: 3000,
                 position: 'bottom-right',
-                style: {
-                    background: '#4b5563',   // Fondo negro
-                    color: '#fff',           // Texto blanco
-                    padding: '16px',
-                    borderRadius: '8px',
-                },
             });
         }
     });
