@@ -54,37 +54,28 @@ export const handleApiError = (error: unknown): never => {
 
 // Creamos el usuario
 export const CreateUsers = async (userData: CreateUserDto) => {
-    try {                
-        const requestData = {            
+    try {
+        const token = localStorage.getItem('token');
+        const requestData = {
             email: userData.email,
             password: userData.password,
             rol: userData.rol,
             idinstitucion: userData.idinstitucion
         };
 
-        // console.log('Enviando datos:', requestData);
-
-        const response = await Api.post('/usuario', requestData);
-        // console.log('Respuesta del back:', response.data);
-        
+        const response = await Api.post('/usuarios', requestData, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
 
         if (response.data.token) {
             localStorage.setItem('token', response.data.token);
         }
 
         return response.data;
-    } catch (error) {        
-        // console.error('Error detallado:', {
-        //     message: error.message,
-        //     response: error.response?.data,
-        //     status: error.response?.status
-        // });
+    } catch (error) {
         throw handleApiError(error);
-
-        // Mejorar el mensaje de error
-        //const errorMessage = error.response?.data?.message || 
-        //                   'Error al crear el usuario';
-        
     }
 };
 
@@ -93,7 +84,7 @@ export const login = async (credentials: LoginUserDto) => {
     try {
         // console.log('Intentando login con:', credentials);
         
-        const response = await Api.post('/usuario/login', credentials);
+        const response = await Api.post('/usuarios/login', credentials);
         // console.log('Respuesta del servidor:', response.data);
 
         if (response.data.token && response.data.user) {
@@ -115,7 +106,7 @@ export const getUserProfile = async (): Promise<{ user: User & { rol?: Rol } }> 
         if (!token) {
             throw new Error('No hay token de autenticación');
         }
-        const response = await Api.get(`/usuario/me`, {
+        const response = await Api.get(`/usuarios/me`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -131,7 +122,7 @@ export const getUserProfile = async (): Promise<{ user: User & { rol?: Rol } }> 
 export const getUsers = async () => {
     const token = localStorage.getItem('token');
     try {
-        const response = await Api.get<ListUserDto[]>('/usuario', {
+        const response = await Api.get<ListUserDto[]>('/usuarios', {
             headers: {
                 'Authorization': `Bearer ${token}`
                 },
@@ -155,7 +146,7 @@ export const updateUser = async (id: string, formData: FormData): Promise<User> 
         //     formData: Object.fromEntries(formData.entries())
         // });        
 
-        const response = await Api.put(`/usuario/${id}`, formData, {
+        const response = await Api.put(`/usuarios/${id}`, formData, {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 // 'Content-Type': 'multipart/form-data'
