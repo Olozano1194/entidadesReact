@@ -106,6 +106,8 @@ const HomeAdmin = () => {
                     icon={<IoPersonOutline />} 
                     iconColor="text-blue-600"
                     iconBg="bg-blue-50"
+                    trend="100%"
+                    trendType="up"
                 />
                 <HomeCard 
                     title="Estudiantes Activos" 
