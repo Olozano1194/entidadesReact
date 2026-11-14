@@ -8,6 +8,7 @@ import {
   Tooltip,
   Legend,
   PointElement,
+  Filler,
 } from "chart.js";
 
 ChartJS.register(
@@ -17,7 +18,8 @@ ChartJS.register(
   PointElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  Filler
 );
 
 type LineChartProps = {
@@ -58,9 +60,14 @@ const LineChart: React.FC<LineChartProps> = ({ stats }) => {
       },
       title: {
         display: true,
-        text: "Estadisticas del sistemas",        
+        text: "Estadisticas del sistema",
       },
-    },    
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+      },
+    },
   };
 
   return (
