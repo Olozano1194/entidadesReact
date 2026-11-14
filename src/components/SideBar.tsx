@@ -36,29 +36,72 @@ const SideBar = () => {
   });
   const [, setUser] = useState<User | null>(null);
   const [userRole, setUserRole] = useState<string>("");
+  const [roleLoading, setRoleLoading] = useState(true);
   const [, setLoggedOut] = useState(false);
 
   //este useEfect es para obtener el rol del usuario
   useEffect(() => {
     const obtenerRol = async () => {
       try {
-        const { user } = await getUserProfile();
-        //console.log('User data received:', user.rol);
+        let user: (User & { rol?: Rol | string }) | null = null;
+
+        // 1) Intentar obtener el perfil desde la API (soporta varias envolturas)
+        try {
+          const profile = await getUserProfile();
+          const p = profile as Record<string, unknown>;
+          const data = (p?.data ?? null) as Record<string, unknown> | null;
+          user =
+            (p?.user as (User & { rol?: Rol | string }) | undefined) ??
+            (data?.user as (User & { rol?: Rol | string }) | undefined) ??
+            (data as (User & { rol?: Rol | string }) | null) ??
+            (profile as unknown as User & { rol?: Rol | string }) ??
+            null;
+          console.log("SideBar profile:", profile, "resolved user:", user);
+        } catch (apiError) {
+          console.warn("No se pudo obtener el perfil desde la API, usando localStorage", apiError);
+        }
+
+        // 2) Fallback a localStorage (igual que Profile.tsx)
+        if (!user) {
+          try {
+            const stored = JSON.parse(localStorage.getItem("user") || "null") as unknown;
+            if (stored && typeof stored === "object") {
+              user = stored as User & { rol?: Rol | string };
+            }
+          } catch {
+            // ignore
+          }
+        }
+
+        if (!user) {
+          console.error("No se encontró información del usuario");
+          return;
+        }
+
         setUser(user);
 
-        //Si el rol viene como objeto
-        if (user.rol && typeof user.rol === "object" && "nombre" in user.rol) {
-          setUserRole((user.rol as Rol).nombre);
-        }
-        //Si el rol viene como String
-        else if (typeof user.rol === "string") {
-          const rol = await getRoleById(user.rol);
-          setUserRole(rol.nombre);
+        // 3) Resolver el nombre del rol en cualquier formato
+        const rolField = user.rol;
+        if (rolField && typeof rolField === "object" && "nombre" in rolField) {
+          setUserRole((rolField as Rol).nombre);
+        } else if (typeof rolField === "string") {
+          try {
+            const rol = await getRoleById(rolField);
+            setUserRole(rol?.nombre ?? rolField);
+          } catch (rolError) {
+            console.warn("No se pudo resolver el rol por id, usando el id", rolError);
+            setUserRole(rolField);
+          }
+        } else if (rolField != null) {
+          setUserRole(String(rolField));
         }
       } catch (error) {
         const errorMessage =
           error instanceof Error ? error.message : "Error al cargar los datos";
+        console.error("Error al cargar el rol del usuario:", error);
         toast.error(errorMessage);
+      } finally {
+        setRoleLoading(false);
       }
     };
     obtenerRol();
@@ -100,29 +143,46 @@ const SideBar = () => {
               <h1 className="font-bold text-xl text-white tracking-wide">
                 EduControl
               </h1>
-              <p className="text-xs text-emerald-400/70">{userRole.charAt(0).toUpperCase() + userRole.slice(1) ||
-                "Cargando..."}
+              <p className="text-xs text-emerald-400/70">
+                {roleLoading
+                  ? "Cargando..."
+                  : userRole
+                  ? userRole.charAt(0).toUpperCase() + userRole.slice(1)
+                  : "Sin rol"}
               </p>
             </div>            
           </div>          
           {/* Menu */}
           <nav className="flex-1 overflow-y-auto space-y-1 sidebar-scroll">
-            {userRole.includes("admin") ? (
-              <SidebarAdmin
-                handleToggleSubMenu={handleToggleSubMenu}
-                showSubmenu={showSubMenu}
-              />
-            ) : userRole.includes("docente") ? (
-              <SidebarTeacher
-                handleToggleSubMenu={handleToggleSubMenu}
-                showSubmenu={showSubMenu}
-              />
-            ) : (
-              <SidebarStudent
-                handleToggleSubMenu={handleToggleSubMenu}
-                showSubmenu={showSubMenu}
-              />
-            )}
+            {(() => {
+              const rol = userRole.toLowerCase();
+              if (rol.includes("admin") || rol.includes("administrador")) {
+                return (
+                  <SidebarAdmin
+                    handleToggleSubMenu={handleToggleSubMenu}
+                    showSubmenu={showSubMenu}
+                  />
+                );
+              }
+              if (
+                rol.includes("docente") ||
+                rol.includes("profesor") ||
+                rol.includes("teacher")
+              ) {
+                return (
+                  <SidebarTeacher
+                    handleToggleSubMenu={handleToggleSubMenu}
+                    showSubmenu={showSubMenu}
+                  />
+                );
+              }
+              return (
+                <SidebarStudent
+                  handleToggleSubMenu={handleToggleSubMenu}
+                  showSubmenu={showSubMenu}
+                />
+              );
+            })()}
           </nav>
         </section>
         {/* Log out */}
