@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 // icons
 import {
   RiMessage3Fill,
@@ -25,13 +25,14 @@ const SidebarStudent: React.FC<SidebarAdminProps> = ({
       {/* Home */}
       <ul className="flex flex-col gap-2">
         <li>
-          <Link
+          <NavLink
             to="/admin"
+            end
             className="bg-emerald-800/40 border-l-4 border-emerald-400 flex font-semibold items-center gap-2 py-3 px-4 rounded-r-lg text-emerald-400 transition-transform active:translate-x-1"
           >
             <RiHome8Line /> 
             Inicio
-          </Link>
+          </NavLink>
         </li>
       </ul>
       {/* Group */}
@@ -53,20 +54,20 @@ const SidebarStudent: React.FC<SidebarAdminProps> = ({
           </button>
           <ul className={`mt-2 ${!showSubmenu.menu1 ? "hidden" : ""}`}>
             {/* <li>
-              <Link
+              <NavLink
                 to="registrar-miembro/"
                 className="py-2 px-4 border-l border-slate-400 block ml-6 text-white font-semibold relative before:w-3 before:h-3 before:absolute before:bg-primary before:rounded-full before:-left-[6.5px] before:top-1/2 before:-translate-y-1/2 before:border-4 before:border-secondary hover:text-gray-400 transition-colors"
               >
                 Registrar docente
-              </Link>
+              </NavLink>
             </li> */}
             <li>
-              <Link
+              <NavLink
                 to="miembros"
                 className="py-2 px-4 border-l border-slate-400 block ml-6 text-white font-semibold relative before:w-3 before:h-3 before:absolute before:bg-primary before:rounded-full before:-left-[6.5px] before:top-1/2 before:-translate-y-1/2 before:border-4 before:border-secondary hover:text-gray-400 transition-colors"
               >
                 Ver Grupo
-              </Link>
+              </NavLink>
             </li>
           </ul>
         </li>
@@ -90,20 +91,20 @@ const SidebarStudent: React.FC<SidebarAdminProps> = ({
           </button>
           <ul className={`mt-2 ${!showSubmenu.menu2 ? "hidden" : ""}`}>
             {/* <li>
-              <Link
+              <NavLink
                 to="registrar-miembro/"
                 className="py-2 px-4 border-l border-slate-400 block ml-6 text-white font-semibold relative before:w-3 before:h-3 before:absolute before:bg-primary before:rounded-full before:-left-[6.5px] before:top-1/2 before:-translate-y-1/2 before:border-4 before:border-secondary hover:text-gray-400 transition-colors"
               >
                 Registrar docente
-              </Link>
+              </NavLink>
             </li> */}
             <li>
-              <Link
+              <NavLink
                 to="miembros"
                 className="py-2 px-4 border-l border-slate-400 block ml-6 text-white font-semibold relative before:w-3 before:h-3 before:absolute before:bg-primary before:rounded-full before:-left-[6.5px] before:top-1/2 before:-translate-y-1/2 before:border-4 before:border-secondary hover:text-gray-400 transition-colors"
               >
                 Ver Grupo
-              </Link>
+              </NavLink>
             </li>
           </ul>
         </li>
@@ -127,20 +128,20 @@ const SidebarStudent: React.FC<SidebarAdminProps> = ({
           </button>
           <ul className={`mt-2 ${!showSubmenu.menu3 ? "hidden" : ""}`}>
             {/* <li>
-              <Link
+              <NavLink
                 to="registrar-miembro/"
                 className="py-2 px-4 border-l border-slate-400 block ml-6 text-white font-semibold relative before:w-3 before:h-3 before:absolute before:bg-primary before:rounded-full before:-left-[6.5px] before:top-1/2 before:-translate-y-1/2 before:border-4 before:border-secondary hover:text-gray-400 transition-colors"
               >
                 Registrar docente
-              </Link>
+              </NavLink>
             </li> */}
             <li>
-              <Link
+              <NavLink
                 to="miembros"
                 className="py-2 px-4 border-l border-slate-400 block ml-6 text-white font-semibold relative before:w-3 before:h-3 before:absolute before:bg-primary before:rounded-full before:-left-[6.5px] before:top-1/2 before:-translate-y-1/2 before:border-4 before:border-secondary hover:text-gray-400 transition-colors"
               >
                 Ver Grupo
-              </Link>
+              </NavLink>
             </li>
           </ul>
         </li>
@@ -148,25 +149,27 @@ const SidebarStudent: React.FC<SidebarAdminProps> = ({
       {/* Message */}
       <ul className="flex flex-col gap-2">
         <li>
-          <Link
+          <NavLink
             to="/"
+            end
             className="flex items-center cursor-pointer gap-3 py-3 px-4 rounded-lg text-emerald-100/60 transition-all hover:text-white hover:bg-emerald-800/20"
           >
             <RiMessage3Fill />
             Mensajes
-          </Link>
+          </NavLink>
         </li>
       </ul>
       {/* Calendar */}
       <ul className="flex flex-col gap-2">
         <li>
-          <Link
+          <NavLink
             to="/"
+            end
             className="flex items-center cursor-pointer gap-3 py-3 px-4 rounded-lg text-emerald-100/60 transition-all hover:text-white hover:bg-emerald-800/20"
           >
             <RiCalendarTodoLine />
             Calendario
-          </Link>
+          </NavLink>
         </li>
       </ul>
     </ul>

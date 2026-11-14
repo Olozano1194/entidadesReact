@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 // icons
 import {
   RiMessage3Fill,
@@ -24,13 +24,14 @@ const SidebarTeacher: React.FC<SidebarAdminProps> = ({
       {/* Home */}
       <ul className="flex flex-col gap-2">
         <li>
-          <Link
+          <NavLink
             to="/admin"
+            end
             className="bg-emerald-800/40 border-l-4 border-emerald-400 flex font-semibold items-center gap-2 py-3 px-4 rounded-r-lg text-emerald-400 transition-transform active:translate-x-1"
           >
             <RiHome8Line /> 
             Inicio
-          </Link>
+          </NavLink>
         </li>
       </ul>
       {/* Students */}
@@ -53,20 +54,20 @@ const SidebarTeacher: React.FC<SidebarAdminProps> = ({
           </button>
           <ul className={`mt-2 ${!showSubmenu.menu2 ? "hidden" : ""}`}>
             <li>
-              <Link
+              <NavLink
                 to="registrar-miembro-day"
                 className="border-l border-emerald-900 block ml-6 py-2 px-4 relative transition-colors text-emerald-100/60 hover:text-white before:border-4 before:border-secondary before:h-3 before:absolute before:bg-primary before:rounded-full before:-left-[6.5px] before:top-1/2 before:-translate-y-1/2 before:w-3"
               >
                 Registrar estudiante
-              </Link>
+              </NavLink>
             </li>
             <li>
-              <Link
+              <NavLink
                 to="miembros-day"
                 className="border-l border-emerald-900 block ml-6 py-2 px-4 relative transition-colors text-emerald-100/60 hover:text-white before:border-4 before:border-secondary before:h-3 before:absolute before:bg-primary before:rounded-full before:-left-[6.5px] before:top-1/2 before:-translate-y-1/2 before:w-3"
               >
                 Ver estudiante
-              </Link>
+              </NavLink>
             </li>
           </ul>
         </li>
@@ -74,25 +75,27 @@ const SidebarTeacher: React.FC<SidebarAdminProps> = ({
       {/* Message */}
       <ul className="flex flex-col gap-2">
         <li>
-          <Link
+          <NavLink
             to="/"
+            end
             className="flex items-center cursor-pointer gap-3 py-3 px-4 rounded-lg text-emerald-100/60 transition-all w-full hover:text-white hover:bg-emerald-800/20"
           >
             <RiMessage3Fill />
             Mensajes
-          </Link>
+          </NavLink>
         </li>
       </ul>
       {/* Calendar */}
       <ul className="flex flex-col gap-2">
         <li>
-          <Link
+          <NavLink
             to="/"
+            end
             className="flex items-center cursor-pointer gap-3 py-3 px-4 rounded-lg text-emerald-100/60 transition-all hover:text-white hover:bg-emerald-800/20"
           >
             <RiCalendarTodoLine />
             Calendario
-          </Link>
+          </NavLink>
         </li>
       </ul>
     </ul>
