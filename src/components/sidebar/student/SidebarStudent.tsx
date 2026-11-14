@@ -3,10 +3,11 @@ import { Link } from "react-router-dom";
 import {
   RiMessage3Fill,
   RiCalendarTodoLine,
-  RiHome8Line,
-  RiUserLine,
+  RiHome8Line,  
   RiArrowRightSLine,
 } from "react-icons/ri";
+import { MdGroups2 } from "react-icons/md";
+import { FaUserCheck, FaFileAlt } from "react-icons/fa";
 // Menus
 import type { SubMenuState } from "../../SideBar";
 
@@ -20,15 +21,15 @@ const SidebarStudent: React.FC<SidebarAdminProps> = ({
   handleToggleSubMenu,
 }) => {
   return (
-    <ul className="">
+    <ul>
       {/* Home */}
       <ul className="flex flex-col gap-2">
         <li>
           <Link
             to="/admin"
-            className="flex items-center gap-3 py-2 px-4 rounded-lg hover:bg-teal-400 text-white font-semibold transition-colors"
+            className="bg-emerald-800/40 border-l-4 border-emerald-400 flex font-semibold items-center gap-2 py-3 px-4 rounded-r-lg text-emerald-400 transition-transform active:translate-x-1"
           >
-            <RiHome8Line className="text-secondary-500" /> Inicio
+            <RiHome8Line  /> Inicio
           </Link>
         </li>
       </ul>
@@ -37,10 +38,10 @@ const SidebarStudent: React.FC<SidebarAdminProps> = ({
         <li>
           <button
             onClick={() => handleToggleSubMenu("menu1")}
-            className="w-full flex items-center justify-between cursor-pointer py-2 px-4 rounded-lg hover:bg-teal-400 text-white font-semibold transition-colors"
+            className="flex items-center justify-between cursor-pointer py-3 px-4 rounded-lg text-emerald-100/60 transition-all w-full hover:text-white hover:bg-emerald-800/20"
           >
             <span className="flex items-center gap-2">
-              <RiUserLine className="text-secondary-500" />
+              <MdGroups2 />
               Grupo
             </span>
             <RiArrowRightSLine
@@ -73,20 +74,20 @@ const SidebarStudent: React.FC<SidebarAdminProps> = ({
       <ul className="flex flex-col gap-2">
         <li>
           <button
-            onClick={() => handleToggleSubMenu("menu1")}
-            className="w-full flex items-center justify-between cursor-pointer py-2 px-4 rounded-lg hover:bg-teal-400 text-white font-semibold transition-colors"
+            onClick={() => handleToggleSubMenu("menu2")}
+            className="flex items-center justify-between cursor-pointer py-3 px-4 rounded-lg text-emerald-100/60 transition-all w-full hover:text-white hover:bg-emerald-800/20"
           >            
             <span className="flex items-center gap-2">
-              <RiUserLine className="text-secondary-500" />
+              <FaUserCheck />
               Asistencia
             </span>
             <RiArrowRightSLine
               className={`mt-1 ${
-                showSubmenu.menu1 ? "rotate-90" : ""
+                showSubmenu.menu2 ? "rotate-90" : ""
               } transition-all`}
             />
           </button>
-          <ul className={`mt-2 ${!showSubmenu.menu1 ? "hidden" : ""}`}>
+          <ul className={`mt-2 ${!showSubmenu.menu2 ? "hidden" : ""}`}>
             {/* <li>
               <Link
                 to="registrar-miembro/"
@@ -110,20 +111,20 @@ const SidebarStudent: React.FC<SidebarAdminProps> = ({
       <ul className="flex flex-col gap-2">
         <li>
           <button
-            onClick={() => handleToggleSubMenu("menu1")}
-            className="w-full flex items-center justify-between cursor-pointer py-2 px-4 rounded-lg hover:bg-teal-400 text-white font-semibold transition-colors"
+            onClick={() => handleToggleSubMenu("menu3")}
+            className="flex items-center justify-between cursor-pointer py-3 px-4 rounded-lg text-emerald-100/60 transition-all w-full hover:text-white hover:bg-emerald-800/20"
           >
             <span className="flex items-center gap-2">
-              <RiUserLine className="text-secondary-500" />
+              <FaFileAlt />
               Evaluación
             </span>
             <RiArrowRightSLine
               className={`mt-1 ${
-                showSubmenu.menu1 ? "rotate-90" : ""
+                showSubmenu.menu3 ? "rotate-90" : ""
               } transition-all`}
             />
           </button>
-          <ul className={`mt-2 ${!showSubmenu.menu1 ? "hidden" : ""}`}>
+          <ul className={`mt-2 ${!showSubmenu.menu3 ? "hidden" : ""}`}>
             {/* <li>
               <Link
                 to="registrar-miembro/"
@@ -148,9 +149,9 @@ const SidebarStudent: React.FC<SidebarAdminProps> = ({
         <li>
           <Link
             to="/"
-            className="flex items-center gap-3 py-2 px-4 rounded-lg hover:bg-teal-400 text-white font-semibold transition-colors"
+            className="flex items-center cursor-pointer gap-3 py-3 px-4 rounded-lg text-emerald-100/60 transition-all hover:text-white hover:bg-emerald-800/20"
           >
-            <RiMessage3Fill className="text-secondary-500" />
+            <RiMessage3Fill />
             Mensajes
           </Link>
         </li>
@@ -160,9 +161,9 @@ const SidebarStudent: React.FC<SidebarAdminProps> = ({
         <li>
           <Link
             to="/"
-            className="flex items-center gap-3 py-2 px-4 rounded-lg hover:bg-teal-400 text-white font-semibold transition-colors"
+            className="flex items-center cursor-pointer gap-3 py-3 px-4 rounded-lg text-emerald-100/60 transition-all hover:text-white hover:bg-emerald-800/20"
           >
-            <RiCalendarTodoLine className="text-secondary-500" />
+            <RiCalendarTodoLine />
             Calendario
           </Link>
         </li>
