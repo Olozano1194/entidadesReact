@@ -29,7 +29,8 @@ const SidebarStudent: React.FC<SidebarAdminProps> = ({
             to="/admin"
             className="bg-emerald-800/40 border-l-4 border-emerald-400 flex font-semibold items-center gap-2 py-3 px-4 rounded-r-lg text-emerald-400 transition-transform active:translate-x-1"
           >
-            <RiHome8Line  /> Inicio
+            <RiHome8Line /> 
+            Inicio
           </Link>
         </li>
       </ul>
