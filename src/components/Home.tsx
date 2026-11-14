@@ -2,9 +2,9 @@ import HomeAdmin from "./home/admin/HomeAdmin";
 
 const Home = () => {
     return (
-        <div className="home">
+        <main className="home">
             <HomeAdmin />
-        </div>
+        </main>
     );
 };
 export default Home;
