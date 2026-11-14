@@ -106,8 +106,8 @@ const HomeAdmin = () => {
                     icon={<IoPersonOutline />} 
                     iconColor="text-blue-600"
                     iconBg="bg-blue-50"
-                    trend="100%"
-                    trendType="up"
+                    trend={stats.totalUsers > 0 ? "100%" : "0%"}
+                    trendType={stats.totalUsers > 0 ? "up" : "neutral"}
                 />
                 <HomeCard 
                     title="Estudiantes Activos" 
