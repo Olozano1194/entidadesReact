@@ -30,7 +30,7 @@ export const getRoleById = async (id: string): Promise<Rol> => {
         }
         const response = await Api.get(`/roles/${id}`, {
             headers: {
-                'Authorization': `Token ${token}`
+                'Authorization': `Bearer ${token}`
             }
         });
         //console.log('User profile response:', response.data)        

@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
+import { toast } from 'react-hot-toast';
 import { getUsers } from '../../../api/user.api';
 import { getStudent } from '../../../api/student.api';
 import { getTeacher } from '../../../api/teacher.api';
 import { getInstitutions } from '../../../api/institution.api';
+import type { Student } from '../../../types/student.model';
 import HomeCard from './HomeCard';
 import ActionButton from './ActionButton';
 import LineChart from './LineChart';
@@ -20,35 +22,49 @@ const HomeAdmin = () => {
         totalStudents: 0,
         totalTeachers: 0,
         totalInstitutions: 0,
-        // recentUsers: []
+        recentStudents: [] as Student[],
     });
     const [loading, setLoading] = useState(true);
 
-    const fetchHomeData = async () => {
-        try {
-            const [ users, students, teachers, institutions ] = await Promise.all([
-                getUsers(),
-                getStudent(),
-                getTeacher(),
-                getInstitutions()
-            ]);
-            setStats({
-                totalUsers: users.length,
-                totalStudents: students.length,
-                totalTeachers: teachers.length,
-                totalInstitutions: institutions.length,
-                // recentUsers: users.slice(-5).reverse()
-            });
-        } catch (error) {
-            console.error("Error fetching home data:", error);
-        } finally {
-            setLoading(false);
+    const toArray = (res: unknown): unknown[] => {
+        if (Array.isArray(res)) return res;
+        if (res && typeof res === 'object') {
+            const r = res as Record<string, unknown>;
+            if (Array.isArray(r.data)) return r.data;
+            if (Array.isArray(r.users)) return r.users;
+            if (Array.isArray(r.students)) return r.students;
+            if (Array.isArray(r.teachers)) return r.teachers;
+            if (Array.isArray(r.institutions)) return r.institutions;
         }
+        return [];
     };
 
     useEffect(() => {
+        const fetchHomeData = async () => {
+            try {
+                const [ usersRes, studentsRes, teachersRes, institutionsRes ] = await Promise.all([
+                    getUsers(),
+                    getStudent(),
+                    getTeacher(),
+                    getInstitutions()
+                ]);
+                console.log("HomeAdmin responses:", { usersRes, studentsRes, teachersRes, institutionsRes });
+                const students = toArray(studentsRes) as Student[];
+                setStats({
+                    totalUsers: toArray(usersRes).length,
+                    totalStudents: students.length,
+                    totalTeachers: toArray(teachersRes).length,
+                    totalInstitutions: toArray(institutionsRes).length,
+                    recentStudents: students.slice(-5).reverse(),
+                });
+            } catch (error) {
+                console.error("Error fetching home data:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
         fetchHomeData();
-    });
+    }, []);
 
     if (loading) {
         return <div className="flex justify-center items-center h-64">Cargando...</div>;
@@ -80,14 +96,18 @@ const HomeAdmin = () => {
             </section>
             {/* Métricas principales */}
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                {(() => {
+                    const pct = (n: number) => stats.totalUsers > 0 ? Math.round((n / stats.totalUsers) * 100) : 0;
+                    return (
+                        <>
                 <HomeCard 
                     title="Total Usuarios" 
                     value={stats.totalUsers} 
                     icon={<IoPersonOutline />} 
                     iconColor="text-blue-600"
                     iconBg="bg-blue-50"
-                    trend="12%"
-                    trendType="up"
+                    trend={stats.totalUsers > 0 ? "100%" : "0%"}
+                    trendType={stats.totalUsers > 0 ? "up" : "neutral"}
                 />
                 <HomeCard 
                     title="Estudiantes Activos" 
@@ -95,7 +115,7 @@ const HomeAdmin = () => {
                     icon={<MdOutlineSchool />} 
                     iconColor="text-green-600"
                     iconBg="bg-green-50"
-                    trend="8%"
+                    trend={`${pct(stats.totalStudents)}%`}
                     trendType="up"
                 />
                 <HomeCard 
@@ -104,8 +124,8 @@ const HomeAdmin = () => {
                     icon={<PiStudent />}
                     iconColor="text-red-600"
                     iconBg="bg-red-50"
-                    trend="5%"
-                    trendType="down"
+                    trend={`${pct(stats.totalTeachers)}%`}
+                    trendType="up"
                 />
                 <HomeCard 
                     title="Instituciones Asociadas" 
@@ -113,9 +133,12 @@ const HomeAdmin = () => {
                     icon={<MdOutlineAccountBalance />}
                     iconColor="text-orange-600"
                     iconBg="bg-orange-50"
-                    trend="0%"
+                    trend={`${pct(stats.totalInstitutions)}%`}
                     trendType="neutral"                    
                 />
+                        </>
+                    );
+                })()}
             </div>
             {/* Gráfico rápido */}
             <section className="bg-surface-container-lowest border border-outline-variant/30 p-8 rounded-2xl shadow-sm lg:col-span-2">
@@ -135,14 +158,31 @@ const HomeAdmin = () => {
                 <section className='flex items-center justify-between mt-6'>
                     <div className='flex gap-4 items-center'>
                         <picture className='flex -space-x-3'>
-                            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuB8gKqD_yY4fIUU0yEWjuLTLCQeD7Q_U3187xEtl8LY4g5rrgyrfnJ6FFZ6jVqZ3xaHVJPSn0_c3PtjYif8v7KWhW9cxv3ycv8hsrSuUIOqGD3a6pvv2YetEzh6oy1v1lx9R8KSx5c5LRzDlgZ2O_mHtIAzaDWk14rguudLogpuNWuMuhbJtZ5IlwkoCw2CmYO2Bv7ikSPg4fbs-PSQEIAlpU8UfrWTKp7cOpyxfNFCN5uU1dZUPAWRa2dvPD7m8M9VWbYvo7AgU9n7" alt="" className='border-2 border-white h-8 object-cover rounded-full w-8' />
-                            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAjDTbxZQY-4prwiucR2mC_N2sov-AY5sEeXPeDhQn9AFx6dB80JApFElWexxZq0ymcAUypigHx74SGIl5e2pUPb0GwUOr2ish5gR-m1EX4EyaZ6edWhvaLKPt5xr7tDu3yPwfbpRXsAtX8suTSrr0apoElIvGBV5fGJ-Vi3sM65JoBbuDCshZIP26vxhC9DmqJrfQTFTnQMHhiwZhuUTKq0ySkeacv_hyvChPwLB1n2JYgaHIn0SYKcF7A0Aceft-vlgbf0N_Zv8V_" alt="" className='border-2 border-white h-8 object-cover rounded-full w-8' />
-                            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuB8gKqD_yY4fIUU0yEWjuLTLCQeD7Q_U3187xEtl8LY4g5rrgyrfnJ6FFZ6jVqZ3xaHVJPSn0_c3PtjYif8v7KWhW9cxv3ycv8hsrSuUIOqGD3a6pvv2YetEzh6oy1v1lx9R8KSx5c5LRzDlgZ2O_mHtIAzaDWk14rguudLogpuNWuMuhbJtZ5IlwkoCw2CmYO2Bv7ikSPg4fbs-PSQEIAlpU8UfrWTKp7cOpyxfNFCN5uU1dZUPAWRa2dvPD7m8M9VWbYvo7AgU9n7" alt="" className='border-2 border-white h-8 object-cover rounded-full w-8' />
-                            <div className='border-2 border-white bg-slate-200 flex font-bold h-8 items-center justify-center rounded-full text-[10px] text-slate-600 w-8'>+42</div>
+                            {stats.recentStudents.slice(0, 4).map((student) => (
+                                <div
+                                    key={student._id ?? student.nombre}
+                                    title={`${student.nombre} ${student.apellido}`}
+                                    className='border-2 border-white bg-emerald-100 flex font-bold h-8 items-center justify-center rounded-full text-[10px] text-emerald-700 w-8'
+                                >
+                                    {student.nombre.charAt(0).toUpperCase()}
+                                    {student.apellido.charAt(0).toUpperCase()}
+                                </div>
+                            ))}
+                            {stats.recentStudents.length > 4 && (
+                                <div className='border-2 border-white bg-slate-200 flex font-bold h-8 items-center justify-center rounded-full text-[10px] text-slate-600 w-8'>
+                                    +{stats.recentStudents.length - 4}
+                                </div>
+                            )}
                         </picture>
                         <span className='font-medium text-slate-600 text-sm'>Estudiantes recientemente registrados</span>
                     </div>
-                    <a href="" className='font-bold text-sm text-emerald-700'>Ver todas los análisis</a>
+                    <button
+                        type="button"
+                        onClick={() => toast('Análisis completo próximamente', { icon: '📊', duration: 3000, position: 'bottom-right' })}
+                        className='font-bold text-sm text-emerald-700 cursor-pointer hover:underline'
+                    >
+                        Ver todos los análisis
+                    </button>
                 </section>
             </section>
             {/* Acciones rápidas - Based on your Sidebar menus */}

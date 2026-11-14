@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 // icons
 import {
   RiMessage3Fill,
@@ -24,13 +24,18 @@ const SidebarAdmin: React.FC<SidebarAdminProps> = ({ showSubmenu, handleToggleSu
       {/* Home */}
       <ul className="flex flex-col gap-2">
         <li>
-          <Link
+          <NavLink
             to="/admin"
-            className="bg-emerald-800/40 border-l-4 border-emerald-400 flex font-semibold items-center gap-3 py-3 px-4 rounded-r-lg text-emerald-400 transition-transform hover:bg-teal-400 active:translate-x-1"
+            end
+            className={({ isActive }) =>
+              isActive
+                ? "bg-emerald-800/40 border-l-4 border-emerald-400 flex font-semibold items-center gap-2 py-3 px-4 rounded-r-lg text-emerald-400 transition-transform active:translate-x-1"
+                : "flex items-center cursor-pointer gap-3 py-3 px-4 rounded-lg text-emerald-100/60 transition-all hover:text-white hover:bg-emerald-800/20"
+            }
           >
-            <MdOutlineDashboard className="text-secondary-500" /> 
+            <MdOutlineDashboard /> 
             Inicio
-          </Link>
+          </NavLink>
         </li>
       </ul>
       {/* Teacher */}
@@ -38,13 +43,13 @@ const SidebarAdmin: React.FC<SidebarAdminProps> = ({ showSubmenu, handleToggleSu
         <li>
           <button
             onClick={() => handleToggleSubMenu("menu1")}
-            className="flex font-semibold items-center justify-between cursor-pointer py-3 px-4 rounded-lg text-emerald-100/60 transition-all hover:text-white hover:bg-emerald-800/20"
+            className="flex items-center justify-between cursor-pointer py-3 px-4 rounded-lg text-emerald-100/60 transition-all w-full hover:text-white hover:bg-emerald-800/20"
           >
             <span className="flex items-center gap-2">
-              <RiUserLine className="text-secondary-500" />
+              <MdOutlineAutoStories />
               Docentes
             </span>
-            <MdOutlineAutoStories
+            <RiArrowRightSLine
               className={`mt-1 ${
                 showSubmenu.menu1 ? "rotate-90" : ""
               } transition-all`}
@@ -52,20 +57,20 @@ const SidebarAdmin: React.FC<SidebarAdminProps> = ({ showSubmenu, handleToggleSu
           </button>
           <ul className={`mt-2 ${!showSubmenu.menu1 ? "hidden" : ""}`}>
             {/* <li>
-              <Link
+              <NavLink
                 to="registrar-miembro/"
                 className="py-2 px-4 border-l border-slate-400 block ml-6 text-white font-semibold relative before:w-3 before:h-3 before:absolute before:bg-primary before:rounded-full before:-left-[6.5px] before:top-1/2 before:-translate-y-1/2 before:border-4 before:border-secondary hover:text-gray-400 transition-colors"
               >
                 Registrar Docente
-              </Link>
+              </NavLink>
             </li> */}
             <li>
-              <Link
+              <NavLink
                 to="docentes"
-                className="py-2 px-4 border-l border-slate-400 block ml-6 text-white font-semibold relative before:w-3 before:h-3 before:absolute before:bg-primary before:rounded-full before:-left-[6.5px] before:top-1/2 before:-translate-y-1/2 before:border-4 before:border-secondary hover:text-gray-400 transition-colors"
+                className="border-l border-emerald-900 block ml-6 py-2 px-4 relative transition-colors text-emerald-100/60 hover:text-white before:border-4 before:border-secondary before:h-3 before:absolute before:bg-primary before:rounded-full before:-left-[6.5px] before:top-1/2 before:-translate-y-1/2 before:w-3"
               >
                 Ver Docente
-              </Link>
+              </NavLink>
             </li>
           </ul>
         </li>
@@ -75,10 +80,10 @@ const SidebarAdmin: React.FC<SidebarAdminProps> = ({ showSubmenu, handleToggleSu
         <li>
           <button
             onClick={() => handleToggleSubMenu("menu2")}
-            className="w-full flex items-center justify-between cursor-pointer py-2 px-4 rounded-lg hover:bg-teal-400 text-white font-semibold transition-colors"
+            className="flex items-center justify-between cursor-pointer py-3 px-4 rounded-lg text-emerald-100/60 transition-all w-full hover:text-white hover:bg-emerald-800/20"
           >
             <span className="flex items-center gap-2">
-              <RiUserLine className="text-secondary-500" />
+              <RiUserLine />
               Estudiantes
             </span>
             <RiArrowRightSLine
@@ -89,20 +94,20 @@ const SidebarAdmin: React.FC<SidebarAdminProps> = ({ showSubmenu, handleToggleSu
           </button>
           <ul className={`mt-2 ${!showSubmenu.menu2 ? "hidden" : ""}`}>
             {/* <li>
-              <Link
+              <NavLink
                 to="registerStudent"
                 className="py-2 px-4 border-l border-slate-400 block ml-6 text-white font-semibold relative before:w-3 before:h-3 before:absolute before:bg-primary before:rounded-full before:-left-[6.5px] before:top-1/2 before:-translate-y-1/2 before:border-4 before:border-secondary hover:text-gray-400 transition-colors"
               >
                 Registrar Estudiante
-              </Link>
+              </NavLink>
             </li> */}
             <li>
-              <Link
+              <NavLink
                 to="alumnos"
-                className="py-2 px-4 border-l border-slate-400 block ml-6 text-white font-semibold relative before:w-3 before:h-3 before:absolute before:bg-primary before:rounded-full before:-left-[6.5px] before:top-1/2 before:-translate-y-1/2 before:border-4 before:border-secondary hover:text-gray-400 transition-colors"
+                className="border-l border-emerald-900 block ml-6 py-2 px-4 relative transition-colors text-emerald-100/60 hover:text-white before:border-4 before:border-secondary before:h-3 before:absolute before:bg-primary before:rounded-full before:-left-[6.5px] before:top-1/2 before:-translate-y-1/2 before:w-3"
               >
                 Ver Estudiante
-              </Link>
+              </NavLink>
             </li>
           </ul>
         </li>
@@ -112,10 +117,10 @@ const SidebarAdmin: React.FC<SidebarAdminProps> = ({ showSubmenu, handleToggleSu
         <li>
           <button
             onClick={() => handleToggleSubMenu("menu3")}
-            className="w-full cursor-pointer flex items-center justify-between py-2 px-4 rounded-lg hover:bg-teal-400 text-white font-semibold transition-colors"
+            className="flex items-center justify-between cursor-pointer py-3 px-4 rounded-lg text-emerald-100/60 transition-all w-full hover:text-white hover:bg-emerald-800/20"
           >
             <span className="flex items-center gap-2">
-              <BiSolidInstitution className="text-secondary-500" />
+              <BiSolidInstitution />
               Instituciones
             </span>
             <RiArrowRightSLine
@@ -130,20 +135,20 @@ const SidebarAdmin: React.FC<SidebarAdminProps> = ({ showSubmenu, handleToggleSu
             } transition-all`}
           >
             <li>
-              <Link
+              <NavLink
                 to="registerInstitutions"
-                className="py-2 px-4 border-l border-slate-400 block ml-6 text-white font-semibold relative before:w-3 before:h-3 before:absolute before:bg-primary before:rounded-full before:-left-[6.5px] before:top-1/2 before:-translate-y-1/2 before:border-4 before:border-secondary hover:text-gray-400 transition-colors"
+                className="border-l border-emerald-900 block ml-6 py-2 px-4 relative transition-colors text-emerald-100/60 hover:text-white before:border-4 before:border-secondary before:h-3 before:absolute before:bg-primary before:rounded-full before:-left-[6.5px] before:top-1/2 before:-translate-y-1/2 before:w-3"
               >
                 Registrar Institución
-              </Link>
+              </NavLink>
             </li>
             <li>
-              <Link
+              <NavLink
                 to="instituciones"
-                className="py-2 px-4 border-l border-slate-400 block ml-6 text-white font-semibold relative before:w-3 before:h-3 before:absolute before:bg-primary before:rounded-full before:-left-[6.5px] before:top-1/2 before:-translate-y-1/2 before:border-4 before:border-secondary hover:text-gray-400 transition-colors"
+                className="border-l border-emerald-900 block ml-6 py-2 px-4 relative transition-colors text-emerald-100/60 hover:text-white before:border-4 before:border-secondary before:h-3 before:absolute before:bg-primary before:rounded-full before:-left-[6.5px] before:top-1/2 before:-translate-y-1/2 before:w-3"
               >
                 Ver Institución
-              </Link>
+              </NavLink>
             </li>
           </ul>
         </li>
@@ -153,10 +158,10 @@ const SidebarAdmin: React.FC<SidebarAdminProps> = ({ showSubmenu, handleToggleSu
         <li>
           <button
             onClick={() => handleToggleSubMenu("menu4")}
-            className="w-full cursor-pointer flex items-center justify-between py-2 px-4 rounded-lg hover:bg-teal-400 text-white font-semibold transition-colors"
+            className="flex items-center justify-between cursor-pointer py-3 px-4 rounded-lg text-emerald-100/60 transition-all w-full hover:text-white hover:bg-emerald-800/20"
           >
             <span className="flex items-center gap-2">
-              <RiUserLine className="text-secondary-500" />
+              <RiUserLine />
               Usuario
             </span>
             <RiArrowRightSLine
@@ -171,20 +176,20 @@ const SidebarAdmin: React.FC<SidebarAdminProps> = ({ showSubmenu, handleToggleSu
             } transition-all`}
           >
             <li>
-              <Link
+              <NavLink
                 to="registerUser"
-                className="py-2 px-4 border-l border-slate-400 block ml-6 text-white font-semibold relative before:w-3 before:h-3 before:absolute before:bg-primary before:rounded-full before:-left-[6.5px] before:top-1/2 before:-translate-y-1/2 before:border-4 before:border-secondary hover:text-gray-400 transition-colors"
+                className="border-l border-emerald-900 block ml-6 py-2 px-4 relative transition-colors text-emerald-100/60 hover:text-white before:border-4 before:border-secondary before:h-3 before:absolute before:bg-primary before:rounded-full before:-left-[6.5px] before:top-1/2 before:-translate-y-1/2 before:w-3"
               >
                 Registrar Usuario
-              </Link>
+              </NavLink>
             </li>
             <li>
-              <Link
+              <NavLink
                 to="usuarios"
-                className="py-2 px-4 border-l border-slate-400 block ml-6 text-white font-semibold relative before:w-3 before:h-3 before:absolute before:bg-primary before:rounded-full before:-left-[6.5px] before:top-1/2 before:-translate-y-1/2 before:border-4 before:border-secondary hover:text-gray-400 transition-colors"
+                className="border-l border-emerald-900 block ml-6 py-2 px-4 relative transition-colors text-emerald-100/60 hover:text-white before:border-4 before:border-secondary before:h-3 before:absolute before:bg-primary before:rounded-full before:-left-[6.5px] before:top-1/2 before:-translate-y-1/2 before:w-3"
               >
                 Ver Usuarios
-              </Link>
+              </NavLink>
             </li>
           </ul>
         </li>
@@ -194,10 +199,10 @@ const SidebarAdmin: React.FC<SidebarAdminProps> = ({ showSubmenu, handleToggleSu
         <li>
           <button
             onClick={() => handleToggleSubMenu("menu5")}
-            className="w-full cursor-pointer flex items-center justify-between py-2 px-4 rounded-lg hover:bg-teal-400 text-white font-semibold transition-colors"
+            className="flex items-center justify-between cursor-pointer py-3 px-4 rounded-lg text-emerald-100/60 transition-all w-full hover:text-white hover:bg-emerald-800/20"
           >
             <span className="flex items-center gap-2">
-              <RiShieldUserLine className="text-secondary-500" />
+              <RiShieldUserLine />
               Roles
             </span>
             <RiArrowRightSLine
@@ -212,20 +217,20 @@ const SidebarAdmin: React.FC<SidebarAdminProps> = ({ showSubmenu, handleToggleSu
             } transition-all`}
           >
             <li>
-              <Link
+              <NavLink
                 to="registerRol"
-                className="py-2 px-4 border-l border-slate-400 block ml-6 text-white font-semibold relative before:w-3 before:h-3 before:absolute before:bg-primary before:rounded-full before:-left-[6.5px] before:top-1/2 before:-translate-y-1/2 before:border-4 before:border-secondary hover:text-gray-400 transition-colors"
+                className="border-l border-emerald-900 block ml-6 py-2 px-4 relative transition-colors text-emerald-100/60 hover:text-white before:border-4 before:border-secondary before:h-3 before:absolute before:bg-primary before:rounded-full before:-left-[6.5px] before:top-1/2 before:-translate-y-1/2 before:w-3"
               >
                 Registrar Rol
-              </Link>
+              </NavLink>
             </li>
             <li>
-              <Link
+              <NavLink
                 to="roles"
-                className="py-2 px-4 border-l border-slate-400 block ml-6 text-white font-semibold relative before:w-3 before:h-3 before:absolute before:bg-primary before:rounded-full before:-left-[6.5px] before:top-1/2 before:-translate-y-1/2 before:border-4 before:border-secondary hover:text-gray-400 transition-colors"
+                className="border-l border-emerald-900 block ml-6 py-2 px-4 relative transition-colors text-emerald-100/60 hover:text-white before:border-4 before:border-secondary before:h-3 before:absolute before:bg-primary before:rounded-full before:-left-[6.5px] before:top-1/2 before:-translate-y-1/2 before:w-3"
               >
                 Ver Roles
-              </Link>
+              </NavLink>
             </li>
           </ul>
         </li>
@@ -233,37 +238,40 @@ const SidebarAdmin: React.FC<SidebarAdminProps> = ({ showSubmenu, handleToggleSu
       {/* Message */}
       <ul className="flex flex-col gap-2">
         <li>
-          <Link
+          <NavLink
             to="/"
-            className="flex items-center gap-3 py-2 px-4 rounded-lg hover:bg-teal-400 text-white font-semibold transition-colors"
+            end
+            className="flex items-center cursor-pointer gap-3 py-3 px-4 rounded-lg text-emerald-100/60 transition-all w-full hover:text-white hover:bg-emerald-800/20"
           >
-            <RiMessage3Fill className="text-secondary-500" />
+            <RiMessage3Fill />
             Mensajes
-          </Link>
+          </NavLink>
         </li>
       </ul>
       {/* Support */}
       <ul className="flex flex-col gap-4">
         <li>
-          <Link
-            to="#"
-            className="flex items-center gap-3 py-2 px-4 rounded-lg hover:bg-teal-400 text-white font-semibold transition-colors"
+          <a
+            href="#"
+            onClick={(e) => e.preventDefault()}
+            className="flex items-center cursor-pointer gap-3 py-3 px-4 rounded-lg text-emerald-100/60 transition-all hover:text-white hover:bg-emerald-800/20"
           >
-            <MdOutlineSupportAgent className="text-secondary-500" />
+            <MdOutlineSupportAgent />
             Soporte técnico
-          </Link>
+          </a>
         </li>
       </ul>
       {/* Calendar */}
       <ul className="flex flex-col gap-2">
         <li>
-          <Link
+          <NavLink
             to="/"
-            className="flex items-center gap-3 py-2 px-4 rounded-lg hover:bg-teal-400 text-white font-semibold transition-colors"
+            end
+            className="flex items-center cursor-pointer gap-3 py-3 px-4 rounded-lg text-emerald-100/60 transition-all hover:text-white hover:bg-emerald-800/20"
           >
-            <RiCalendarTodoLine className="text-secondary-500" />
+            <RiCalendarTodoLine />
             Calendario
-          </Link>
+          </NavLink>
         </li>
       </ul>
     </ul>

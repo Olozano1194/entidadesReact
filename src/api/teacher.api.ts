@@ -9,7 +9,7 @@ import type { UpdateTeacherDto } from '../types/dto/teacher.dto';
 export const getTeacher = async (): Promise<Teacher[]> => {
     try {
          const token = localStorage.getItem('token');         
-        const response = await Api.get('/profesor', {
+        const response = await Api.get('/profesores', {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
