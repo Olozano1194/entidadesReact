@@ -11,6 +11,8 @@ import { MdOutlineCalendarToday, MdOutlineFileDownload, MdOutlineSchool, MdOutli
 import { IoPersonOutline, IoPersonAddOutline } from "react-icons/io5";
 import { PiStudent } from "react-icons/pi";
 import { FaRegCheckCircle } from "react-icons/fa";
+import { BiSolidInstitution } from "react-icons/bi";
+import { GiTeacher } from "react-icons/gi";
 
 const HomeAdmin = () => {
     const [stats, setStats] = useState({
@@ -156,21 +158,21 @@ const HomeAdmin = () => {
                         color="blue"
                     />
                     <ActionButton 
-                        icon="📋" 
+                        icon={<PiStudent />} 
                         label="Ver Estudiantes"
                         description="Inscribir al estudiante en instituciones" 
                         onClick={() => window.location.href = '/admin/alumnos'}
                         color="green"
                     />
                     <ActionButton 
-                        icon="👨‍🏫" 
+                        icon={<GiTeacher />} 
                         label="Ver Docentes"
                         description="Inscribir al estudiante en instituciones" 
                         onClick={() => window.location.href = '/admin/docentes'}
                         color="purple"
                     />
                     <ActionButton 
-                        icon="🏫" 
+                        icon={<BiSolidInstitution />} 
                         label="Gestionar Instituciones"
                         description="Configurar nodos organizacionales" 
                         onClick={() => window.location.href = '/admin/registerinstitutions'}
