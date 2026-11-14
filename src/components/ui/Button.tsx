@@ -1,7 +1,7 @@
 const Button = ({children, ...props}: React.ButtonHTMLAttributes<HTMLButtonElement>) => {
     return (
         <button 
-            className=" bg-primary cursor-pointer flex font-bold justify-center items-center gap-1 mt-5 p-2.5 rounded-lg text-lg text-slate-100 hover:scale-105 hover:bg-secundary-500" 
+            className="w-full bg-primary-container cursor-pointer flex font-label-bold justify-center items-center gap-2 mt-form-stack py-4 rounded-lg shadow-lg text-label-bold text-on-primary transition-all hover:shadow-xl hover:bg-primary active:scale-95" 
             {...props}
         >        
             {children}

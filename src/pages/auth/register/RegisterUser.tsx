@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 //ui
 import Main from '../../../components/ui/Main';
-import Form from '../../../components/ui/Form';
+import Card from '../../../components/ui/Card';
 import Title from '../../../components/ui/Title';
 import Span from '../../../components/ui/Span';
 import ErrorSpan from '../../../components/ui/ErrorSpan';
@@ -89,7 +89,7 @@ const RegisterUser = () => {
 
     return (
         <Main>
-            <Form onSubmit={onSubmit}>
+            <Card onSubmit={onSubmit}>
                 <div className='w-full flex justify-center'>
                     <Title><img className="w-8 h-6 rounded-lg" src={icons} alt="logo del desarrollador" />Crear <span className="pl-2 text-teal-800">Usuario</span></Title>
                 </div>                              
@@ -198,7 +198,7 @@ const RegisterUser = () => {
                     <RiLoginBoxLine className='text-purple-500 hover:text-purple-900'/>                    
                         Registrar                                   
                 </Button>
-            </Form>
+            </Card>
         </Main>
     );
 };

@@ -51,6 +51,7 @@ const LineChart: React.FC<LineChartProps> = ({ stats }) => {
 
   const options = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         position: "top" as const,
@@ -63,7 +64,7 @@ const LineChart: React.FC<LineChartProps> = ({ stats }) => {
   };
 
   return (
-    <section className="w-full max-w-3xl p-4 bg-white rounded-2xl shadow-md">      
+    <section className="border-emerald-100 border border-dashed chart-gradient h-64 min-w-0 w-full overflow-hidden p-4 relative rounded-xl shadow-md">      
       <Line data={data} options={options} />        
     </section>
   );

@@ -1,26 +1,46 @@
 // components/ui/ActionButton.tsx
 interface ActionButtonProps {
-  icon: string;
+  icon: React.ReactNode;
   label: string;
+  description: string;
   onClick: () => void;
   color?: 'blue' | 'green' | 'purple' | 'orange';
 }
 
-const ActionButton = ({ icon, label, onClick, color = 'blue' }: ActionButtonProps) => {
+const ActionButton = ({ icon, label, description, onClick, color = 'green' }: ActionButtonProps) => {
   const colorClasses = {
-    blue: 'bg-blue-50 hover:bg-blue-100 text-blue-700',
-    green: 'bg-green-50 hover:bg-green-100 text-green-700',
-    purple: 'bg-purple-50 hover:bg-purple-100 text-purple-700',
-    orange: 'bg-orange-50 hover:bg-orange-100 text-orange-700'
+    blue: {
+    normal: 'bg-blue-100 text-blue-700',
+    hover: 'group-hover:bg-blue-600',
+    },
+    green: {
+      normal: 'bg-emerald-100 text-emerald-700',
+      hover: 'group-hover:bg-emerald-600',
+    },
+    purple: {
+      normal: 'bg-purple-100 text-purple-700',
+      hover: 'group-hover:bg-purple-600',
+    },
+    orange: {
+      normal: 'bg-amber-100 text-amber-700',
+      hover: 'group-hover:bg-amber-600',
+    },
   };
+
+  const selectedColor = colorClasses[color];
 
   return (
     <button
       onClick={onClick}
-      className={`cursor-pointer flex flex-col items-center p-4 rounded-lg transition-all duration-200 ${colorClasses[color]} hover:shadow-md`}
+      className={`border border-outline-variant/30 cursor-pointer flex gap-4 group items-center p-4 rounded-xl transition-all w-full hover:bg-emerald-50 hover:border-emerald-200`}
     >
-      <span className="text-2xl mb-2">{icon}</span>
-      <span className="text-sm font-medium">{label}</span>
+      <div className={`duration-300 flex h-10 items-center justify-center rounded-lg transition-all w-10 ${selectedColor.normal} ${selectedColor.hover} group-hover:!text-white`}>
+        <span className="text-2xl mb-2">{icon}</span>
+      </div>
+      <div className="text-left">
+        <p className="font-bold text-sm text-on-surface">{label}</p>
+        <p className="text-xs text-slate-500">{description}</p>
+      </div>
     </button>
   );
 };

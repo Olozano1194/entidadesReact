@@ -1,7 +1,7 @@
 const Span = ({children, ...props}: React.LabelHTMLAttributes<HTMLLabelElement>) => {
     return (
         <span
-            className="flex font-bold gap-1 justify-center items-center p-2 text-lg"
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-outline"
             {...props}
         >
             {children}

@@ -214,4 +214,8 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+# Artefactos SDD generados (no commitear)
+.atl/
+skills-lock.json
+
 # End of https://www.toptal.com/developers/gitignore/api/node,windows,linux,react,visualstudiocode

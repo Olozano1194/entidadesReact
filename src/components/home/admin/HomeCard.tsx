@@ -1,23 +1,62 @@
+import { MdOutlineTrendingUp, MdOutlineTrendingDown, MdOutlineTrendingFlat } from "react-icons/md";
+
 interface HomeCardProps {
   title: string;
   value: string | number;
-  icon: string;
+  icon: React.ReactNode;
   trend?: string;
-  color?: string;
+  trendType?: "up" | "down" | "neutral";
+  iconColor?: string;
+  iconBg?: string;
+  trendColor?: string;
+  trendBg?: string;
 }
 
-const HomeCard = ({ title, value, icon, trend, color = 'bg-gradient-to-tr from-slate-600 to-slate-800' }: HomeCardProps) => {
+const HomeCard = ({ title, value, icon, trend, trendType = 'neutral', iconColor = 'text-blue-600', iconBg = 'bg-blue-50', trendColor, trendBg }: HomeCardProps) => {
+
+  const trendStyles = {
+    up: {
+      color: 'text-green-600',
+      background: 'bg-green-100',
+      icon: <MdOutlineTrendingUp />,
+
+    },
+    down: {
+      color: 'text-red-600',
+      background: 'bg-red-100',
+      icon: <MdOutlineTrendingDown />,
+    },
+    neutral: {
+      color: 'text-gray-600',
+      background: 'bg-gray-100',
+      icon: <MdOutlineTrendingFlat />,
+    },
+  };
+
+  const currentTrend = trendStyles[trendType];
+
+
   return (
-    <div className={ `p-4 rounded-lg shadow text-white ${color}` }>
-      <div className="flex justify-between items-start">
-        <div>
-          <p className="text-sm text-white md:text-lg lg:text-xl">{title}</p>
-          <p className="text-3xl text-primary font-bold md:text-4xl">{value}</p>
-          {trend && <span className="text-sm text-gray-900 md:text-base">{trend}</span>}
+    <section className="bg-surface-container-lowest border border-outline-variant/30 group p-6 rounded-xl shadow-sm transition-shadow hover:shadow-md">
+      {/* Icono y porcentaje */}
+      <section className="flex justify-between items-start mb-4">
+        <div className={`${iconBg} p-3 rounded-lg transition-colors`}>
+          <span className={iconColor}>
+            {icon}
+          </span> 
         </div>
-        <div className="text-3xl">{icon}</div>
-      </div>
-    </div>
+        {/* Tendencia  */}
+        {trend && (
+          <span className={`flex font-bold gap-1 items-center px-2 py-1 rounded-full text-xs ${trendBg || currentTrend.background} ${trendColor || currentTrend.color}`}>
+            <span>{currentTrend.icon}</span>
+            {trend}
+          </span>
+        )}
+      </section>
+      {/* Información */}
+      <p className="font-label-sm text-slate-500">{title}</p>
+      <h3 className="font-display-xl mt-1 text-3xl text-on-surface">{value}</h3>
+    </section>
   );
 };
 export default HomeCard;

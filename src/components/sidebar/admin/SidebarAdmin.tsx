@@ -2,13 +2,12 @@ import { Link } from "react-router-dom";
 // icons
 import {
   RiMessage3Fill,
-  RiCalendarTodoLine,
-  RiHome8Line,
+  RiCalendarTodoLine,  
   RiUserLine,
   RiArrowRightSLine,
   RiShieldUserLine,
 } from "react-icons/ri";
-import { MdOutlineSupportAgent } from "react-icons/md";
+import { MdOutlineSupportAgent, MdOutlineDashboard, MdOutlineAutoStories } from "react-icons/md";
 import { BiSolidInstitution } from "react-icons/bi";
 // Menus
 import type { SubMenuState } from "../../SideBar";
@@ -21,15 +20,16 @@ interface SidebarAdminProps {
 const SidebarAdmin: React.FC<SidebarAdminProps> = ({ showSubmenu, handleToggleSubMenu }) => {
   
   return (
-    <ul className="">
+    <ul>
       {/* Home */}
       <ul className="flex flex-col gap-2">
         <li>
           <Link
             to="/admin"
-            className="flex items-center gap-3 py-2 px-4 rounded-lg hover:bg-teal-400 text-white font-semibold transition-colors"
+            className="bg-emerald-800/40 border-l-4 border-emerald-400 flex font-semibold items-center gap-3 py-3 px-4 rounded-r-lg text-emerald-400 transition-transform hover:bg-teal-400 active:translate-x-1"
           >
-            <RiHome8Line className="text-secondary-500" /> Inicio
+            <MdOutlineDashboard className="text-secondary-500" /> 
+            Inicio
           </Link>
         </li>
       </ul>
@@ -38,13 +38,13 @@ const SidebarAdmin: React.FC<SidebarAdminProps> = ({ showSubmenu, handleToggleSu
         <li>
           <button
             onClick={() => handleToggleSubMenu("menu1")}
-            className="w-full flex items-center justify-between cursor-pointer py-2 px-4 rounded-lg hover:bg-teal-400 text-white font-semibold transition-colors"
+            className="flex font-semibold items-center justify-between cursor-pointer py-3 px-4 rounded-lg text-emerald-100/60 transition-all hover:text-white hover:bg-emerald-800/20"
           >
             <span className="flex items-center gap-2">
               <RiUserLine className="text-secondary-500" />
               Docentes
             </span>
-            <RiArrowRightSLine
+            <MdOutlineAutoStories
               className={`mt-1 ${
                 showSubmenu.menu1 ? "rotate-90" : ""
               } transition-all`}
