@@ -187,7 +187,7 @@ const HomeAdmin = () => {
             </section>
             {/* Acciones rápidas - Based on your Sidebar menus */}
             <div className="bg-surface-container-lowest border border-outline-variant/30 p-8 rounded-2xl shadow-sm">
-                <h4 className=" font-headline-md mb-2 text-headline-md text-on-surface">Acciones Rápidas</h4>
+                <h4 className="font-body-md font-semibold mb-2 text-headline-md text-on-surface">Acciones Rápidas</h4>
                 <p className='font-body-md mb-6 text-sm text-on-surface-variant'>Tareas administrativas de uso frecuente</p>
                 <div className="space-y-3">
                     <ActionButton 

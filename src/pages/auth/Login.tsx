@@ -40,6 +40,7 @@ const Login = () => {
 
             if (token) {
                 localStorage.setItem('token', token);
+                localStorage.setItem('loginTime', String(Date.now()));
                 const user = response?.data?.user ?? response?.user;
                 if (user) localStorage.setItem('user', JSON.stringify(user));
                 toast.success('Inicio de sesión exitoso', {

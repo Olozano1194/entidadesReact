@@ -5,63 +5,53 @@ import type { AdminModel } from '../types/admin.model';
 //Dto
 import type { UpdateAdminDto } from '../types/dto/admin.dto';
 
-// Obtenemos todos los Profesores
+// Obtenemos todos los administradores
 export const getAdmin = async (): Promise<AdminModel[]> => {
     try {
-        // console.log('Solicitando roles al seridor...');        
-        const response = await Api.get('/admin');
-        // console.log('Roles recibidos:', response.data);
-        
-        return response.data.map((admin: AdminModel) => ({
-            ...admin,
-            id: admin._id
-        }));
+        const token = localStorage.getItem('token');
+        const response = await Api.get('/administradores', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = Array.isArray(response.data)
+            ? response.data
+            : Array.isArray(response.data?.data)
+                ? response.data.data
+                : Array.isArray(response.data?.administradores)
+                    ? response.data.administradores
+                    : [];
+        return data.map((admin: AdminModel) => ({ ...admin, id: admin._id }));
     } catch (error) {
         throw handleApiError(error);
-    };
-};
-
-//Obtener Profesores
-export const getAdminById = async (): Promise<{ admin: AdminModel | null }> => {    
-    try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-            throw new Error('No hay token de autenticación');
-        }
-        const response = await Api.get('/admin/me-admin', {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-        //console.log('User profile response:', response.data)        
-        return response.data;        
-    } catch (error) {        
-        throw handleApiError(error);        
     }
 };
 
-// Actualizar un Profesores
-export const updateAdmin = async (id: string, admin: UpdateAdminDto ): Promise<AdminModel> => {
+//Obtener Administrador (no existe endpoint "me" en el backend, retorna null)
+export const getAdminById = async (): Promise<{ admin: AdminModel | null }> => {
+    return { admin: null };
+};
+
+// Actualizar un Administrador
+export const updateAdmin = async (id: string, admin: UpdateAdminDto): Promise<AdminModel> => {
     try {
         const token = localStorage.getItem('token');
         if (!token) throw new Error('No hay token de autenticación');
-        const response = await Api.put(`/admin/${id}`, admin, {
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                // 'Content-Type': 'multipart/form-data'
-            }
+        const response = await Api.put(`/administradores/${id}`, admin, {
+            headers: { 'Authorization': `Bearer ${token}` }
         });
         return response.data;
     } catch (error) {
         throw handleApiError(error);
-    };
+    }
 };
 
-// Eliminar un Profesores
+// Eliminar un Administrador
 export const deleteAdmin = async (id: string): Promise<void> => {
     try {
-        await Api.delete(`/admin/${id}`);        
+        const token = localStorage.getItem('token');
+        await Api.delete(`/administradores/${id}`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
     } catch (error) {
         throw handleApiError(error);
-    };
+    }
 };

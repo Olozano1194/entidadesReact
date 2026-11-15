@@ -5,8 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { getUserProfile, updateUser } from "../../../../../api/user.api";
 import { getTeacherById, updateTeacher } from "../../../../../api/teacher.api";
 import { getRoles } from "../../../../../api/roles.api";
-//icons
-import { RiEdit2Line } from "react-icons/ri";
+//components
+import ProfileAvatar from "../ProfileAvatar";
 //models
 import type { User } from "../../../../../types/user.model";
 import type { Teacher } from "../../../../../types/teacher.model";
@@ -31,7 +31,7 @@ const TeacherProfile = () => {
     const [ roles, setRoles ] = useState<Rol[]>([]);
     const [ teacher, setTeacher ] = useState<Teacher | null>(null);
     const [ editingUser, setEditingUser ] = useState(false);
-    const [ loading, setLoading ] = useState(true);
+    const [, setLoading ] = useState(true);
     const [ selectedFile, setSelectedFile ] = useState<File | null>(null);
     const [ , setPreviewUrl ] = useState<string | null>(null);   
     const [formData, setFormData] = useState<FormData>({
@@ -212,22 +212,7 @@ const TeacherProfile = () => {
         }
     };
 
-    const resetForm = () => {
-        // console.log('Reseteando form...');        
-        if (user || teacher) {
-            const rolId = typeof user?.rol === 'string' ? user.rol : user?.rol._id ?? '';
-            setFormData({
-            nombre: teacher?.nombre ?? '',
-            apellido: teacher?.apellido ?? '',
-            rol: rolId,
-            id: user?._id ?? '',
-            telefono: teacher?.telefono ?? '',
-            especialidad: teacher?.especialidad ?? ''
-            });
-            setSelectedFile(null);
-            setEditingUser(false);
-        }        
-    };    
+    
 
     const defaultAvatar = 'https://img.freepik.com/foto-gratis/negocios-finanzas-empleo-concepto-mujeres-emprendedoras-exitosas-joven-empresaria-segura-anteojos-mostrando-gesto-pulga-arriba-sostenga-computadora-portatil-garantice-mejor-calidad-servicio_1258-59118.jpg';
     const avatarSrc = user?.fotoPerfil?.url 
@@ -245,28 +230,14 @@ const TeacherProfile = () => {
                         <p>Avatar</p>
                     </div>                    
                     <div className="flex-1">
-                        <div className="relative mb-2">
-                            <img 
-                                src={avatarSrc} 
-                                alt="foto de perfil" 
-                                className="w-28 h-28 object-cover rounded-lg"
-                                onError={(e) => { e.currentTarget.src = defaultAvatar;}} 
-                            />
-                            {editingUser && (
-                                <div>
-                                    <label htmlFor="avatar" className="absolute bg-primary p-2 rounded-full hover:cursor-pointer -top-2 left-24"><RiEdit2Line className='text-secondary-500' /></label>
-                                    <input 
-                                        type="file" 
-                                        name="fotoPerfil" 
-                                        id="avatar"
-                                        className="hidden" 
-                                        // {...register("avatar")} 
-                                        accept='image/*' 
-                                        onChange={handleFileChange}
-                                    />
-                                </div>                                    
-                            )}                            
-                        </div>                        
+                        <ProfileAvatar
+                            avatarSrc={avatarSrc}
+                            defaultAvatar={defaultAvatar}
+                            isEditing={editingUser}
+                            onFileChange={handleFileChange}
+                            className="mb-2"
+                            imageClassName="w-28 h-28 object-cover rounded-lg border-2 border-white/20 shadow-md"
+                        />
                         <p className="text-gray-300 text-sm mb-5">Allowed file types: png, jpg, jpeg.</p>
                     </div>                       
                 </section>
@@ -371,7 +342,7 @@ const TeacherProfile = () => {
                     </div>
                 </section>                
                 {/* Botones de acción */}
-                <section className='flex justify-end items-center'>
+                {/* <section className='flex justify-end items-center'>
                     {editingUser ? (
                         <>
                             <button
@@ -401,7 +372,7 @@ const TeacherProfile = () => {
                             </button>
                         )}
                                     
-                </section>                                
+                </section>                                 */}
             </form>
         </section>
     );

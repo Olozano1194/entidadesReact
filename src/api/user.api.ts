@@ -6,7 +6,7 @@ import type { Rol } from '../types/rol.models';
 //Dto
 import type { CreateUserDto } from "../types/dto/user.dto";
 import type { LoginUserDto } from '../types/dto/user.dto';
-import type { ListUserDto } from '../types/dto/user.dto';
+
 
 
 export const Api = axios.create({
@@ -122,16 +122,19 @@ export const getUserProfile = async (): Promise<{ user: User & { rol?: Rol } }> 
 export const getUsers = async () => {
     const token = localStorage.getItem('token');
     try {
-        const response = await Api.get<ListUserDto[]>('/usuarios', {
-            headers: {
-                'Authorization': `Bearer ${token}`
-                },
-            }
-        );
-        //console.log('Users response:', response.data);        
-        return response.data;        
+        const response = await Api.get('/usuarios', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = Array.isArray(response.data)
+            ? response.data
+            : Array.isArray(response.data?.data)
+                ? response.data.data
+                : Array.isArray(response.data?.usuarios)
+                    ? response.data.usuarios
+                    : [];
+        return data;
     } catch (error) {
-        throw handleApiError(error);        
+        throw handleApiError(error);
     }
 };
 
