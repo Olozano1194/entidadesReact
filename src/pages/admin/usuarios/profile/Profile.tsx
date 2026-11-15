@@ -30,7 +30,7 @@ const Profile = () => {
     if (userRole === 'admin' && admin.loading) return <div>Cargando Perfil...</div>;
 
     return (
-        <main className="max-w-[1440px] mx-auto p-container-padding w-full">
+        <main className="max-w-[1440px] mx-auto w-full md:p-container-padding">
             {userRole === 'estudiante' && <StudentProfile />}
             {userRole === 'docente' && <TeacherProfile />}
             {userRole === 'admin' && (
@@ -43,6 +43,7 @@ const Profile = () => {
                         onFileChange={admin.handleFileChange}
                         onReset={admin.resetForm}
                         onSave={admin.handleSave}
+                        onEdit={() => admin.setEditingUser(true)}
                     />
                     <section className="gap-gutter grid grid-cols-1 lg:grid-cols-12">
                         <section className="lg:col-span-8">
@@ -51,7 +52,6 @@ const Profile = () => {
                                 roles={admin.roles}
                                 editingUser={admin.editingUser}
                                 onChange={admin.handleChanges}
-                                onEdit={() => admin.setEditingUser(true)}
                             />
                         </section>
                         <section className="lg:col-span-4">

@@ -31,7 +31,7 @@ const TeacherProfile = () => {
     const [ roles, setRoles ] = useState<Rol[]>([]);
     const [ teacher, setTeacher ] = useState<Teacher | null>(null);
     const [ editingUser, setEditingUser ] = useState(false);
-    const [ loading, setLoading ] = useState(true);
+    const [, setLoading ] = useState(true);
     const [ selectedFile, setSelectedFile ] = useState<File | null>(null);
     const [ , setPreviewUrl ] = useState<string | null>(null);   
     const [formData, setFormData] = useState<FormData>({
@@ -212,22 +212,7 @@ const TeacherProfile = () => {
         }
     };
 
-    const resetForm = () => {
-        // console.log('Reseteando form...');        
-        if (user || teacher) {
-            const rolId = typeof user?.rol === 'string' ? user.rol : user?.rol._id ?? '';
-            setFormData({
-            nombre: teacher?.nombre ?? '',
-            apellido: teacher?.apellido ?? '',
-            rol: rolId,
-            id: user?._id ?? '',
-            telefono: teacher?.telefono ?? '',
-            especialidad: teacher?.especialidad ?? ''
-            });
-            setSelectedFile(null);
-            setEditingUser(false);
-        }        
-    };    
+    
 
     const defaultAvatar = 'https://img.freepik.com/foto-gratis/negocios-finanzas-empleo-concepto-mujeres-emprendedoras-exitosas-joven-empresaria-segura-anteojos-mostrando-gesto-pulga-arriba-sostenga-computadora-portatil-garantice-mejor-calidad-servicio_1258-59118.jpg';
     const avatarSrc = user?.fotoPerfil?.url 
@@ -357,7 +342,7 @@ const TeacherProfile = () => {
                     </div>
                 </section>                
                 {/* Botones de acción */}
-                <section className='flex justify-end items-center'>
+                {/* <section className='flex justify-end items-center'>
                     {editingUser ? (
                         <>
                             <button
@@ -387,7 +372,7 @@ const TeacherProfile = () => {
                             </button>
                         )}
                                     
-                </section>                                
+                </section>                                 */}
             </form>
         </section>
     );

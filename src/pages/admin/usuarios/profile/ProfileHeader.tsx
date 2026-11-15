@@ -10,11 +10,12 @@ interface ProfileHeaderProps {
     onFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     onReset: () => void;
     onSave: (e: React.FormEvent) => void;
+    onEdit: () => void;
 }
 
 const ProfileHeader = ({
     formData, avatarSrc, defaultAvatar, editingUser,
-    onFileChange, onReset, onSave,
+    onFileChange, onReset, onSave, onEdit,
 }: ProfileHeaderProps) => {
     return (
         <div className="flex flex-col gap-8 items-center mb-section-gap md:flex-row">
@@ -35,8 +36,14 @@ const ProfileHeader = ({
                 </div>
             </div>
             <div className="flex gap-3 md:ml-auto">
-                <button className="border-2 border-primary cursor-pointer flex font-label-bold gap-2 items-center px-6 py-2.5 rounded-xl text-primary text-label-bold transition-all hover:bg-emerald-50 active:scale-95" onClick={onReset}>Cancelar</button>
-                <button className="bg-primary cursor-pointer flex font-label-bold gap-2 items-center px-6 py-2.5 rounded-xl shadow-lg shadow-emerald-900/10 text-white text-label-bold transition-all hover:bg-emerald-800 active:scale-95" onClick={(e) => onSave(e as unknown as React.FormEvent)}>Guardar cambios</button>
+                {editingUser ? (
+                    <>
+                        <button className="border-2 border-primary cursor-pointer flex font-label-bold gap-2 items-center px-6 py-2.5 rounded-xl text-primary text-label-bold transition-all hover:bg-emerald-50 active:scale-95" onClick={onReset}>Cancelar</button>
+                        <button className="bg-primary cursor-pointer flex font-label-bold gap-2 items-center px-6 py-2.5 rounded-xl shadow-lg shadow-emerald-900/10 text-white text-label-bold transition-all hover:bg-emerald-800 active:scale-95" onClick={(e) => onSave(e as unknown as React.FormEvent)}>Guardar cambios</button>
+                    </>
+                ) : (
+                    <button className="bg-primary cursor-pointer flex font-label-bold gap-2 items-center px-6 py-2.5 rounded-xl shadow-lg shadow-emerald-900/10 text-white text-label-bold transition-all hover:bg-emerald-800 active:scale-95" onClick={onEdit}>Editar Perfil</button>
+                )}
             </div>
         </div>
     );

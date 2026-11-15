@@ -32,7 +32,7 @@ const StudentProfile = () => {
     const [ roles, setRoles ] = useState<Rol[]>([]);
     const [ student, setStudent ] = useState<Student | null>(null);
     const [ editingUser, setEditingUser ] = useState(false);
-    const [ loading, setLoading ] = useState(true);
+    const [, setLoading ] = useState(true);
     const [ selectedFile, setSelectedFile ] = useState<File | null>(null);
     const [ , setPreviewUrl ] = useState<string | null>(null);   
     const [formData, setFormData] = useState<FormData>({
@@ -227,32 +227,7 @@ const StudentProfile = () => {
         }
     };
 
-    const resetForm = () => {
-        // console.log('Reseteando form...');        
-        if (user || student) {
-            const rolId = typeof user?.rol === 'string' ? user.rol : user?.rol._id ?? '';
 
-            const getSafeDate = (dateString?: string | Date) => {
-                if (!dateString) return new Date().toISOString().split('T')[0];
-                const date = typeof dateString === 'string' ? new Date(dateString) : dateString;
-                return date.toISOString().split('T')[0];
-            };
-
-            setFormData({
-            nombre: student?.nombre ?? '',
-            apellido: student?.apellido ?? '',
-            rol: rolId,
-            id: user?._id ?? '',
-            fechanacimiento: student?.fechanacimiento 
-                ? getSafeDate(student.fechanacimiento)
-                : getSafeDate(formData.fechanacimiento),
-            telefono: student?.telefono ?? '',
-            direccion: student?.direccion ?? ''
-            });
-            setSelectedFile(null);
-            setEditingUser(false);
-        }        
-    };
 
     const formatDate = (date: Date): string => {
         return date.toISOString().slice(0,10);
@@ -408,7 +383,7 @@ const StudentProfile = () => {
                     </div>
                 </section>                
                 {/* Botones de acción */}
-                <section className='flex justify-end items-center'>
+                {/* <section className='flex justify-end items-center'>
                     {editingUser ? (
                         <>
                             <button
@@ -438,7 +413,7 @@ const StudentProfile = () => {
                             </button>
                         )}
                                     
-                </section>                                
+                </section>                                 */}
             </form>
         </section>
     );

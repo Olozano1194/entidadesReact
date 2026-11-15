@@ -7,10 +7,9 @@ interface ProfileFormProps {
     roles: Rol[];
     editingUser: boolean;
     onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
-    onEdit: () => void;
 }
 
-const ProfileForm = ({ formData, roles, editingUser, onChange, onEdit }: ProfileFormProps) => {
+const ProfileForm = ({ formData, roles, editingUser, onChange }: ProfileFormProps) => {
     return (
         <section className="border border-emerald-50 bg-white p-8 rounded-xl shadow-[0px_4px_20px_rgba(0,0,0,0.04)] w-full">
             <div className="flex items-center justify-between mb-8">
@@ -50,9 +49,6 @@ const ProfileForm = ({ formData, roles, editingUser, onChange, onEdit }: Profile
                     <textarea name="bio" id="bio" className="border border-outline-variant bg-surface-container-lowest font-body-md px-4 py-3 rounded-lg transition-all text-body-m w-full focus:border-primary focus:ring-1 focus:ring-primary" rows={3} defaultValue="Supervisión de protocolos administrativos a nivel institucional e iniciativas de transformación digitales desde 2018."></textarea>
                 </section>
                 <section className='flex justify-end items-center'>
-                    {!editingUser && (
-                        <button type="button" className="mt-4 py-2 px-4 bg-sky-700 cursor-pointer font-bold text-white rounded hover:scale-105 hover:bg-sky-500" onClick={onEdit}>Editar Perfil</button>
-                    )}
                 </section>
             </form>
         </section>
