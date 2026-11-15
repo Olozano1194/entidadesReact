@@ -85,12 +85,17 @@ const SideBar = () => {
         if (rolField && typeof rolField === "object" && "nombre" in rolField) {
           setUserRole((rolField as Rol).nombre);
         } else if (typeof rolField === "string") {
-          try {
-            const rol = await getRoleById(rolField);
-            setUserRole(rol?.nombre ?? rolField);
-          } catch (rolError) {
-            console.warn("No se pudo resolver el rol por id, usando el id", rolError);
+          const rolStr = rolField.toLowerCase();
+          if (rolStr === 'admin' || rolStr === 'estudiante' || rolStr === 'docente') {
             setUserRole(rolField);
+          } else {
+            try {
+              const rol = await getRoleById(rolField);
+              setUserRole(rol?.nombre ?? rolField);
+            } catch (rolError) {
+              console.warn("No se pudo resolver el rol por id, usando el id", rolError);
+              setUserRole(rolField);
+            }
           }
         } else if (rolField != null) {
           setUserRole(String(rolField));
