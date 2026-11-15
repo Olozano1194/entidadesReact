@@ -1,72 +1,102 @@
 //icons
-import { RiShieldCheckLine } from "react-icons/ri";
-
-//Api
-import { getUserProfile } from "../../../../api/user.api";
-
-//hooks
-import { useState, useEffect } from "react";
+import { RiHistoryLine } from "react-icons/ri";
+import { IoIosLock } from "react-icons/io";
+import { MdOutlineSecurity } from "react-icons/md";
 
 
-function UserPass() {
-    const [user, setUser] = useState({ email: ''});
-
-    useEffect(() => {
-        const axiosUserData = async () => {
-            try {
-                const data = await getUserProfile();
-                setUser({
-                    email: data.user.email,                    
-                });
-            }catch (error) {
-                console.error(error);
-            }
-        };
-        axiosUserData();
-    }, []);
+function UserPass() {  
+    
 
     return (
         <>
-             {/* Usuario y contraseña */}
-        <section className="bg-primary p-8 rounded-xl mt-10">
-            <h1 className="text-xl text-white font-bold md:text-2xl">Usuario y Contraseña</h1>
-            <hr className="my-8 border-gray-500" />
-
-            <form action="">
-                {/* Email */}
-                <section className="flex flex-col md:flex-row md:items-center justify-between mb-8">
-                    <div className="mb-4">
-                        <h5 className="text-white font-semibold text-xl">Corre Electrónico</h5>
-                        <p className="text-gray-400 text-sm">{user.email}</p>
+        {/* Usuario y contraseña */}
+        <section className="flex flex-col gap-gutter">
+            <div className="bg-white border border-emerald-50 p-6 rounded-xl shadow-[0px_4px_20px_rgba(0,0,0,0.04)]">
+                <h3 className="font-headline-md flex gap-3 items-center mb-6 text-headline-md text-primary md:text-2xl">
+                    <IoIosLock />
+                    Seguridad
+                </h3>
+                <form className="flex flex-col gap-form-stack">
+                    <div className="flex flex-col gap-1.5">
+                        <label htmlFor="" className="font-label-sm text-label-sm text-on-surface-variant">
+                            Contraseña Actual
+                        </label>
+                        <input type="password" className="border border-outline-variant px-3 py-2.5 rounded-lg text-sm focus:border-primary focus:ring-1 focus:ring-primary" placeholder="********" />
                     </div>
-                        <button className="py-2 px-4 rounded-lg bg-sky-700 cursor-pointer font-bold text-white hover:bg-sky-500 hover:scale-105 transition-colors" >Cambiar Correo</button>
-                </section>
-
-                {/* Contraseña */}
-                <section className="flex flex-col md:flex-row md:items-center justify-between mb-8">
-                    <div className="mb-3">
-                        <h5 className="text-white font-semibold text-xl">Contraseña</h5>
-                        <p className="text-gray-400 text-sm">***************</p>
+                    <div className="flex flex-col gap-1.5">
+                        <label htmlFor="" className="font-label-sm text-label-sm text-on-surface-variant">
+                            Nueva Contraseña
+                        </label>
+                        <input type="password" className="border border-outline-variant px-3 py-2.5 rounded-lg text-sm focus:border-primary focus:ring-1 focus:ring-primary" placeholder="********" />
                     </div>
-                        <button className="py-2 px-4 rounded-lg bg-sky-700 cursor-pointer font-bold text-white hover:bg-sky-500 hover:scale-105 transition-colors" >Cambiar Contraseña</button>
+                    <div className="flex flex-col gap-1.5">
+                        <label htmlFor="" className="font-label-sm text-label-sm text-on-surface-variant">
+                            Confirmar Contraseña
+                        </label>
+                        <input type="password" className="border border-outline-variant px-3 py-2.5 rounded-lg text-sm focus:border-primary focus:ring-1 focus:ring-primary" placeholder="********" />
+                    </div>
+                    <button className="border-2 border-emerald-100 cursor-pointer font-label-bold mt-2 py-2.5 rounded-lg text-primary text-label-bold transition-colors w-full hover:bg-emerald-50">
+                        Actualizar Contraseña
+                    </button>
+                </form>
+            </div>
+            {/* Activity Summary */}
+            <article className="bg-white border border-emerald-50 p-6 rounded-xl shadow-[0px_4px_20px_rgba(0,0,0,0.04)]">
+                <div className="flex items-center justify-between mb-6">
+                    <h3 className="flex font-headline-md gap-3 items-center text-headline-md text-primary">
+                        <RiHistoryLine />
+                        Actividad
+                    </h3>
+                    <span className="bg-emerald-50 font-label-sm px-2 py-1 rounded text-label-sm text-emerald-600">
+                        Ultimos 7 días
+                    </span>
+                </div>
+                <section className="flex flex-col gap-4">
+                    <div className="flex gap-4 items-start">
+                        <div className="bg-primary-container p-2 rounded-lg text-on-primary-container">
+                            <MdOutlineSecurity className="text-[20px]" />
+                        </div>
+                        <div>
+                            <p className="font-label-bold text-label-bold text-on-surface">
+                                Permisos de usuarios actualizados
+                            </p>
+                            <p className="font-label-sm text-label-sm text-on-surface-variant">
+                                ayer a las 2:45 PM
+                            </p>
+                        </div>                        
+                    </div>
+                    <div className="flex gap-4 items-start">
+                        <div className="bg-primary-container p-2 rounded-lg text-on-primary-container">
+                            <MdOutlineSecurity className="text-[20px]" />
+                        </div>
+                        <div>
+                            <p className="font-label-bold text-label-bold text-on-surface">
+                                Informe mensual generado
+                            </p>
+                            <p className="font-label-sm text-label-sm text-on-surface-variant">
+                                Oct 12, 2023
+                            </p>
+                        </div>                        
+                    </div>
+                    <div className="flex gap-4 items-start">
+                        <div className="bg-primary-container p-2 rounded-lg text-on-primary-container">
+                            <MdOutlineSecurity className="text-[20px]" />
+                        </div>
+                        <div>
+                            <p className="font-label-bold text-label-bold text-on-surface">
+                                Inicio de sesión en el sistema
+                            </p>
+                            <p className="font-label-sm text-label-sm text-on-surface-variant">
+                                Oct 11, 2024 * 9:12 AM
+                            </p>
+                        </div>                        
+                    </div>                    
                 </section>
-            </form>
-
-            <article className="grid grid-cols-1 items-center gap-y-4 md:grid-cols-8 bg-blue-400/10 p-4 rounded-lg border border-dashed border-sky-400 ">
-                <div className="flex justify-center">
-                    <RiShieldCheckLine className="text-4xl text-sky-400" />
-                </div>
-
-                <div className="px-4 md:col-span-6">
-                    <h4 className="font-bold text-white text-xl sm:text-base mb-2">Secure Your Account</h4>
-                    <p className="text-white text-xl md:text-sm md: ">Two-factor authentication adds an extra layer od security to your account.To log in, in addition you'll need to provide a 6 digit code</p>
-                </div>
-
-                <div className="flex md:justify-end justify-center">
-                    <button className="bg-sky-700 cursor-pointer py-2 px-3
-                    rounded-lg text-white hover:bg-sky-500 transition-colors">Activar</button>
-                </div>
+                <a className="block cursor-pointer font-label-bold mt-6 text-center text-label-bold text-primary hover:underline decoration-2 underline-offset-4">
+                    Ver toda la actividad                   
+                </a>
             </article>
+
         </section>
         </>
     );

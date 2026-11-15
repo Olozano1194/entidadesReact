@@ -5,8 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { getUserProfile, updateUser } from "../../../../../api/user.api";
 import { getTeacherById, updateTeacher } from "../../../../../api/teacher.api";
 import { getRoles } from "../../../../../api/roles.api";
-//icons
-import { RiEdit2Line } from "react-icons/ri";
+//components
+import ProfileAvatar from "../ProfileAvatar";
 //models
 import type { User } from "../../../../../types/user.model";
 import type { Teacher } from "../../../../../types/teacher.model";
@@ -245,28 +245,14 @@ const TeacherProfile = () => {
                         <p>Avatar</p>
                     </div>                    
                     <div className="flex-1">
-                        <div className="relative mb-2">
-                            <img 
-                                src={avatarSrc} 
-                                alt="foto de perfil" 
-                                className="w-28 h-28 object-cover rounded-lg"
-                                onError={(e) => { e.currentTarget.src = defaultAvatar;}} 
-                            />
-                            {editingUser && (
-                                <div>
-                                    <label htmlFor="avatar" className="absolute bg-primary p-2 rounded-full hover:cursor-pointer -top-2 left-24"><RiEdit2Line className='text-secondary-500' /></label>
-                                    <input 
-                                        type="file" 
-                                        name="fotoPerfil" 
-                                        id="avatar"
-                                        className="hidden" 
-                                        // {...register("avatar")} 
-                                        accept='image/*' 
-                                        onChange={handleFileChange}
-                                    />
-                                </div>                                    
-                            )}                            
-                        </div>                        
+                        <ProfileAvatar
+                            avatarSrc={avatarSrc}
+                            defaultAvatar={defaultAvatar}
+                            isEditing={editingUser}
+                            onFileChange={handleFileChange}
+                            className="mb-2"
+                            imageClassName="w-28 h-28 object-cover rounded-lg border-2 border-white/20 shadow-md"
+                        />
                         <p className="text-gray-300 text-sm mb-5">Allowed file types: png, jpg, jpeg.</p>
                     </div>                       
                 </section>
