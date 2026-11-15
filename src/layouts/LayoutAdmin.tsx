@@ -2,6 +2,7 @@ import { Outlet } from "react-router-dom"; //el outlet nos sirve para agregarle 
 
 import SideBar from "../components/SideBar";
 import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 function LayoutAdmin() {
     return (
@@ -13,7 +14,7 @@ function LayoutAdmin() {
                 <div className="h-[90vh] overflow-y-scroll p-8">
                     <Outlet />
                 </div> 
-                
+                <Footer />
             </div>
         </div>
     );
