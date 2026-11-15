@@ -11,8 +11,15 @@ export const getRoles = async (): Promise<Rol[]> => {
         // console.log('Solicitando roles al seridor...');        
         const response = await Api.get('/roles');
         // console.log('Roles recibidos:', response.data);
-        
-        return response.data.map((rol: Rol) => ({
+
+        const data = Array.isArray(response.data)
+            ? response.data
+            : Array.isArray(response.data?.data)
+                ? response.data.data
+                : Array.isArray(response.data?.roles)
+                    ? response.data.roles
+                    : [];
+        return data.map((rol: Rol) => ({
             ...rol,
             id: rol._id
         }));

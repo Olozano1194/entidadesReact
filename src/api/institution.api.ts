@@ -4,7 +4,7 @@ import { handleApiError } from "./user.api";
 //Model
 import type { InstitucionModel } from "../types/institution.model";
 //Dto
-import type { CreateInstitucionDto, ListInstitucionDto } from "../types/dto/institution.dto";
+import type { CreateInstitucionDto } from "../types/dto/institution.dto";
 
 
 // Creamos el Institcione
@@ -50,39 +50,28 @@ export const CreateInstitution = async (userData: CreateInstitucionDto) => {
     }
 };
 
-//function profile
-export const getInstitutionProfile = async (): Promise<{ user: InstitucionModel }> => {    
-    try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-            throw new Error('No hay token de autenticación');
-        }
-        const response = await Api.get(`/instituciones/me`, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-        //console.log('User profile response:', response.data)        
-        return response.data;        
-    } catch (error) {
-        throw handleApiError(error);        
-    }
+//function profile (no existe endpoint "me" en el backend, retorna null)
+export const getInstitutionProfile = async (): Promise<{ user: InstitucionModel | null }> => {
+    return { user: null };
 };
 
 //Lista de  Institciones
 export const getInstitutions = async () => {
     const token = localStorage.getItem('token');
     try {
-        const response = await Api.get<ListInstitucionDto[]>('/instituciones', {
-            headers: {
-                'Authorization': `Bearer ${token}`
-                },
-            }
-        );
-        //console.log('Users response:', response.data);        
-        return response.data;        
+        const response = await Api.get('/instituciones', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = Array.isArray(response.data)
+            ? response.data
+            : Array.isArray(response.data?.data)
+                ? response.data.data
+                : Array.isArray(response.data?.instituciones)
+                    ? response.data.instituciones
+                    : [];
+        return data;
     } catch (error) {
-        throw handleApiError(error);        
+        throw handleApiError(error);
     }
 };
 
