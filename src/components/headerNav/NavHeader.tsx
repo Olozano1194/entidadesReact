@@ -48,9 +48,15 @@ function NavHeader() {
                     rolNombre = (userData.user.rol as Rol).nombre.toLowerCase();
                     setUserRole((userData.user.rol as Rol).nombre);
                 } else if (typeof userData.user.rol === 'string') {
-                    const rol = await getRoleById(userData.user.rol);
-                    rolNombre = rol.nombre.toLowerCase();
-                    setUserRole(rol.nombre);
+                    const rolStr = userData.user.rol.toLowerCase();
+                    if (rolStr === 'admin' || rolStr === 'estudiante' || rolStr === 'docente') {
+                        rolNombre = rolStr;
+                        setUserRole(userData.user.rol);
+                    } else {
+                        const rol = await getRoleById(userData.user.rol);
+                        rolNombre = rol.nombre.toLowerCase();
+                        setUserRole(rol.nombre);
+                    }
                 }
 
                 // llamada condicional segun el rol
@@ -89,13 +95,16 @@ function NavHeader() {
                 }               
 
                 let avatarUrl = '';
-                if (userData.user.fotoPerfil instanceof File) {
-                    avatarUrl = URL.createObjectURL(userData.user.fotoPerfil);
-                } else if (userData.user.fotoPerfil?.url) {
-                    const url = userData.user.fotoPerfil.url;
+                const foto = userData.user.fotoPerfil as string | { url?: string } | null;
+                if (foto instanceof File) {
+                    avatarUrl = URL.createObjectURL(foto);
+                } else if (typeof foto === 'string') {
+                    avatarUrl = foto;
+                } else if (foto && typeof foto === 'object' && foto.url) {
+                    const url = foto.url;
                     avatarUrl = url.startsWith('/')
-                    ? `http://localhost:5000${userData.user.fotoPerfil.url}`
-                    : url;
+                        ? `http://localhost:5000${url}`
+                        : url;
                 }
                 
                 setUser({                    
@@ -132,15 +141,15 @@ function NavHeader() {
             </Menu>
             {/* aca comienza el menu desplegable del usuario */}
             <Menu>
-                <MenuButton className="flex cursor-pointer items-center gap-x-2 hover:bg-primary p-2 rounded-lg transition-colors">
+                <MenuButton className="flex cursor-pointer items-center gap-x-2 hover:bg-emerald-800/40 p-2 rounded-lg transition-colors">
                 <img 
                     src={user.fotoPerfil || defaultAvatar } alt="img-user"
-                    className="w-10 h-10 object-cover rounded-full"
+                    className="w-10 h-10 object-cover rounded-full border-2 border-emerald-900"
                 />
                 <span className="text-white font-bold">{student?.nombre || teacher?.nombre || admin?.nombre || userRole.charAt(0).toUpperCase() + userRole.slice(1)} {student?.apellido || teacher?.apellido || admin?.apellido}</span>
-                <RiArrowDownSLine className="text-2xl" />
+                <RiArrowDownSLine className="text-2xl text-emerald-400" />
                 </MenuButton>
-                <MenuItems anchor='bottom' className='bg-primary mt-1 p-4 rounded-lg'>
+                <MenuItems anchor='bottom' className='bg-emerald-950 border border-emerald-900 mt-1 p-4 rounded-xl shadow-2xl'>
                     <MenuItem as='div' className='p-0'>
                             <section className="rounded-lg transition-colors text-white flex items-center gap-x-4 py-2 px-4">
                                 <img 
@@ -149,7 +158,7 @@ function NavHeader() {
                                 />
                                 <div className="flex flex-col gap-1 text-sm">
                                     <span className="text-white text-sm">{student?.nombre || teacher?.nombre || admin?.nombre || userRole.charAt(0).toUpperCase() + userRole.slice(1)} {student?.apellido || teacher?.apellido || admin?.apellido}</span>
-                                    <span className="text-white text-xm">{user.email}</span>
+                                    <span className="text-emerald-100/60 text-xs">{user.email}</span>
                                 </div>
                             </section>
                             
@@ -157,7 +166,7 @@ function NavHeader() {
                     <hr className="my-4 border-gray-500" />
 
                     <MenuItem as='div' className='p-0'>
-                            <Link to='/admin/usuario' className="rounded-lg transition-colors text-white hover:bg-teal-400 flex items-center gap-x-4 py-2 px-4 flex-1">
+                            <Link to='/admin/usuario' className="rounded-lg transition-colors text-white hover:bg-emerald-800/40 flex items-center gap-x-4 py-2 px-4 flex-1">
                                 <RiSettings3Line className="text-2xl" />
                                 Configuración                                                
                             </Link>
@@ -168,7 +177,7 @@ function NavHeader() {
                     <MenuItem as='div' className='p-0'>
                         <button
                             onClick={handleLogOut}
-                            className="w-full cursor-pointer rounded-lg transition-colors text-white hover:bg-teal-400 flex items-centerr gap-x-4 py-2 px-4 flex-1">
+                            className="w-full cursor-pointer rounded-lg transition-colors text-white hover:bg-emerald-800/40 flex items-center gap-x-4 py-2 px-4 flex-1">
                             <RiLogoutCircleRLine />
                             Cerrar Sesión                                      
                         </button>                            
