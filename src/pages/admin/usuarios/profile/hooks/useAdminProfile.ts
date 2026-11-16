@@ -70,11 +70,11 @@ export const useAdminProfile = () => {
                 if (!userId) throw new Error('No se encontró el Id del usuario');
 
                 setFormData({
-                    nombre: adminData?.nombre || userData.user?.nombre || '',
-                    apellido: adminData?.apellido || userData.user?.apellido || '',
+                    nombre: adminData?.nombre || '',
+                    apellido: adminData?.apellido || '',
                     rol: rolId,
                     id: userId,
-                    telefono: adminData?.telefono || userData.user?.telefono || '',
+                    telefono: adminData?.telefono || '',
                     cargo: adminData?.cargo || '',
                 });
 
