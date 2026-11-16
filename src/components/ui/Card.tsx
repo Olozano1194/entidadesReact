@@ -1,7 +1,11 @@
-const Card = ({children, ...props}: React.FormHTMLAttributes<HTMLFormElement>) => {
+interface CardProps extends React.HTMLAttributes<HTMLElement> {
+    children: React.ReactNode;
+}
+
+const Card = ({children, className = "", ...props}: CardProps) => {
     return (
         <article 
-            className="w-full max-w-md flex flex-col p-container-padding glass-card rounded-lg shadow-lg" 
+            className={`grid grid-cols-1 gap-8 lg:grid-cols-12 ${className}`} 
             {...props}
         >        
             {children}
