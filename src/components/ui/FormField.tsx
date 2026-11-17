@@ -20,7 +20,7 @@ interface FormFieldProps {
 
 const FormField = ({ label, htmlFor, icon, error, labelRight, trailing, children }: FormFieldProps) => {
     return (
-        <section className="mb-gutter">
+        <section className="space-y-2">
             {labelRight ? (
                 <div className="flex items-center justify-between mb-form-stack">
                     <label htmlFor={htmlFor} className="block font-label-bold text-label-bold text-on-surface-variant">
