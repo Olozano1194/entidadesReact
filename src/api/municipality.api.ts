@@ -11,15 +11,23 @@ export const getMunicipalityByDepto = async (idDepto: string): Promise<Municipal
         if (!token) throw new Error('No hay token de autenticación');
 
         const response = await Api.get(`/municipios/by-departamento`, {
-            params: { departamento: idDepto },
+            params: { departamento: idDepto, limit: 100 },
             headers: {
                 'Authorization': `Bearer ${token}`
             }
         });        
                
-        return response.data;        
+        console.log('getMunicipalityByDepto response:', response.data);
+        const data = Array.isArray(response.data)
+            ? response.data
+            : Array.isArray(response.data?.data)
+                ? response.data.data
+                : Array.isArray(response.data?.municipios)
+                    ? response.data.municipios
+                    : [];
+        return data;
     } catch (error) {
-        throw handleApiError(error);        
+        throw handleApiError(error);
     }
 };
 //Lista de usuarios
