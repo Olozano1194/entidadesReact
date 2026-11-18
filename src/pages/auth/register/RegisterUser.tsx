@@ -1,47 +1,41 @@
 import { useForm } from 'react-hook-form';
 import { useNavigate } from "react-router-dom";
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 //Mensajes
 import { toast } from 'react-hot-toast';
 //ui
-import Main from '../../../components/ui/Main';
 import Card from '../../../components/ui/Card';
 import ErrorSpan from '../../../components/ui/ErrorSpan';
 //icons
 import { RiShieldUserLine, RiLock2Fill, RiKeyFill } from "react-icons/ri";
-import { MdOutlineSecurity, MdContactMail, MdAlternateEmail, MdExpandMore, MdOutlineVisibility, MdOutlineVerifiedUser, MdOutlineInfo, MdOutlineHowToReg, MdHistory, MdOutlineMailLock } from "react-icons/md";
+import { MdOutlineSecurity, MdContactMail, MdAlternateEmail, MdExpandMore, MdOutlineVisibility, MdOutlineVerifiedUser, MdOutlineInfo, MdOutlineHowToReg, MdHistory, MdOutlineMailLock, MdOutlineVisibilityOff } from "react-icons/md";
 import { BiCheckCircle } from "react-icons/bi";
 //Api
 import { CreateUsers } from '../../../api/user.api';
-// import { getRoles } from '../../../api/roles.api';
+import { getRoles } from '../../../api/roles.api';
 //Model
 import type { User } from '../../../types/user.model';
 import type { CreateUserDto } from '../../../types/dto/user.dto';
-// import type { Rol } from '../../../types/rol.models';
+import type { Rol } from '../../../types/rol.models';
 
 
 const RegisterUser = () => {
     const { register, handleSubmit, formState: { errors }, watch, reset } = useForm<User>();
-    // const [roles, setRoles] = useState<Rol[]>([]);
+    const [roles, setRoles] = useState<Rol[]>([]);
     const navigate = useNavigate();
+    const [showPass, setShowPass] = useState(false);
 
     useEffect(() => {
         const loadRoles = async () => {
             try {
-                // const rolesData = await getRoles();
-                // setRoles(rolesData);
+                const rolesData = await getRoles();
+                setRoles(rolesData);
             } catch (error) {
                 console.error('Error al cargar roles:', error);
             }
         }
         loadRoles();
     }, []);
-
-    // const handleRolChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    //     const rolId = event.target.value;
-    //     console.log('ID del rol seleccionado:', rolId);
-    //     setValue('rol', rolId);
-    // };
 
     const onSubmit = handleSubmit(async (data: User) => {
         try {
@@ -80,9 +74,13 @@ const RegisterUser = () => {
             });
         }
     });
+    // Visibilidad del pass
+    const handlePass = () => {
+        setShowPass(!showPass);
+    };
 
     return (
-        <Main className='max-w-[1200px] mx-auto p-8'>
+        <main className='max-w-[1200px] mx-auto p-8'>
             <header className='mb-12'>
                 <div className='flex gap-3 items-center mb-2'>
                     <span className='bg-secondary-container font-bold px-3 py-1 rounded-full text-on-secondary-container text-xs tracking-wider uppercase'>
@@ -155,6 +153,7 @@ const RegisterUser = () => {
                                     </h4>
                                 </div>
                                 <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
+                                    {/* email */}
                                     <div className='space-y-2'>
                                         <label htmlFor="" className='font-bold flex gap-1 items-center text-label-bold text-on-surface'>
                                             Correo Institucional
@@ -164,7 +163,7 @@ const RegisterUser = () => {
                                             <MdAlternateEmail className='absolute left-4 top-1/2 text-slate-400 text-lg -translate-y-1/2' />
                                             <input
                                                 type="text"
-                                                className='border border-slate-200 bg-slate-50 pl-11 pr-4 py-3 rounded-lg text-on-surface transition-all w-full focus:border-emerald-700 focus:bg-white'
+                                                className='border border-slate-200 bg-slate-50 duration-200 pl-11 pr-4 py-3 rounded-lg text-on-surface transition-all w-full focus:outline-none focus:border-emerald-700 focus:bg-white'
                                                 placeholder='e.g. j.doe@institucion.edu'
                                                 {...register('email', {
                                                     required: {
@@ -182,6 +181,7 @@ const RegisterUser = () => {
                                             errors.email && <ErrorSpan>{errors.email.message}</ErrorSpan>
                                         }
                                     </div>
+                                    {/* Rol */}
                                     <div className='space-y-2'>
                                         <label htmlFor="" className='font-label-bold flex gap-1 items-center text-label-bold text-on-surface'>
                                             Rol de acceso
@@ -189,9 +189,31 @@ const RegisterUser = () => {
                                         </label>
                                         <div className='relative'>
                                             <RiShieldUserLine className='absolute left-4 top-1/2 text-slate-400 text-lg -translate-y-1/2' />
-                                            <select name="" id="" className='appearance-none border border-slate-200 bg-slate-50 pl-11 pr-4 py-3 rounded-lg text-on-surface transition-all w-full focus:border-emerald-700 focus:bg-white'></select>
-                                            <MdExpandMore className='absolute pointer-events-none right-4 top-1/2 text-slate-400 -translate-y-1/2' />
+                                            <div className='relative'>
+                                                <select
+                                                    id="rol"
+                                                    className='appearance-none border border-slate-200 bg-slate-50 cursor-pointer duration-200 pl-11 pr-4 py-3 rounded-lg text-on-surface transition-all w-full focus:outline-none focus:border-emerald-700 focus:bg-white'
+                                                    {...register('rol', {
+                                                        required: {
+                                                            value: true,
+                                                            message: 'Rol requerido'
+                                                        }
+                                                    })}
+                                                >
+                                                    <option value="">Seleccione un rol</option>
+                                                    {roles.map(rol => (
+
+                                                        <option key={rol._id} value={rol._id}>
+                                                            {rol.nombre}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                                <MdExpandMore className='absolute pointer-events-none right-4 top-1/2 text-slate-400 -translate-y-1/2' />  
+                                            </div>
                                         </div>
+                                        {
+                                            errors.rol && <span className='text-red-500 text-sm'>{errors.rol.message}</span>
+                                        }
                                     </div>
                                 </div>
                             </article>
@@ -210,8 +232,8 @@ const RegisterUser = () => {
                                         </label>
                                         <div className='relative'>
                                             <RiKeyFill className='absolute left-4 text-lg top-1/2 text-slate-400 -translate-y-1/2' />
-                                            <input type="password"
-                                                className='border border-slate-200 bg-slate-50 pl-11 pr-12 py-3 rounded-lg text-on-surface transition-all w-full focus:border-emerald-700 focus:bg-white'
+                                            <input type={showPass ? "text" : "password"}
+                                                className='border border-slate-200 bg-slate-50 duration-200 pl-11 pr-12 py-3 rounded-lg text-on-surface transition-all w-full focus:outline-none focus:border-emerald-700 focus:bg-white'
                                                 placeholder='********'
                                                 {...register('password', {
                                                     required: {
@@ -228,8 +250,8 @@ const RegisterUser = () => {
                                                     },
                                                 })}
                                             />
-                                            <button className='absolute right-4 top-1/2 text-slate-400 -translate-y-1/2'>
-                                                <MdOutlineVisibility />
+                                            <button type='button' onClick={handlePass} className='absolute cursor-pointer right-4 top-1/2 text-slate-400 -translate-y-1/2 hover:text-on-surface-variant'>
+                                                {showPass ? <MdOutlineVisibility /> : <MdOutlineVisibilityOff />}
                                             </button>
                                         </div>
                                         {
@@ -245,7 +267,7 @@ const RegisterUser = () => {
                                         <div className='relative'>
                                             <MdOutlineVerifiedUser className='absolute left-4 top-1/2 text-lg text-slate-400 -translate-y-1/2' />
                                             <input type="password"
-                                                className='border border-slate-200 bg-slate-50 pl-11 pr-4 py-3 rounded-lg text-on-surface transition-all w-full focus:border-emerald-700 focus:bg-white'
+                                                className='border border-slate-200 bg-slate-50 duration-200 pl-11 pr-4 py-3 rounded-lg text-on-surface transition-all w-full focus:outline-none focus:border-emerald-700 focus:bg-white'
                                                 placeholder='*******'
                                                 {...register('repeatPassword', {
                                                     required: {
@@ -269,10 +291,10 @@ const RegisterUser = () => {
                                 </div>
                             </article>
                             <div className='border-t border-slate-100 flex flex-col gap-4 items-center justify-end pt-8 sm:flex-row'>
-                                <button className='font-label-bold px-8 py-3 rounded-lg text-emerald-800 transition-colors w-full hover:bg-emerald-50 sm:w-auto'>
+                                <button className='cursor-pointer font-label-bold px-8 py-3 rounded-lg text-emerald-800 transition-colors w-full hover:bg-emerald-50 sm:w-auto'>
                                     Cancelar y restablecer
                                 </button>
-                                <button className='accent-gradient flex font-label-bold gap-2 items-center justify-center px-12 py-3 rounded-lg shadow-lg text-white transition-all w-full hover:shadow-emerald-900/20 active:scale-[0.98]  sm:w-auto'>
+                                <button className='accent-gradient cursor-pointer flex font-label-bold gap-2 items-center justify-center px-12 py-3 rounded-lg shadow-lg text-white transition-all w-full hover:shadow-emerald-900/20 active:scale-[0.98]  sm:w-auto'>
                                     <MdOutlineHowToReg className='text-xl' />
                                     Registrar nuevo usuario
                                 </button>
@@ -309,31 +331,6 @@ const RegisterUser = () => {
                         </div>
                     </section>
                 </section>
-                {/* Roles */}
-                {/* <label htmlFor="roles"><Span><RiUserSettingsLine />Rol</Span>
-                    <Select
-                        {...register('rol', {
-                            required: {
-                                value: true,
-                                message: 'Rol requerido'
-                            }
-                        })}
-                    // onChange={handleRolChange}
-                    >
-                        <option value="">Seleccione un rol</option>
-                        {roles.map(rol => (
-
-                            <option key={rol._id} value={rol._id}>
-                                {rol.nombre}
-                            </option>
-                        )
-                        )
-                        }
-                    </Select>
-                </label>
-                {
-                    errors.rol && <span className='text-red-500 text-sm'>{errors.rol.message}</span>
-                } */}
                 {/* Instituciones */}
                 {/* <label htmlFor="instituciones"><Span><CiUser/>Instituciones</Span><Select
                 {...register('idinstitucion',{
@@ -351,10 +348,8 @@ const RegisterUser = () => {
                 {
                     errors.idinstitucion && <span className='text-red-500 text-sm'>{errors.idinstitucion.message}</span>
                 }                      */}
-
-
             </Card>
-        </Main>
+        </main>
     );
 };
 export default RegisterUser;
