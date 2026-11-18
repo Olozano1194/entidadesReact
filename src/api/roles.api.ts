@@ -8,25 +8,38 @@ import type { CreateRolDto } from '../types/dto/rol.dto';
 // Obtenemos todos los roles
 export const getRoles = async (): Promise<Rol[]> => {
     try {
-        // console.log('Solicitando roles al seridor...');        
-        const response = await Api.get('/roles');
-        // console.log('Roles recibidos:', response.data);
-
-        const data = Array.isArray(response.data)
-            ? response.data
-            : Array.isArray(response.data?.data)
-                ? response.data.data
-                : Array.isArray(response.data?.roles)
-                    ? response.data.roles
-                    : [];
-        return data.map((rol: Rol) => ({
-            ...rol,
-            id: rol._id
-        }));
+        const { data } = await Api.get('/roles');
+        return data.data;
     } catch (error) {
         throw handleApiError(error);
-    };
+    }
 };
+// export const getRoles = async (): Promise<Rol[]> => {
+//     try {
+//         // console.log('Solicitando roles al seridor...');        
+//         const response = await Api.get('/roles', {
+//             params: {
+//                 page: 1,
+//                 limit: 100
+//             }
+//         });
+//         // console.log('Roles recibidos:', response.data);
+
+//         const data = Array.isArray(response.data)
+//             ? response.data
+//             : Array.isArray(response.data?.data)
+//                 ? response.data.data
+//                 : Array.isArray(response.data?.roles)
+//                     ? response.data.roles
+//                     : [];
+//         return data.map((rol: Rol) => ({
+//             ...rol,
+//             id: rol._id
+//         }));
+//     } catch (error) {
+//         throw handleApiError(error);
+//     };
+// };
 
 //Obtener Rol
 export const getRoleById = async (id: string): Promise<Rol> => {    

@@ -9,10 +9,16 @@ import type { DepartamentModel } from "../types/department.model";
 export const getDepartment = async (): Promise<DepartamentModel[]> => {
     try {
         // console.log('Solicitando roles al seridor...');        
-        const response = await Api.get('/departamentos');
-        // console.log('Roles recibidos:', response.data);
-        
-        return response.data.map((departament: DepartamentModel) => ({
+        // limit=100 to fetch all 33 Colombian departments in one request (default is 20)
+        const response = await Api.get('/departamentos', { params: { limit: 100 } });
+        const data = Array.isArray(response.data)
+            ? response.data
+            : Array.isArray(response.data?.data)
+                ? response.data.data
+                : Array.isArray(response.data?.departamentos)
+                    ? response.data.departamentos
+                    : [];
+        return data.map((departament: DepartamentModel) => ({
             ...departament,
             id: departament._id
         }));

@@ -1,4 +1,5 @@
 import { IoPersonOutline } from "react-icons/io5";
+import { MdExpandMore } from "react-icons/md"
 import type { AdminFormData } from "./hooks/useAdminProfile";
 import type { Rol } from "../../../../types/rol.models";
 
@@ -34,14 +35,34 @@ const ProfileForm = ({ formData, roles, editingUser, onChange }: ProfileFormProp
                     <input type="tel" className="border border-outline-variant bg-surface-container-lowest font-body-md py-3 px-4 outline-none rounded-lg text-body-md text-primary transition-all w-full focus:border-primary focus:right-1 focus:ring-primary" id="phone" name='telefono' placeholder="3003213215" value={formData.telefono ?? ''} onChange={onChange} disabled={!editingUser} />
                 </section>
                 <section className="flex flex-col gap-2">
-                    <label className="font-label-bold text-label-bold text-on-surface-variant"><p>Rol <span className="text-red-500">*</span></p></label>
-                    <select name="rol" value={formData.rol ?? ''} onChange={onChange} disabled={!editingUser} className="appearance-none border border-outline-variant bg-surface-container-lowest cursor-pointer font-body-md py-3 px-4 outline-none rounded-lg text-body-md text-primary transition-all w-full focus:border-primary focus:right-1 focus:ring-primary">
-                        <option value="">Seleccione un rol</option>
-                        {roles.map(rol => (<option key={rol._id} value={rol._id}>{rol.nombre}</option>))}
-                    </select>
+                    <label className="font-label-bold text-label-bold text-on-surface-variant">
+                        <p>
+                            Rol <span className="text-red-500">*</span>
+                        </p>
+                    </label>
+                    <div className="relative">
+                        <select 
+                            name="rol" 
+                            value={formData.rol ?? ''} 
+                            onChange={onChange} 
+                            disabled={!editingUser} 
+                            className="appearance-none border border-outline-variant bg-surface-container-lowest cursor-pointer font-body-md py-3 px-4 outline-none rounded-lg text-body-md text-primary transition-all w-full focus:border-primary focus:right-1 focus:ring-primary"
+                        >
+                            <option value="">Seleccione un rol</option>
+                            {roles.map(rol => 
+                                (<option key={rol._id} value={rol._id}>{rol.nombre}
+                                </option>
+                            ))}
+                        </select>
+                        <MdExpandMore className='absolute pointer-events-none right-4 top-1/2 text-slate-400 -translate-y-1/2' />
+                    </div>
                 </section>
                 <section className="flex flex-col gap-2">
-                    <label className="font-label-bold text-label-bold text-on-surface-variant"><p>Cargo <span className="text-red-500">*</span></p></label>
+                    <label className="font-label-bold text-label-bold text-on-surface-variant">
+                        <p>
+                            Cargo <span className="text-red-500">*</span>
+                        </p>
+                    </label>
                     <input type="text" className="border border-outline-variant bg-surface-container-lowest font-body-md py-3 px-4 outline-none rounded-lg text-body-md text-primary transition-all w-full focus:border-primary focus:right-1 focus:ring-primary" id="address" name='cargo' placeholder="Ing de Sistemas" value={formData.cargo ?? ''} onChange={onChange} disabled={!editingUser} />
                 </section>
                 <section className="flex flex-col gap-2 pt-4 md:col-span-2">

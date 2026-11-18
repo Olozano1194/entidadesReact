@@ -9,6 +9,9 @@ export interface CreateInstitucionDto {
     nosedes: number;
     estudiantes: string[];
     profesores: string[];
+    idsecretaria?: string;
+    periodos?: Array<{ nombre: string; fechainicio?: Date; fechafin?: Date }>;
+    secretaria?: string;
 }
 
 export interface ListInstitucionDto {

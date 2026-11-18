@@ -12,4 +12,6 @@ export interface InstitucionModel {
     profesores: string[];
     asignarTodosStudent?: boolean;
     asignarTodosTeacher?: boolean;
+    secretaria?: string;
+    periodos?: string;
 }
