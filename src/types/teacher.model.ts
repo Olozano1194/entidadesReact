@@ -6,4 +6,8 @@ export interface Teacher {
     apellido: string;
     telefono: string;
     especialidad: string;
+    email?: string;
+    correo?: string;
+    foto?: string;
+    avatar?: string;
 };
