@@ -12,6 +12,8 @@ import type {
     SortingState,
     Column,
 } from '@tanstack/react-table';
+// Components
+import { PaginationSection } from "./table/PaginationSection";
 
 
 interface TableProps<T> {
@@ -30,6 +32,9 @@ const Table = <T,> ({ data, columns, totalRow }: TableProps<T>) => {
         columns,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
+        initialState: {
+            pagination: { pageIndex: 0, pageSize: 5 },
+        },
         getSortedRowModel: getSortedRowModel(),
         state: {
             sorting 
@@ -48,18 +53,18 @@ const Table = <T,> ({ data, columns, totalRow }: TableProps<T>) => {
     };
 
     return (
-        <main className="cards w-full flex flex-col justify-center items-center gap-y-4 p-4 rounded-xl">
-            <div className="overflow-x-auto w-full">                
-                <table className="min-w-full border"> 
-                    <thead className="bg-secondary-500 text-white text-sm lg:text-lg">
+        <main className="bg-surface-container-lowest mb-6 overflow-hidden rounded-xl shadow-sm">
+            <section className="overflow-x-auto">                
+                <table className="min-w-full text-left"> 
+                    <thead>
                         {
                             table.getHeaderGroups().map(headerGroup => (
-                                <tr key={headerGroup.id}>
+                                <tr key={headerGroup.id} className="bg-surface-container-low font-label-bold text-label-bold text-on-surface-variant tracking-wide">
                                     {
                                         headerGroup.headers.map(header => (
                                             <th key={header.id}
                                                 onClick={header.column.getToggleSortingHandler()}
-                                                className="p-2">
+                                                className="py-4 px-6 text-center w-12">
                                                     {!header.isPlaceholder &&           flexRender(header.column.columnDef.header, header.getContext()
                                                     )}
                                                     {
@@ -71,23 +76,32 @@ const Table = <T,> ({ data, columns, totalRow }: TableProps<T>) => {
                             ))
                         }
                     </thead>
-                    <tbody className="text-sm text-white lg:text-lg">
+                    <tbody className="font-body-md divide-y-0 text-body-md text-on-surface">
                         {
-                            table.getRowModel().rows.map(row => (
-                                <tr key={row.id}>
-                                    {
-                                        row.getVisibleCells().map(cell => (
-                                            <td key={cell.id} className="border p-2 text-center">{flexRender(cell.column.columnDef.cell, cell.getContext())
-                                            }</td>
-                                        ))
-                                    }
+                            table.getRowModel().rows.length === 0 ? (
+                                <tr>
+                                    <td colSpan={columns.length} className="py-8 text-center text-on-surface-variant">
+                                        No hay datos para mostrar
+                                    </td>
                                 </tr>
-                            ))
+                            ) : (
+                                table.getRowModel().rows.map(row => (
+                                    <tr key={row.id} className="group transition-colors hover:bg-surface-container-low/60">
+                                        {
+                                            row.getVisibleCells().map(cell => (
+                                                <td key={cell.id} className="py-4 px-4 text-center text-on-surface-variant">
+                                                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                                </td>
+                                            ))
+                                        }
+                                    </tr>
+                                ))
+                            )
                         }
                         {/* Fila del total que estará siempre al final */}
                         { totalRow && (
                             <tr 
-                                className="bg-slate-500 text-white font-bold md:text-lg">
+                                className="bg-on-surface-variant text-outline-variant font-bold md:text-lg">
                                 {table.getAllColumns().map((column) => {
                                     const accessorKey = column.id;
                                     const value = totalRow[accessorKey as keyof typeof totalRow] ?? '';
@@ -103,38 +117,12 @@ const Table = <T,> ({ data, columns, totalRow }: TableProps<T>) => {
                     </tbody>
                 </table>
                 {/* contenedor de los btn de paginación */}
-                <div className="w-full flex md:justify-center md:items-center gap-x-4 pt-4">
-                    <button 
-                        onClick={() => table.setPageIndex(0)}
-                        disabled={!table.getCanPreviousPage()}
-                        className="px-3 py-1 bg-blue-500 text-white text-sm rounded disabled:bg-gray-400 md:ml-0" 
-                    >
-                        Primera Página
-                    </button>
-                    <button 
-                        onClick={() => table.previousPage()}
-                        disabled={!table.getCanPreviousPage()}
-                        className="px-3 py-1 bg-blue-500 text-white text-sm rounded disabled:bg-gray-400"
-                    >
-                        Página Anterior
-                    </button>
-                    <button 
-                        onClick={() => table.nextPage()}
-                        disabled={!table.getCanNextPage()}
-                        className="px-3 py-1 bg-blue-500 text-white text-sm rounded disabled:bg-gray-400"
-                    >
-                        Página Siguiente
-                    </button>
-                    <button 
-                        onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-                        disabled={!table.getCanNextPage()}
-                        className="px-3 py-1 bg-blue-500 text-white text-sm rounded disabled:bg-gray-400"
-                    >
-                        Última Página
-                    </button>
-
-                </div>
-            </div>                      
+                <PaginationSection
+                    currentPage={table.getState().pagination.pageIndex + 1}
+                    totalPages={table.getPageCount()}
+                    onPageChange={(page: number) => table.setPageIndex(page - 1)}                     
+                />                
+            </section>                      
         </main>
     );
 }
