@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 //API
 import { getTeacher } from '../../../api/teacher.api';
 //Table
@@ -10,25 +10,37 @@ import Table from '../../../components/Table';
 import { toast } from 'react-hot-toast';
 //Models
 import type { Teacher } from '../../../types/teacher.model';
-// Icons
-import { MdOutlineChevronRight, MdOutlineDownload, MdOutlinePersonAddAlt } from "react-icons/md";
 // Components
-import SearchTeacher from "./components/SearchTeacher";
-import TeacherMetrics from "./components/TeacherMetrics";
+import SearchSection from "../../../components/table/SearchSection";
+import MetricsSection from "../../../components/table/MetricsSection";
+import HeaderSection from "../../../components/table/HeaderSection";
+// icons
+// import { MdOutlineDownload, MdOutlinePersonAddAlt, MdTrendingUp, MdSchedule, MdOutlineTimelapse, MdOutlineStarBorderPurple500 } from "react-icons/md";
+import { TfiIdBadge } from "react-icons/tfi";
+import { MdOutlineDownload, MdOutlinePersonAddAlt, MdTrendingUp, MdSchedule, MdOutlineTimelapse, MdOutlineStarBorderPurple500 } from "react-icons/md";
+
 
 
 const ListTeacher = () => {
     const [ teacher, setTeacher ] = useState<Teacher[]>([]);
     const [ isLoading, setIsLoading ] = useState(false);
-    // Dashboard metrics (to be filled when the backend provides them)
-    const [ metrics ] = useState<{
-        tc?: number;
-        hc?: number;
-        cargaHorariaMedia?: number;
-        evaluacionDesempeno?: number;
-        acreditacionPct?: number;
-        sedes?: number;
-    }>({});
+    const [ searchTerm, setSearchTerm ] = useState('');
+    const [ departamento, setDepartamento ] = useState('');    
+
+    const departamentos = useMemo(
+        () => Array.from(new Set(teacher.map((t) => t.departamento).filter(Boolean) as string[])).sort(),
+        [teacher]
+    );
+
+    const filteredTeachers = useMemo(() => {
+        const term = searchTerm.trim().toLowerCase();
+        return teacher.filter((t) => {
+            if (departamento && t.departamento !== departamento) return false;
+            if (!term) return true;
+            const haystack = `${t.nombre} ${t.apellido} ${t.identificacion ?? ''}`.toLowerCase();
+            return haystack.includes(term);
+        });
+    }, [teacher, searchTerm, departamento]);
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -46,6 +58,103 @@ const ListTeacher = () => {
         fetchUserData();
     }, []);
 
+    // Dashboard metrics (to be filled when the backend provides them)
+    const [ metrics ] = useState<{
+        tc?: number;
+        hc?: number;
+        cargaHorariaMedia?: number;
+        evaluacionDesempeno?: number;
+        acreditacionPct?: number;
+        sedes?: number;
+        docentesNuevos?: number;
+    }>({});
+
+    const teacherMetrics = [
+        {
+            id: 'docentes',
+            title: 'Docentes Vinculados',
+            value: teacher.length,
+            icon: <TfiIdBadge className="text-[22px]" />,
+            blurColor: 'bg-primary-fixed/30',
+            indicator: metrics.docentesNuevos != null ? (
+                <span className="font-label-sm font-semibold flex items-center text-tertiary text-label-sm">
+                    <MdTrendingUp />
+                    +{metrics.docentesNuevos} nuevos
+                </span>
+            ) : undefined,
+            footer: (
+                <div className="flex font-label-sm items-center justify-between text-outline text-label-sm">
+                    <span>{metrics.acreditacionPct != null ? `${metrics.acreditacionPct}% con acreditación` : 'Acreditación pendiente'}</span>
+                    <span className="font-medium text-on-surface">
+                        {metrics.sedes != null ? `${metrics.sedes} sedes` : '— sedes'}
+                    </span>
+                </div>
+            ),
+        },
+        {
+            id: 'dedicacion',
+            title: 'Dedicación Docente',
+            value: (
+                <>
+                    {metrics.tc ?? '—'}
+                    <span className="text-on-surface-variant font-light text-headline-md"> TC</span>
+                </>
+            ),
+            icon: <MdSchedule className="text-[22px]" />,
+            iconContainerClass: 'bg-tertiary-fixed/30 text-tertiary',
+            blurColor: 'bg-tertiary-fixed/40',
+            indicator: (
+                <span className="text-outline font-label-bold text-label-bold">
+                    / {metrics.hc ?? '—'} HC
+                </span>
+            ),
+            footer: metrics.tc != null && metrics.hc != null ? (
+                <div className="w-full bg-surface-container-high h-2 rounded-full overflow-hidden flex">
+                    <div className="bg-primary h-full" style={{ width: `${(metrics.tc / (metrics.tc + metrics.hc)) * 100}%` }}></div>
+                    <div className="bg-secondary-fixed-dim h-full" style={{ width: `${(metrics.hc / (metrics.tc + metrics.hc)) * 100}%` }}></div>
+                </div>
+            ) : undefined,
+        },
+        {
+            id: 'carga',
+            title: 'Carga Horaria Media',
+            value: metrics.cargaHorariaMedia ?? '—',
+            icon: <MdOutlineTimelapse className="text-[22px]" />,
+            iconContainerClass: 'bg-secondary-fixed/40 text-secondary',
+            blurColor: 'bg-secondary-fixed/40',
+            indicator: (
+                <span className="font-label-sm font-semibold flex items-center text-outline text-label-sm">
+                    hrs / sem
+                </span>
+            ),
+            footer: (
+                <div className="flex font-label-sm gap-1.5 items-center text-on-surface-variant text-label-sm">
+                    <span className="bg-emerald-500 h-2 rounded-full shrink-0 w-2"></span>
+                    <span>Balance óptimo de aula (Norma: 24h)</span>
+                </div>
+            ),
+        },
+        {
+            id: 'evaluacion',
+            title: 'Evaluación Desempeño',
+            value: metrics.evaluacionDesempeno ?? '—',
+            icon: <MdOutlineStarBorderPurple500 className="text-[22px]" />,
+            iconContainerClass: 'bg-primary-fixed/30 text-primary',
+            blurColor: 'bg-primary-fixed/30',
+            indicator: (
+                <span className="font-label-sm font-semibold flex items-center text-outline text-label-sm">
+                    / 5.0
+                </span>
+            ),
+            footer: (
+                <div className="flex font-label-sm items-center justify-between text-outline text-label-sm">
+                    <span>Evaluación por comités estudiantiles</span>
+                    <span className="font-medium text-primary">96% rta</span>
+                </div>
+            ),
+        },
+    ];
+
     const columnHelper = createColumnHelper<Teacher>();
 
     const columns = [
@@ -55,7 +164,7 @@ const ListTeacher = () => {
             cell: (info) => info.row.index + 1,
         }),
         columnHelper.accessor(row => `${row.nombre} ${row.apellido}`, {
-            id: 'nombre',
+            id: 'docente',
             header: 'Docente y Credenciales',
             cell: ({ row }) => {
                 const t = row.original;
@@ -96,47 +205,46 @@ const ListTeacher = () => {
                 );
             },
         }),
+        columnHelper.accessor(row => row.departamento, {
+            id: 'departamento',
+            header: 'Departamento/Cursos',
+        }),
         columnHelper.accessor(row => row.telefono, {
             id: 'telefono',
             header: 'Telefono',
         }),
+        columnHelper.accessor(row => row.cargaAcademica, {
+            id: 'cargaAcademica',
+            header: 'Carga Académica',
+        }),
+        columnHelper.accessor(row => row.contrato, {
+            id: 'contrato',
+            header: 'Contrato/Escalafón',
+        }),        
         columnHelper.accessor(row => row.especialidad, {
             id: 'especialidad',
             header: 'Especialidad',
-        })
+        }),
+        columnHelper.accessor(row => row.estado, {
+            id: 'estado',
+            header: 'Estado',
+        }),
     ] as ColumnDef<Teacher>[];
 
     return (
         <main className="flex-1 flex-col gap-y-4 max-w-[1440px] mx-auto p-8 rounded-xl space-y-section-gap w-full">
             <section className="flex flex-col w-full">
-                <section className="flex flex-col gap-6 justify-between pb-6 lg:flex-row lg:items-end">
-                    <div className="space-y-2">
-                        <div className="flex font-label-sm gap-2 items-center text-label-sm text-outline">
-                            <span className="cursor-pointer transition-colors hover:text-primary">
-                                Gestión de personal
-                            </span>
-                            <MdOutlineChevronRight className="text-outline-variant text-[14px]" />
-                            <span className="cursor-pointer transition-colors hover:text-primary">
-                                Docentes
-                            </span>
-                            <MdOutlineChevronRight className="text-outline-variant text-[14px]" />
-                            <span className="font-semibold text-primary">
-                                Directorio General
-                            </span>
-                        </div>
-                        <div className="flex gap-3 items-baseline">
-                            <h2 className="font-headline-lg font-semibold text-headline-lg text-on-surface tracking-tight">
-                                Planta Docente y Catedráticos
-                            </h2>
-                            <span className="bg-secondary-container font-label-sm font-medium inline-flex items-center px-2 py-0.5 rounded-full text-label-sm text-on-secondary-container">
-                                Periodo 2026-2
-                            </span>
-                        </div>
-                        <p className="font-body-md max-w-2xl text-body-md text-on-surface-variant">
-                            Supervisión de talento pedagógico, escalafón ministerial, asignación lectiva y validación contractual para el cuerpo de profesores activo.
-                        </p>
-                    </div>
-                    <div className="flex gap-3 items-center self-start lg:self-auto">
+                <HeaderSection
+                    breadcrumbs={[
+                        'Gestión de Personal',
+                        'Docentes', 
+                        'Directorio General'
+                    ]}
+                    title="Planta Docente y Catedráticos"
+                    badge="Periodo 2026-1"
+                    description="Supervisión de talento pedagógico, escalafón ministerial, asignación lectiva y validación contractual para el cuerpo de profesores activo."
+                    actions= {
+                        <>
                         <button className="bg-surface-container-low cursor-pointer flex font-label-bold gap-2 items-center px-4 py-2.5 rounded-xl shadow-sm text-on-surface text-label-bold transition-all hover:bg-surface-container">
                             <MdOutlineDownload className="text-[20px]" />
                             Descarga Nómina/ Carga
@@ -145,11 +253,29 @@ const ListTeacher = () => {
                             <MdOutlinePersonAddAlt className="text-[20px]" />
                             Vincular Nuevo Docente
                         </button>
-                    </div>
-                </section>
-                <TeacherMetrics teacherCount={teacher.length} metrics={metrics} />
+                        </>
+                    } 
+                />
+                <MetricsSection metrics={teacherMetrics} columns={4} />
                 {/* Filtration & Search */}
-                <SearchTeacher />
+                <SearchSection
+                    searchTerm={searchTerm}
+                    onSearchChange={setSearchTerm}
+                    placeholder="Buscar por nombre o documento"
+                    filters={[
+                        {
+                            key: 'departamento',
+                            label: 'Departamento',
+                            value: departamento,
+                            onChange: setDepartamento,
+                            options: departamentos.map((d) => ({ value: d, label: d })),
+                        },
+                    ]}
+                    onClear={() => {
+                        setSearchTerm('');
+                        setDepartamento('');
+                    }}
+                />
             </section>
             {
                 isLoading ? (
@@ -157,7 +283,7 @@ const ListTeacher = () => {
                 ) : (
                     <div className="w-full">
                         <Table
-                            data={teacher}
+                            data={filteredTeachers}
                             columns={columns}
                         />
                     </div>

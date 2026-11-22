@@ -10,4 +10,9 @@ export interface Teacher {
     correo?: string;
     foto?: string;
     avatar?: string;
+    departamento?: string;
+    cargaAcademica?: string;
+    contrato?: string;
+    estado?: string;
+    identificacion?: string | number;
 };

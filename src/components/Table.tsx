@@ -14,6 +14,9 @@ import type {
 } from '@tanstack/react-table';
 // Components
 import { PaginationSection } from "./table/PaginationSection";
+// Icons
+import { GoArrowDown, GoArrowUp } from "react-icons/go";
+import { BsArrowsVertical } from "react-icons/bs";
 
 
 interface TableProps<T> {
@@ -45,11 +48,10 @@ const Table = <T,> ({ data, columns, totalRow }: TableProps<T>) => {
     const renderSortIcon = (column: Column<T>) => {
         const sortState = column.getIsSorted();
         return {
-            'asc': "⬆️",
-            'desc': "⬇️",
-            'none': "↕️"
-        }[sortState || 'none'];
-        
+            'asc': <GoArrowUp />,
+            'desc': <GoArrowDown />,
+            'none': <BsArrowsVertical />
+        }[sortState || 'none'];        
     };
 
     return (
@@ -64,12 +66,22 @@ const Table = <T,> ({ data, columns, totalRow }: TableProps<T>) => {
                                         headerGroup.headers.map(header => (
                                             <th key={header.id}
                                                 onClick={header.column.getToggleSortingHandler()}
-                                                className="py-4 px-6 text-center w-12">
-                                                    {!header.isPlaceholder &&           flexRender(header.column.columnDef.header, header.getContext()
-                                                    )}
-                                                    {
-                                                      renderSortIcon(header.column)                               
-                                                    }                                      
+                                                className="py-4 px-6 text-center"
+                                            >
+                                                {!header.isPlaceholder && (
+                                                    <div className="flex items-center">
+                                                        <span>
+                                                            {
+                                                                flexRender(header.column.columnDef.header, header.getContext()
+                                                            )}
+                                                        </span>
+                                                        <span className="shrink-0">
+                                                            {
+                                                                renderSortIcon(header.column)  
+                                                            } 
+                                                        </span>
+                                                    </div>
+                                                )}                                     
                                             </th>                                        
                                         ))}                                
                                 </tr>
