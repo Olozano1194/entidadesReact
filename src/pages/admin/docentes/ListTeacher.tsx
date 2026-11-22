@@ -2,10 +2,10 @@ import { useEffect, useState, useMemo } from "react";
 //API
 import { getTeacher } from '../../../api/teacher.api';
 //Table
-import { createColumnHelper } from '@tanstack/react-table';
-import type { ColumnDef } from "@tanstack/react-table";
-//Componente principal para la listas
 import Table from '../../../components/Table';
+import type { ColumnDef } from '@tanstack/react-table';
+// ...
+import { getTeacherColumns } from "./components/columns";
 //Mensajes
 import { toast } from 'react-hot-toast';
 //Models
@@ -155,81 +155,7 @@ const ListTeacher = () => {
         },
     ];
 
-    const columnHelper = createColumnHelper<Teacher>();
-
-    const columns = [
-        columnHelper.accessor((_, index) => index + 1, {
-            id: 'index',
-            header: 'N°',
-            cell: (info) => info.row.index + 1,
-        }),
-        columnHelper.accessor(row => `${row.nombre} ${row.apellido}`, {
-            id: 'docente',
-            header: 'Docente y Credenciales',
-            cell: ({ row }) => {
-                const t = row.original;
-                const email = t.email || t.correo;
-                const photo = t.foto || t.avatar;
-                const initials = `${t.nombre?.[0] ?? ''}${t.apellido?.[0] ?? ''}`.toUpperCase();
-                return (
-                    <section className="flex gap-3 items-center">
-                        <div className="relative">
-                            {photo ? (
-                                <img
-                                    src={photo}
-                                    alt={`${t.nombre} ${t.apellido}`}
-                                    className="h-10 w-10 rounded-full object-cover shadow-sm"
-                                />
-                            ) : (
-                                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 font-semibold text-primary shadow-sm">
-                                    {initials}
-                                </div>
-                            )}
-                        </div>
-                        <div className="min-w-0 text-left">
-                            <div className="font-label-bold flex gap-2 items-center text-label-bold text-on-surface">
-                                <span>{t.nombre} {t.apellido}</span>
-                            </div>
-                            {email && (
-                                <div className="font-label-sm text-label-sm text-outline truncate">
-                                    {email}
-                                </div>
-                            )}
-                            {t._id && (
-                                <div className="font-label-sm text-[11px] text-outline-variant">
-                                    UID: {t._id}
-                                </div>
-                            )}
-                        </div>
-                    </section>
-                );
-            },
-        }),
-        columnHelper.accessor(row => row.departamento, {
-            id: 'departamento',
-            header: 'Departamento/Cursos',
-        }),
-        columnHelper.accessor(row => row.telefono, {
-            id: 'telefono',
-            header: 'Telefono',
-        }),
-        columnHelper.accessor(row => row.cargaAcademica, {
-            id: 'cargaAcademica',
-            header: 'Carga Académica',
-        }),
-        columnHelper.accessor(row => row.contrato, {
-            id: 'contrato',
-            header: 'Contrato/Escalafón',
-        }),        
-        columnHelper.accessor(row => row.especialidad, {
-            id: 'especialidad',
-            header: 'Especialidad',
-        }),
-        columnHelper.accessor(row => row.estado, {
-            id: 'estado',
-            header: 'Estado',
-        }),
-    ] as ColumnDef<Teacher>[];
+    const columns = getTeacherColumns() as unknown as ColumnDef<Teacher>[];
 
     return (
         <main className="flex-1 flex-col gap-y-4 max-w-[1440px] mx-auto p-8 rounded-xl space-y-section-gap w-full">
