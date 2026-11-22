@@ -83,7 +83,7 @@ export const getInstitutionColumns = () => [
                         <span className="text-on-surface-variant font-mono">{estudiantes.toLocaleString('es-CO')} est.</span>
                     </div>
                     <div className="w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
-                        <div className="bg-primary h-full rounded-full" style={{ width: `${Math.min(100, (estudiantes / 5000) * 100)}%` }}></div>
+                        <div className="bg-primary h-full rounded-full" style={{ width: `${Math.min(100, (estudiantes / 5000) * 100)}%`, minWidth: estudiantes > 0 ? '4px' : '0px' }}></div>
                     </div>
                 </div>
             );
