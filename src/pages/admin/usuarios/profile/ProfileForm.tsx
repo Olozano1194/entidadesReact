@@ -67,7 +67,14 @@ const ProfileForm = ({ formData, roles, editingUser, onChange }: ProfileFormProp
                 </section>
                 <section className="flex flex-col gap-2 pt-4 md:col-span-2">
                     <label className="font-label-bold text-label-bold text-on-surface-variant">Breve biografía</label>
-                    <textarea name="bio" id="bio" className="border border-outline-variant bg-surface-container-lowest font-body-md px-4 py-3 rounded-lg transition-all text-body-m w-full focus:border-primary focus:ring-1 focus:ring-primary" rows={3} defaultValue="Supervisión de protocolos administrativos a nivel institucional e iniciativas de transformación digitales desde 2018."></textarea>
+                    <textarea 
+                        name="bio" 
+                        id="bio" 
+                        className="border border-outline-variant bg-surface-container-lowest font-body-md px-4 py-3 rounded-lg transition-all text-body-m w-full focus:border-primary focus:ring-1 focus:ring-primary" 
+                        rows={3} 
+                        placeholder="Supervisión de protocolos administrativos a nivel institucional e iniciativas de transformación digitales desde 2018."
+                    >
+                    </textarea>
                 </section>
                 <section className='flex justify-end items-center'>
                 </section>
