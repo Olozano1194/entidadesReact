@@ -11,4 +11,5 @@ export interface Student {
     desempeño?: number;
     nivel?: string;
     salones?: number | string;
+    curso?: string;
 };

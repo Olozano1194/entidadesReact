@@ -15,4 +15,10 @@ export interface Teacher {
     contrato?: string;
     estado?: string;
     identificacion?: string | number;
+    materias?: string[];
+    grupos?: string;
+    campus?: string;
+    horasAsignadas?: number;
+    horasTotales?: number;
+    porcentajeCarga?: number;
 };
