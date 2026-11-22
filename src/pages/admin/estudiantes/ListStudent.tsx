@@ -4,18 +4,17 @@ import { getStudent } from '../../../api/student.api';
 //Table
 import Table from '../../../components/Table';
 import type { ColumnDef } from '@tanstack/react-table';
-import { getStudentColumns } from "./components/columns";
 //Mensajes
 import { toast } from 'react-hot-toast';
 //Models
 import type { Student } from '../../../types/student.model';
-// components
-import StudentMetrics from "./components/StudentMetrics";
+// Components
 import HeaderSection from "../../../components/table/HeaderSection";
 import SearchSection from "../../../components/table/SearchSection";
+import StudentMetrics from "./components/StudentMetrics";
+import { getStudentColumns } from "./components/columns";
 // icons
 import { MdOutlineDownload, MdOutlinePersonAddAlt } from "react-icons/md";
-
 
 const ListStudent = () => {
     const [student, setStudent] = useState<Student[]>([]);
@@ -30,7 +29,6 @@ const ListStudent = () => {
             setIsLoading(true);
             try {
                 const studentData = await getStudent();
-                // console.log('User data received:', studentData);
                 setStudent(studentData);
             } catch (error) {
                 const errorMessage = error instanceof Error ? error.message : 'Error al cargar los datos';
@@ -67,7 +65,6 @@ const ListStudent = () => {
         });
     }, [student, searchTerm, estado, nivel, salon]);
 
-    // Dashboard metrics (to be filled when the backend provides them)
     const columns = getStudentColumns() as unknown as ColumnDef<Student>[];
 
     return (
@@ -120,7 +117,7 @@ const ListStudent = () => {
                             key: 'estado',
                             label: 'Estado',
                             value: estado,
-                            onChange: setSalon,
+                            onChange: setEstado,
                             options: estados.map((d) => ({ value: d, label: d })),
                         },
                     ]}
@@ -137,10 +134,12 @@ const ListStudent = () => {
                     <div className="text-center py-4">Cargando...</div>
 
                 ) : (
-                    <Table
-                        data={filteredStudent}
-                        columns={columns}
-                    />
+                    <div className="w-full">
+                        <Table
+                            data={filteredStudent}
+                            columns={columns}
+                        />
+                    </div>
                 )
             }
         </main>
