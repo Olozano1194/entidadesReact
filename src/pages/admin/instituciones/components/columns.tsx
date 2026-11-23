@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { createColumnHelper } from '@tanstack/react-table';
 import { MdApartment, MdVisibility, MdMoreVert, MdLocationOn } from "react-icons/md";
-import type { ListInstitucionDto } from "../../../types/dto/institution.dto";
+import type { ListInstitucionDto } from "../../../../types/dto/institution.dto";
 
 const columnHelper = createColumnHelper<ListInstitucionDto>();
 

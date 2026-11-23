@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import { PaginationSection } from './PaginationSection';
+import PaginationSection from './PaginationSection';
 
 describe('PaginationSection', () => {
   it('renders nothing when totalPages <= 1', () => {
