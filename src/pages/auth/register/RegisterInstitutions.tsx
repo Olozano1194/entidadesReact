@@ -192,5 +192,4 @@ const RegisterInstitutions = () => {
         </main>
     );
 };
-
 export default RegisterInstitutions;

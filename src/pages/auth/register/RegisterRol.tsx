@@ -9,6 +9,9 @@ import type { CreateRolDto } from '../../../types/dto/rol.dto';
 import type { Rol } from '../../../types/rol.models';
 // Icons
 import { MdOutlineArrowBack } from "react-icons/md";
+// Components
+import FormField from '../../../components/form/FormField';
+import FormSection from '../../../components/form/FormSection';
 
 const NIVELES = [
     { value: '1', label: 'Nivel 1 - Super Admin (Control Total)' },
@@ -91,82 +94,50 @@ const RegisterRol = () => {
                 {/* Form */}
                 <form id="roleCreationForm" onSubmit={onSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                     <div className="lg:col-span-8 flex flex-col space-y-8">
-                        <section className="bg-surface-container-lowest rounded-xl p-6 sm:p-8 shadow-sm flex flex-col gap-6">
-                            <div className="flex items-center gap-3 pb-4 border-b border-surface-container">
-                                <div className="w-10 h-10 rounded-lg bg-primary-fixed flex items-center justify-center text-on-primary-fixed">
-                                    <MdOutlineArrowBack className="text-[22px]" />
-                                </div>
-                                <div>
-                                    <h2 className="font-headline-md text-headline-md text-on-surface">Información Básica del Rol</h2>
-                                    <p className="font-label-sm text-label-sm text-on-surface-variant">Parámetros de identificación institucional y clasificación jerárquica</p>
-                                </div>
-                            </div>
-
+                        <FormSection
+                            title="Información Básica del Rol"
+                            description="Parámetros de identificación institucional y clasificación jerárquica"
+                            icon={<MdOutlineArrowBack className="text-[22px]" />}
+                            badge="Requerido"
+                        >
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                {/* Nombre */}
-                                <div className="flex flex-col gap-2">
-                                    <label className="font-label-bold text-label-bold text-on-surface" htmlFor="nombre">
-                                        Nombre Oficial del Rol <span className="text-error">*</span>
-                                    </label>
-                                    <input
-                                        id="nombre"
-                                        type="text"
-                                        placeholder="Ej. Coordinador de Convivencia"
-                                        className="w-full bg-surface-container-low rounded-lg px-3.5 py-2.5 text-on-surface font-body-md text-body-md focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary focus:outline-none transition-all"
-                                        {...register('nombre', { required: 'Nombre requerido' })}
-                                    />
-                                    {errors.nombre && <span className="text-red-500 text-sm">{errors.nombre.message}</span>}
-                                </div>
-
-                                {/* Slug */}
-                                <div className="flex flex-col gap-2">
-                                    <label className="font-label-bold text-label-bold text-on-surface" htmlFor="slug">
-                                        Código de Sistema (Slug)
-                                    </label>
-                                    <input
-                                        id="slug"
-                                        type="text"
-                                        readOnly
-                                        value={slug}
-                                        className="w-full bg-surface-container rounded-lg px-3.5 py-2.5 text-on-surface-variant font-mono text-[13px] tracking-wide focus:outline-none cursor-not-allowed select-all"
-                                    />
-                                    <p className="font-label-sm text-label-sm text-on-surface-variant">Clave unívoca empleada en validaciones de API y JWT.</p>
-                                </div>
+                                <FormField
+                                    label="Nombre Oficial del Rol"
+                                    required
+                                    placeholder="Ej. Coordinador de Convivencia"
+                                    error={errors.nombre?.message}
+                                    {...register('nombre', { required: 'Nombre requerido' })}
+                                />
+                                <FormField
+                                    label="Código de Sistema (Slug)"
+                                    helpText="Clave unívoca empleada en validaciones de API y JWT."
+                                    value={slug}
+                                    readOnly
+                                    className="cursor-not-allowed select-all font-mono text-[13px] tracking-wide text-on-surface-variant bg-surface-container"
+                                />
                             </div>
-
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                {/* Nivel jerárquico */}
-                                <div className="flex flex-col gap-2">
-                                    <label className="font-label-bold text-label-bold text-on-surface" htmlFor="nivel">
-                                        Nivel Jerárquico y Alcance <span className="text-error">*</span>
-                                    </label>
-                                    <select
-                                        id="nivel"
-                                        className="w-full bg-surface-container-low rounded-lg px-3.5 py-2.5 text-on-surface font-body-md text-body-md focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary focus:outline-none appearance-none transition-all cursor-pointer"
-                                        {...register('nivel', { required: 'Nivel requerido' })}
-                                    >
-                                        {NIVELES.map((n) => (
-                                            <option key={n.value} value={n.value}>{n.label}</option>
-                                        ))}
-                                    </select>
-                                </div>
-
-                                {/* Descripción */}
-                                <div className="flex flex-col gap-2">
-                                    <label className="font-label-bold text-label-bold text-on-surface" htmlFor="descripcion">
-                                        Descripción Operativa
-                                    </label>
-                                    <textarea
-                                        id="descripcion"
-                                        rows={3}
-                                        placeholder="Describe las responsabilidades institucionales..."
-                                        className="w-full bg-surface-container-low rounded-lg p-3.5 text-on-surface font-body-md text-body-md focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary focus:outline-none transition-all resize-none"
-                                        {...register('descripcion', { required: 'Descripción requerida' })}
-                                    />
-                                    {errors.descripcion && <span className="text-red-500 text-sm">{errors.descripcion.message}</span>}
-                                </div>
+                                <FormField
+                                    as="select"
+                                    label="Nivel Jerárquico y Alcance"
+                                    required
+                                    error={errors.nivel?.message}
+                                    {...register('nivel', { required: 'Nivel requerido' })}
+                                >
+                                    {NIVELES.map((n) => (
+                                        <option key={n.value} value={n.value}>{n.label}</option>
+                                    ))}
+                                </FormField>
+                                <FormField
+                                    as="textarea"
+                                    label="Descripción Operativa"
+                                    helpText="Describe las responsabilidades institucionales..."
+                                    error={errors.descripcion?.message}
+                                    rows={3}
+                                    {...register('descripcion', { required: 'Descripción requerida' })}
+                                />
                             </div>
-                        </section>
+                        </FormSection>
                     </div>
 
                     {/* Sidebar */}
@@ -179,15 +150,12 @@ const RegisterRol = () => {
                             <div className="flex flex-col gap-2 pt-1">
                                 <button type="button" className="w-full text-left px-3 py-2 rounded-md bg-surface-container-lowest hover:bg-secondary-fixed/30 text-on-surface text-label-sm font-label-sm flex items-center justify-between transition-colors">
                                     <span>Docente Titular</span>
-                                    <MdOutlineArrowBack className="text-[16px] text-primary rotate-180" />
                                 </button>
                                 <button type="button" className="w-full text-left px-3 py-2 rounded-md bg-surface-container-lowest hover:bg-secondary-fixed/30 text-on-surface text-label-sm font-label-sm flex items-center justify-between transition-colors">
                                     <span>Secretaría Académica</span>
-                                    <MdOutlineArrowBack className="text-[16px] text-primary rotate-180" />
                                 </button>
                                 <button type="button" className="w-full text-left px-3 py-2 rounded-md bg-surface-container-lowest hover:bg-secondary-fixed/30 text-on-surface text-label-sm font-label-sm flex items-center justify-between transition-colors">
                                     <span>Coordinador de Convivencia</span>
-                                    <MdOutlineArrowBack className="text-[16px] text-primary rotate-180" />
                                 </button>
                             </div>
                         </div>
