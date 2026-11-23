@@ -75,7 +75,6 @@ const RegisterUser = () => {
                     Habilitar el acceso para nuevos miembros del profesorado, estudiantes o administradores. Asegurarse de que todas las credenciales cumplan con la politica de seguridad de la institución.
                 </p>
             </header>
-
             <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
                 {/* Left Column */}
                 <section className="flex flex-col gap-6 lg:col-span-4">
@@ -108,7 +107,6 @@ const RegisterUser = () => {
                         </ul>
                     </div>
                 </section>
-
                 {/* Right Column */}
                 <section className="lg:col-span-8 flex flex-col">
                     <div className="bg-white border border-slate-100 p-8 lg:p-10 rounded-2xl shadow-[0px_4px_20px_rgba(0,0,0,0.04)] flex-1 flex flex-col">

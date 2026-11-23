@@ -1,7 +1,8 @@
-import type { ReactNode, InputHTMLAttributes, SelectHTMLAttributes, TextareaHTMLAttributes } from "react";
-import { MdKeyboardArrowDown } from "react-icons/md";
+import type { ReactNode, ChangeEvent, FocusEvent, Ref } from "react";
+import Select from "../ui/Select";
 
-interface BaseProps {
+// Props comunes a todos los tipos de campo
+interface BaseFieldProps {
     label: string;
     required?: boolean;
     error?: string;
@@ -9,42 +10,108 @@ interface BaseProps {
     helpText?: string;
     trailing?: ReactNode;
 }
+// Props para un input normal
+interface InputFieldProps extends BaseFieldProps {
+    type?: string;
+    placeholder?: string;
+    value?: string;
+    onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
+    readOnly?: boolean;
+    className?: string;
+    name?: string;
+    onBlur?: (e: FocusEvent<HTMLInputElement>) => void;
+    ref?: Ref<HTMLInputElement>;
+}
+// Props para un select
+interface SelectFieldProps extends BaseFieldProps {
+    as: "select";
+    children: ReactNode;
+    value?: string;
+    onChange?: (e: ChangeEvent<HTMLSelectElement>) => void;
+    name?: string;
+    onBlur?: (e: FocusEvent<HTMLSelectElement>) => void;
+    ref?: Ref<HTMLSelectElement>;
+}
+// Props para un textarea
+interface TextareaFieldProps extends BaseFieldProps {
+    as: "textarea";
+    placeholder?: string;
+    rows?: number;
+    value?: string;
+    onChange?: (e: ChangeEvent<HTMLTextAreaElement>) => void;
+    name?: string;
+    onBlur?: (e: FocusEvent<HTMLTextAreaElement>) => void;
+    ref?: Ref<HTMLTextAreaElement>;
+}
 
-type InputProps = BaseProps & InputHTMLAttributes<HTMLInputElement> & { as?: 'input' };
-type SelectProps = BaseProps & SelectHTMLAttributes<HTMLSelectElement> & { as: 'select'; children: ReactNode };
-type TextareaProps = BaseProps & TextareaHTMLAttributes<HTMLTextAreaElement> & { as: 'textarea' };
+type FormFieldProps = InputFieldProps | SelectFieldProps | TextareaFieldProps;
 
-type FormFieldProps = InputProps | SelectProps | TextareaProps;
+// Estilos base compartidos por todos los campos
+const baseClass = "border border-slate-200 bg-slate-50/50 px-4 py-3 pl-10 rounded-lg text-on-surface transition-all w-full focus:outline-none focus:border-primary focus:bg-white";
 
 const FormField = (props: FormFieldProps) => {
-    const { label, required, error, icon, helpText, as = 'input', ...rest } = props;
-    const baseClass = "w-full bg-surface-container-low rounded-lg px-3.5 py-2.5 text-on-surface font-body-md text-body-md focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary focus:outline-none transition-all";
+    const { label, required, error, icon, helpText, trailing } = props;
+
+    // Determinar si es select o textarea
+    const isSelect = (props as SelectFieldProps).as === "select";
+    const isTextarea = (props as TextareaFieldProps).as === "textarea";
 
     return (
         <div className="flex flex-col gap-2">
+            {/* Label */}
             <label className="font-label-bold text-label-bold text-on-surface flex items-center gap-1">
-                {label} {required && <span className="text-error">*</span>}
+                {label}
+                {required && <span className="text-error">*</span>}
             </label>
+
+            {/* Input / Select / Textarea */}
             <div className="relative">
-                {icon && <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-outline">{icon}</span>}
-                {as === 'select' ? (
-                    <select {...(rest as SelectHTMLAttributes<HTMLSelectElement>)} className={`${baseClass} appearance-none cursor-pointer pr-10 ${icon ? 'pl-10' : ''}`}>
-                        {(props as SelectProps).children}
-                    </select>
-                ) : as === 'textarea' ? (
-                    <textarea {...(rest as TextareaHTMLAttributes<HTMLTextAreaElement>)} className={`${baseClass} resize-none ${icon ? 'pl-10' : ''}`} />
-                ) : (
-                    <input {...(rest as InputHTMLAttributes<HTMLInputElement>)} className={`${baseClass} ${icon ? 'pl-10' : ''} ${props.trailing ? 'pr-12' : ''}`} />
+                {/* Icono a la izquierda */}
+                {icon && (
+                    <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-outline">
+                        {icon}
+                    </span>
                 )}
-                {as === 'select' && (
-                    <MdKeyboardArrowDown className="absolute right-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none text-base" />
+                {/* Select */}
+                {isSelect && (
+                    <Select
+                        {...(props as SelectFieldProps)}
+                        className={`px-4 py-3 ${icon ? 'pl-10' : ''}`}
+                    >
+                        {(props as SelectFieldProps).children}
+                    </Select>
                 )}
-                {props.trailing && (
-                    <div className="absolute right-3 top-1/2 -translate-y-1/2">{props.trailing}</div>
+                {/* Textarea */}
+                {isTextarea && (
+                    <textarea
+                        {...(props as TextareaFieldProps)}
+                        className={`${baseClass} resize-none ${icon ? 'pl-10' : ''}`}
+                    />
+                )}
+                {/* Input (por defecto) */}
+                {!isSelect && !isTextarea && (
+                    <input
+                        {...(props as InputFieldProps)}
+                        className={`${baseClass} ${icon ? 'pl-10' : ''} ${(props as InputFieldProps).className ?? ""}`}
+                    />
+                )}
+                {/* Elemento trailing (ej. botón de mostrar contraseña) */}
+                {trailing && (
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                        {trailing}
+                    </div>
                 )}
             </div>
-            {helpText && <p className="font-label-sm text-label-sm text-on-surface-variant">{helpText}</p>}
-            {error && <span className="text-red-500 text-sm">{error}</span>}
+            {/* Texto de ayuda */}
+            {helpText && (
+                <p className="font-label-sm text-label-sm text-on-surface-variant">
+                    {helpText}
+                </p>
+            )}
+            {/* Error */}
+            {error && (
+                <span className="text-red-500 text-sm">{error}</span>
+            )}
         </div>
     );
 };
