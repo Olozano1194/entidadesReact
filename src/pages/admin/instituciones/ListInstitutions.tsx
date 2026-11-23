@@ -11,7 +11,7 @@ import InstitutionMetrics from "./components/InstitutionMetrics";
 import SearchSection from "../../../components/table/SearchSection";
 import Table from "../../../components/Table";
 import type { ColumnDef } from "@tanstack/react-table";
-import { getInstitutionColumns } from "./columns";
+import { getInstitutionColumns } from "./components/columns";
 
 const ListInstitutions = () => {
     const [ institution, setInstitution ] = useState<ListInstitucionDto[]>([]);
