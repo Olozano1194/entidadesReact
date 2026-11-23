@@ -3,4 +3,5 @@ export interface CreateRolDto {
     descripcion?: string;
     permisos: string[];
     activo?: boolean;
+    nivel?: string;
 };
