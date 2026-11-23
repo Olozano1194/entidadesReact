@@ -1,6 +1,6 @@
 # Convenciones de trabajo — entidades-react
 
-> Reglas acordadas con el mantenedor. **Inquebrantables**: R2 (commits) y R3 (push).
+> Reglas acordadas con el mantenedor. **Inquebrantables**: R2 (commits), R3 (push) y R15 (código legible para juniors).
 
 ## R1 — Commits en español con Conventional Commits
 
@@ -83,6 +83,15 @@
 - Si un componente excede el límite, se debe **dividir/refactorizar** en componentes más pequeños
   antes de abrir el PR.
 - Aplica a archivos `.tsx`/`.ts` de componentes y a sus archivos de test asociados.
+
+## R15 — Código legible para juniors sin experiencia (INQUEBRANTABLE)
+
+- **Nunca** se escribe código que una persona junior sin experiencia en una empresa de tecnología no pueda entender.
+- Todo componente, función o bloque de lógica debe ser **autoexplicativo**: nombres descriptivos, funciones cortas, comentarios donde la intención no sea obvia.
+- Evitar abstracciones prematuras, patrones complejos, type-gymnastics o trucos que solo un senior entendería.
+- Si un junior no puede leer el código y saber qué hace en menos de 30 segundos, el código está mal escrito.
+- Aplica a **todo** el código del proyecto: componentes, hooks, utils, tests, configuración.
+- Un PR que contenga código ilegible para juniors no se acepta, sin excepción.
 
 ---
 
