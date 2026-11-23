@@ -48,7 +48,7 @@ export const getUserColumns = () => [
                 const r = rol.toLowerCase();
                 if (r.includes('super') || r.includes('admin')) return 'bg-primary text-on-primary border-primary';
                 if (r.includes('docente') || r.includes('profesor')) return 'bg-surface-container-high text-on-surface-variant border-outline-variant';
-                if (r.includes('estudiante') || r.includes('alumno')) return 'bg-tertiary-fixed text-on-tertiary-fixed border-tertiary-fixed';
+                if (r.includes('estudiante') || r.includes('alumno')) return 'bg-emerald-50/50 text-on-tertiary-fixed border-tertiary-fixed/50';
                 if (r.includes('secretaria') || r.includes('secretario')) return 'bg-secondary-container text-on-secondary-container border-secondary-container';
                 if (r.includes('acudiente')) return 'bg-secondary-fixed text-on-secondary-fixed border-secondary-fixed';
                 return 'bg-surface-container text-on-surface-variant border-outline-variant';

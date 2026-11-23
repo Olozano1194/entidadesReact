@@ -101,7 +101,7 @@ const Table = <T,> ({ data, columns, totalRow }: TableProps<T>) => {
                                     <tr key={row.id} className="group transition-colors hover:bg-surface-container-low/60">
                                         {
                                             row.getVisibleCells().map(cell => (
-                                                <td key={cell.id} className="py-4 px-4 text-center text-on-surface-variant">
+                                                <td key={cell.id} className="py-4 px-4 text-left text-on-surface-variant">
                                                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                                 </td>
                                             ))
