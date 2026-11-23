@@ -1,5 +1,4 @@
-import { TfiIdBadge } from "react-icons/tfi";
-import { MdTrendingUp, MdSchedule, MdOutlineTimelapse, MdOutlineStarBorderPurple500 } from "react-icons/md";
+import { MdBadge, MdTrendingUp, MdSchedule, MdOutlineTimelapse, MdOutlineStarBorderPurple500 } from "react-icons/md";
 import MetricsSection from "../../../../components/table/MetricsSection";
 
 interface TeacherMetricsProps {
@@ -21,7 +20,7 @@ const TeacherMetrics = ({ teacherCount, metrics }: TeacherMetricsProps) => {
             id: 'docentes',
             title: 'Docentes Vinculados',
             value: teacherCount,
-            icon: <TfiIdBadge className="text-[22px]" />,
+            icon: <MdBadge className="text-[22px]" />,
             blurColor: 'bg-primary-fixed/30',
             indicator: metrics.docentesNuevos != null ? (
                 <span className="font-label-sm font-semibold flex items-center text-tertiary text-label-sm">
