@@ -18,5 +18,10 @@ export interface ListUserDto {
     email: string;
     rol: Rol | string;
     nombre?: string;
-    apellido?: string;     
+    apellido?: string;
+    estado?: string;
+    foto?: string;
+    avatar?: string;
+    institucion?: string;
+    ultimoAcceso?: string | Date;      
 }

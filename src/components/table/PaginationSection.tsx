@@ -6,11 +6,11 @@ type PaginationProps = {
     onPageChange: (page: number) => void;
 };
 
-export function PaginationSection({
+const PaginationSection =({
     currentPage,
     totalPages,
     onPageChange,
-}: PaginationProps) {
+}: PaginationProps) => {
     if (totalPages <= 1) return null;
 
     const maxVisible = 5;
@@ -50,7 +50,7 @@ export function PaginationSection({
                 <button
                     onClick={() => onPageChange(currentPage - 1)}
                     disabled={currentPage === 1}
-                    className="bg-surface-container border border-outline-variant cursor-pointer flex items-center justify-center h-10 p-2 rounded-lg text-on-surface transition-colors hover:bg-surface-container-high disabled:opacity-40"
+                    className="bg-surface-container border border-outline-variant cursor-pointer flex items-center justify-center h-8 p-2 rounded-lg text-on-surface transition-colors hover:bg-surface-container-high disabled:opacity-40"
                 >
                     <FaChevronLeft />
                 </button>
@@ -109,3 +109,4 @@ export function PaginationSection({
         </nav>
     );
 }
+export default PaginationSection;

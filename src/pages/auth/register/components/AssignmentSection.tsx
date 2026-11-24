@@ -1,6 +1,9 @@
 import type { UseFormRegister } from 'react-hook-form';
 import { MdOutlineVerified } from 'react-icons/md';
 import type { InstitucionModel } from '../../../../types/institution.model';
+// UI
+import Input from '../../../../components/ui/Input';
+import Select from '../../../../components/ui/Select';
 
 interface AssignmentSectionProps {
     register: UseFormRegister<InstitucionModel>;
@@ -40,9 +43,8 @@ const AssignmentSection = ({ register }: AssignmentSectionProps) => (
                 </div>
                 <div className='space-y-2'>
                     <label className='font-label-bold text-label-bold text-slate-700'>Secretaría</label>
-                    <input
-                        type="text"
-                        className='border border-slate-200 bg-slate-50/50 px-4 py-3 rounded-lg text-on-surface transition-all w-full focus:outline-none focus:border-primary focus:bg-white'
+                    <Input
+                        type="text"                        
                         placeholder='Nombre de la secretaria'
                         {...register('secretaria')}
                     />
@@ -51,16 +53,17 @@ const AssignmentSection = ({ register }: AssignmentSectionProps) => (
                     por eso casteamos periodos a string en el modelo */}
                 <div className='space-y-2'>
                     <label className='font-label-bold text-label-bold text-slate-700'>Número de periodos</label>
-                    <select
-                        className='appearance-none border border-slate-200 bg-slate-50 cursor-pointer px-4 py-3 rounded-lg text-on-surface transition-all w-full focus:outline-none focus:border-primary focus:bg-white'
-                        {...register('periodos')}
-                        defaultValue="4"
-                    >
-                        <option value="1">1 periodo</option>
-                        <option value="2">2 periodos</option>
-                        <option value="3">3 periodos</option>
-                        <option value="4">4 periodos</option>
-                    </select>
+                    <div className='relative'>
+                        <Select                        
+                            {...register('periodos')}
+                            defaultValue="4"
+                        >
+                            <option value="1">1 periodo</option>
+                            <option value="2">2 periodos</option>
+                            <option value="3">3 periodos</option>
+                            <option value="4">4 periodos</option>
+                        </Select>
+                    </div>                    
                 </div>
             </div>
         </div>

@@ -13,7 +13,7 @@ import type {
     Column,
 } from '@tanstack/react-table';
 // Components
-import { PaginationSection } from "./table/PaginationSection";
+import PaginationSection from "./table/PaginationSection";
 // Icons
 import { GoArrowDown, GoArrowUp } from "react-icons/go";
 import { BsArrowsVertical } from "react-icons/bs";
@@ -101,7 +101,7 @@ const Table = <T,> ({ data, columns, totalRow }: TableProps<T>) => {
                                     <tr key={row.id} className="group transition-colors hover:bg-surface-container-low/60">
                                         {
                                             row.getVisibleCells().map(cell => (
-                                                <td key={cell.id} className="py-4 px-4 text-center text-on-surface-variant">
+                                                <td key={cell.id} className="py-4 px-4 text-left text-on-surface-variant">
                                                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                                 </td>
                                             ))
@@ -128,13 +128,13 @@ const Table = <T,> ({ data, columns, totalRow }: TableProps<T>) => {
                         )}
                     </tbody>
                 </table>
-                {/* contenedor de los btn de paginación */}
-                <PaginationSection
-                    currentPage={table.getState().pagination.pageIndex + 1}
-                    totalPages={table.getPageCount()}
-                    onPageChange={(page: number) => table.setPageIndex(page - 1)}                     
-                />                
-            </section>                      
+            </section>
+            {/* contenedor de los btn de paginación */}
+            <PaginationSection
+                currentPage={table.getState().pagination.pageIndex + 1}
+                totalPages={table.getPageCount()}
+                onPageChange={(page: number) => table.setPageIndex(page - 1)}                     
+            />                      
         </main>
     );
 }

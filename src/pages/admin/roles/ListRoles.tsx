@@ -1,89 +1,101 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 //API
 import { getRoles } from "../../../api/roles.api";
-//Table
-import { createColumnHelper } from '@tanstack/react-table';
-import type { ColumnDef } from "@tanstack/react-table";
-//Componente principal para la listas
-import Table from '../../../components/Table';
+import { getUsers } from "../../../api/user.api";
 //Mensajes
 import { toast } from 'react-hot-toast';
 //Models
 import type { Rol } from "../../../types/rol.models";
-
-
+import type { ListUserDto } from "../../../types/dto/user.dto";
+// Components
+import Table from '../../../components/Table';
+import type { ColumnDef } from '@tanstack/react-table';
+import HeaderSection from "../../../components/table/HeaderSection";
+import SearchSection from "../../../components/table/SearchSection";
+import RoleMetrics from "./components/RoleMetrics";
+import { getRoleColumns } from "./components/columns";
 
 const ListRoles = () => {
     const [ roles, setRoles ] = useState<Rol[]>([]);
+    const [ users, setUsers ] = useState<ListUserDto[]>([]);
     const [ isLoading, setIsLoading ] = useState(false);
+    const [ searchTerm, setSearchTerm ] = useState('');
 
     useEffect(() => {
         const fetchUserData = async () => {
             setIsLoading(true);
             try {
-                const rolesData = await getRoles();
-                //console.log('User data received:', data);
-                setRoles(rolesData);               
-                                
-            }catch (error) {
+                const [rolesData, usersData] = await Promise.all([
+                    getRoles(),
+                    getUsers(),
+                ]);
+                setRoles(rolesData);
+                setUsers(usersData);
+            } catch (error) {
                 const errorMessage = error instanceof Error ? error.message : 'Error al cargar los datos';
                 toast.error(errorMessage);
-            }finally {
+            } finally {
                 setIsLoading(false);
             }
         };
         fetchUserData();
     }, []);
-  
 
-    const columnHelper = createColumnHelper<Rol>();
+    const filteredRoles = useMemo(() => {
+        const term = searchTerm.trim().toLowerCase();
+        if (!term) return roles;
+        return roles.filter((r) => {
+            const haystack = `${r.nombre} ${r.descripcion ?? ''} ${(r.permisos ?? []).join(' ')}`.toLowerCase();
+            return haystack.includes(term);
+        });
+    }, [roles, searchTerm]);
 
-    const columns = [
-        columnHelper.accessor((_, index) => index + 1, {
-            id: 'index',
-            header: 'N°',
-            cell: (info) => {
-                // Solo mostrar el número si no es la fila de total
-                return info.row.index + 1;
-            },
-        }),        
-        columnHelper.accessor(row => row.nombre, {
-            id: 'nombre',
-            header: 'Nombre',
-        }),
-        columnHelper.accessor(row => row.descripcion, {
-            id: 'despcripcion',
-            header: 'Descripción',
-        }),
-        columnHelper.accessor(row => row.permisos, {
-            id: 'permisos',
-            header: 'Permisos',
-        }),
-        // columnHelper.accessor('actions', {
-        //     header: 'Acciones',
-        //     cell: (({ row }) => (
-        //         <div className="flex justify-center items-center gap-x-4">
-        //             <Link to={`/edit/usuarios/${row.original.id}`} className="bg-green-500 text-white p-2 rounded-md">Editar</Link>
-        //             <button className="bg-red-500 text-white p-2 rounded-md">Eliminar</button>
-        //         </div>
-        //     )),
-        // }),
-    ] as ColumnDef<Rol>[];
+    const totalRoles = roles.length;
+    const rolesActivos = roles.filter((r) => r.activo).length;
+    const totalPermisos = roles.reduce((acc, r) => acc + (r.permisos?.length || 0), 0);
+    const usuariosConRol = users.filter((u) => u.rol).length;
+
+    const columns = getRoleColumns() as unknown as ColumnDef<Rol>[];
 
     return (
-        <main className="cards bg-primary w-full flex flex-col justify-center items-center gap-y-4 p-4 rounded-xl">
-            <h1 className='text-xl text-white font-bold pb-4 md:text-2xl' >Listado de Usuarios</h1>
+        <main className="flex-1 flex-col gap-y-4 max-w-[1440px] mx-auto p-8 rounded-xl space-y-section-gap w-full">
+            <section className="flex flex-col w-full">
+                <HeaderSection
+                    breadcrumbs={['Configuración del Sistema', 'Seguridad', 'Roles y Permisos']}
+                    title="Matriz de Roles y Niveles de Acceso"
+                    description="Configura los privilegios granulares y controla el acceso basado en roles (RBAC) para los módulos académicos, directivos, administrativos y de auditoría institucional."
+                    actions={
+                        <>
+                            <button className="px-5 py-2.5 rounded-xl bg-surface-container-high hover:bg-surface-container-highest text-secondary font-label-bold text-label-bold transition-all flex items-center gap-2 shadow-sm">
+                                Registro de Auditoría
+                            </button>
+                            <button className="px-5 py-2.5 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-label-bold text-label-bold transition-all shadow-md shadow-primary/20 flex items-center gap-2">
+                                Crear Nuevo Rol Personalizado
+                            </button>
+                        </>
+                    }
+                />
+                <RoleMetrics totalRoles={totalRoles} rolesActivos={rolesActivos} totalPermisos={totalPermisos} usuariosConRol={usuariosConRol} />
+                <SearchSection
+                    searchTerm={searchTerm}
+                    onSearchChange={setSearchTerm}
+                    placeholder="Buscar por nombre o descripción..."
+                    filters={[]}
+                    onClear={() => setSearchTerm('')}
+                />
+            </section>
             {
                 isLoading ? (
                     <div className="text-center py-4">Cargando...</div>
-
-                ): (
-                    <Table 
-                        data={roles} 
-                        columns={columns}                          
-                    />
+                ) : (
+                    <div className="w-full">
+                        <Table
+                            data={filteredRoles}
+                            columns={columns}
+                        />
+                    </div>
                 )
-            }               
+            }
         </main>
     );
 }

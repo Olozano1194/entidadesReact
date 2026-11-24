@@ -1,8 +1,10 @@
 import type { UseFormRegister, FieldErrors } from 'react-hook-form';
-import { MdExpandMore, MdOutlineLocationOn, MdOutlineCorporateFare, MdAdd, MdOutlineRemove } from 'react-icons/md';
+import { MdOutlineLocationOn, MdOutlineCorporateFare, MdAdd, MdOutlineRemove } from 'react-icons/md';
 import ErrorSpan from '../../../../components/ui/ErrorSpan';
 import type { InstitucionModel } from '../../../../types/institution.model';
 import type { MunicipalityModel } from '../../../../types/municipality.model';
+// UI
+import Select from '../../../../components/ui/Select';
 
 interface LocationCapacitySectionProps {
     register: UseFormRegister<InstitucionModel>;
@@ -28,9 +30,9 @@ const LocationCapacitySection = ({ register, errors, filteredMunicipality, isDep
                         Municipio
                     </label>
                     <div className='relative'>
-                        <select
+                        <Select
                             id="municipio"
-                            className='appearance-none border border-slate-200 bg-slate-50 cursor-pointer duration-200 mt-2 pl-4 pr-10 py-3 rounded-lg text-on-surface transition-all w-full focus:outline-none focus:border-emerald-700 focus:bg-white disabled:opacity-50 disabled:cursor-not-allowed'
+                            className='disabled:cursor-not-allowed'
                             {...register('idmunicipio', { required: 'Municipio requerido' })}
                             disabled={!isDeptoSelected}
                         >
@@ -42,8 +44,7 @@ const LocationCapacitySection = ({ register, errors, filteredMunicipality, isDep
                                     {muni.descripcion}
                                 </option>
                             ))}
-                        </select>
-                        <MdExpandMore className='absolute pointer-events-none right-4 top-1/2 text-slate-400 -translate-y-1/2' />
+                        </Select>                        
                     </div>
                     {errors.idmunicipio && <ErrorSpan>{errors.idmunicipio.message}</ErrorSpan>}
                 </div>
