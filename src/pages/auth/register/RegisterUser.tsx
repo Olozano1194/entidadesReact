@@ -17,6 +17,9 @@ import type { Rol } from '../../../types/rol.models';
 // Components
 import FormField from '../../../components/form/FormField';
 import FormSection from '../../../components/form/FormSection';
+// UI
+import ButtonFormRight from '../../../components/ui/btn/ButtonFormRight';
+import ButtonFormLeft from '../../../components/ui/btn/ButtonFormLeft';
 
 const RegisterUser = () => {
     const { register, handleSubmit, formState: { errors }, watch, reset } = useForm<User>();
@@ -189,14 +192,14 @@ const RegisterUser = () => {
                                     </p>
                                 </div>
                             </FormSection>
-
+                            {/* Buttons */}
                             <div className="border-t border-slate-100 flex flex-col gap-4 items-center justify-end pt-8 sm:flex-row">
-                                <button type="button" onClick={() => navigate('/admin')} className="cursor-pointer font-label-bold px-8 py-3 rounded-lg text-emerald-800 transition-colors w-full hover:bg-emerald-50 sm:w-auto">
+                                <ButtonFormLeft type="button" onClick={() => navigate('/admin')}>
                                     Cancelar y restablecer
-                                </button>
-                                <button type="submit" className="accent-gradient cursor-pointer flex font-label-bold gap-2 items-center justify-center px-12 py-3 rounded-lg shadow-lg text-white transition-all w-full hover:shadow-emerald-900/20 active:scale-[0.98] sm:w-auto">
+                                </ButtonFormLeft>
+                                <ButtonFormRight type="submit">
                                     Registrar nuevo usuario
-                                </button>
+                                </ButtonFormRight>
                             </div>
                         </form>
                     </div>

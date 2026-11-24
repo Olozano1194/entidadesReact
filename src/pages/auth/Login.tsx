@@ -9,7 +9,6 @@ import { login } from "../../api/user.api";
 import Main from '../../components/ui/Main';
 import AuthDecoration from "../../components/ui/AuthDecoration";
 import Title from "../../components/ui/Title";
-import Button from '../../components/ui/Button';
 import FormField from '../../components/form/FormField';
 //Mensajes
 import { toast } from 'react-hot-toast';
@@ -134,9 +133,13 @@ const Login = () => {
                             })}
                         />
                         {/* Btn */}
-                        <Button type="submit">
-                            Iniciar Sesión <RiLoginBoxLine className='text-lg' />
-                        </Button>
+                        <button 
+                            type="submit" 
+                            className="bg-primary-container cursor-pointer flex font-label-bold justify-center items-center gap-2 mt-form-stack py-4 rounded-lg shadow-lg text-label-bold text-on-primary transition-all w-full hover:shadow-xl hover:bg-primary active:scale-95"
+                        >
+                            Iniciar Sesión 
+                            <RiLoginBoxLine className='text-lg' />
+                        </button>
                     </form>
                     <div className="border-t border-outline-variant/30 mt-8 pt-8 text-center">
                         <p className="font-label-sm text-label-sm text-on-surface-variant">
