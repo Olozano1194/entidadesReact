@@ -9,7 +9,7 @@ const Select = ({children, className= '', ...props}: SelectProps) => {
     return (
         <>
         <select 
-            className={`appearance-none bg-slate-50/50 border border-slate-200 cursor-pointer duration-200 mt-2 focus:bg-white focus:outline-none focus:ring-1 focus:ring-primary px-4 py-3 rounded-lg text-on-surface transition-all w-full ${className}`} 
+            className={`appearance-none bg-slate-50/50 border border-slate-200 cursor-pointer duration-200 focus:bg-white focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/30 px-4 py-3 rounded-lg text-on-surface transition-all w-full ${className}`} 
             {...props}
         >        
             {children}

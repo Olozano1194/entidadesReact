@@ -9,9 +9,7 @@ import { login } from "../../api/user.api";
 import Main from '../../components/ui/Main';
 import AuthDecoration from "../../components/ui/AuthDecoration";
 import Title from "../../components/ui/Title";
-import Input from '../../components/ui/Input';
-import Button from '../../components/ui/Button';
-import FormField from "../../components/ui/FormField";
+import FormField from '../../components/form/FormField';
 //Mensajes
 import { toast } from 'react-hot-toast';
 //Models
@@ -101,60 +99,47 @@ const Login = () => {
                         {/* Email */}
                         <FormField
                             label="Correo Administrativo"
-                            htmlFor="email"
-                            icon={<MdOutlineEmail className='lg:text-2xl' />}
+                            type="email"
+                            id="email"
+                            icon={<MdOutlineEmail className='text-xl' />}
+                            placeholder="admin@educontrol.com"
                             error={errors.email?.message}
-                        >
-                            <Input type="email" placeholder="admin@educontrol.com" id="email"
-                                {...register('email', {
-                                    required: {
-                                        value: true,
-                                        message: 'Correo requerido'
-                                    },
-                                    pattern: {
-                                        value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                                        message: 'Correo invalido'
-                                    },
-                                })}
-                            />
-                        </FormField>
+                            {...register('email', {
+                                required: { value: true, message: 'Correo requerido' },
+                                pattern: {
+                                    value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                                    message: 'Correo invalido'
+                                },
+                            })}
+                        />
                         {/* Password */}
                         <FormField
                             label="Contraseña"
-                            htmlFor="password"
-                            icon={<CiLock className='lg:text-2xl xl:text-xl' />}
-                            error={errors.password?.message}
+                            type={showPass ? "text" : "password"}
+                            id="password"
+                            icon={<CiLock className='text-xl' />}
+                            placeholder="Escriba su contraseña"
                             labelRight={<Link to='#' className="font-label-sm text-label-sm text-primary transition-colors hover:text-tertiary">Has olvidado tu contraseña?</Link>}
                             trailing={
-                                <button type="button" onClick={handlePass} className="absolute top-1/2 -translate-y-1/2 text-outline right-4 hover:text-on-surface-variant">
+                                <button type="button" onClick={handlePass} className="cursor-pointer text-outline hover:text-on-surface-variant">
                                     {showPass ? <MdOutlineVisibility /> : <MdOutlineVisibilityOff />}
                                 </button>
                             }
-                        >
-                            <Input
-                                type={showPass ? "text" : "password"}
-                                id="password"
-                                placeholder="Escriba su contraseña"
-                                {...register('password', {
-                                    required: {
-                                        value: true,
-                                        message: 'Contraseña requerida'
-                                    },
-                                    minLength: {
-                                        value: 5,
-                                        message: 'La contraseña debe tener minimo 5 carácteres'
-                                    },
-                                    maxLength: {
-                                        value: 20,
-                                        message: 'La contraseña debe tener como máximo 20 carácteres'
-                                    },
-                                })}
-                            />
-                        </FormField>
+                            error={errors.password?.message}
+                            {...register('password', {
+                                required: { value: true, message: 'Contraseña requerida' },
+                                minLength: { value: 5, message: 'La contraseña debe tener minimo 5 carácteres' },
+                                maxLength: { value: 20, message: 'La contraseña debe tener como máximo 20 carácteres' },
+                            })}
+                        />
                         {/* Btn */}
-                        <Button type="submit">
-                            Iniciar Sesión <RiLoginBoxLine className='text-lg' />
-                        </Button>
+                        <button 
+                            type="submit" 
+                            className="bg-primary-container cursor-pointer flex font-label-bold justify-center items-center gap-2 mt-form-stack py-4 rounded-lg shadow-lg text-label-bold text-on-primary transition-all w-full hover:shadow-xl hover:bg-primary active:scale-95"
+                        >
+                            Iniciar Sesión 
+                            <RiLoginBoxLine className='text-lg' />
+                        </button>
                     </form>
                     <div className="border-t border-outline-variant/30 mt-8 pt-8 text-center">
                         <p className="font-label-sm text-label-sm text-on-surface-variant">

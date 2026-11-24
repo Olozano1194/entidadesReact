@@ -20,6 +20,9 @@ import GeneralInfoSection from './components/GeneralInfoSection';
 import ContactSection from './components/ContactSection';
 import LocationCapacitySection from './components/LocationCapacitySection';
 import AssignmentSection from './components/AssignmentSection';
+// UI
+import ButtonFormLeft from '../../../components/ui/btn/ButtonFormLeft';
+import ButtonFormRight from '../../../components/ui/btn/ButtonFormRight';
 
 const RegisterInstitutions = () => {
     const params = useParams<{ id?: string }>();
@@ -133,12 +136,12 @@ const RegisterInstitutions = () => {
                     </p>
                 </div>
                 <div className='flex gap-4 items-center'>
-                    <button type="button" className='border-2 border-primary cursor-pointer font-label-bold px-6 py-2.5 rounded-xl text-primary transition-all hover:bg-emerald-50'>
+                    <ButtonFormLeft type="button">
                         Cancelar registro
-                    </button>
-                    <button type="button" className='bg-gradient-to-r cursor-pointer font-label-bold from-emerald-800 px-8 py-3 rounded-xl shadow-lg to-emerald-600 text-white transition-all hover:shadow-emerald-900/20 hover:-translate-y-0.5'>
+                    </ButtonFormLeft>
+                    <ButtonFormRight type="button">
                         Guardar y continuar
-                    </button>
+                    </ButtonFormRight>
                 </div>
             </section>
 

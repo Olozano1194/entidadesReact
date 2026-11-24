@@ -15,6 +15,9 @@ import { PiStudent } from "react-icons/pi";
 import { FaRegCheckCircle } from "react-icons/fa";
 import { BiSolidInstitution } from "react-icons/bi";
 import { GiTeacher } from "react-icons/gi";
+// UI
+import ButtonFormLeft from '../../ui/btn/ButtonFormLeft';
+import ButtonFormRight from '../../ui/btn/ButtonFormRight';
 
 const HomeAdmin = () => {
     const [stats, setStats] = useState({
@@ -80,18 +83,18 @@ const HomeAdmin = () => {
                     <p className="font-body-md text-body-md text-on-surface-variant">Bienvenido de nuevo. Esto es lo que está sucediendo en sus instituciones hoy en día.</p>
                 </div>
                 <div className='flex gap-3'>
-                    <button className='border border-outline-variant cursor-pointer font-label-bold flex gap-2 items-center px-4 py-2 rounded-xl text-sm transition-colors hover:bg-surface-container'>
+                    <ButtonFormLeft className='border border-outline-variant flex gap-2 items-center px-4 py-2 text-sm transition-colors hover:bg-surface-container'>
                         <span className='text-lg'>
                             <MdOutlineCalendarToday />
                         </span>
                         Ultimos 30 días
-                    </button>
-                    <button className='bg-primary cursor-pointer font-label-bold flex gap-2 items-center px-4 py-2 rounded-xl shadow-primary/10 shadow-lg text-sm text-white transition-opacity hover:opacity-90'>
+                    </ButtonFormLeft>
+                    <ButtonFormRight className='flex gap-2 items-center px-4 py-2 rounded-xl shadow-primary/10 shadow-lg text-sm transition-opacity hover:opacity-90'>
                         <span className='text-lg'>
                             <MdOutlineFileDownload />                            
                         </span>
                         Descargar Reporte
-                    </button>
+                    </ButtonFormRight>
                 </div>  
             </section>
             {/* Métricas principales */}

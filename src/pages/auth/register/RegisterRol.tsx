@@ -12,6 +12,9 @@ import { MdOutlineArrowBack } from "react-icons/md";
 // Components
 import FormField from '../../../components/form/FormField';
 import FormSection from '../../../components/form/FormSection';
+// UI
+import ButtonFormLeft from '../../../components/ui/btn/ButtonFormLeft';
+import ButtonFormRight from '../../../components/ui/btn/ButtonFormRight';
 
 const NIVELES = [
     { value: '1', label: 'Nivel 1 - Super Admin (Control Total)' },
@@ -67,7 +70,6 @@ const RegisterRol = () => {
                     <span className="text-outline-variant">›</span>
                     <span className="text-primary font-semibold">Crear Nuevo Rol</span>
                 </nav>
-
                 {/* Header */}
                 <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-6 border-b border-surface-container-highest">
                     <div className="space-y-1.5 max-w-3xl">
@@ -78,19 +80,19 @@ const RegisterRol = () => {
                             Define un nuevo perfil de acceso, jerarquía operativa y descripción institucional.
                         </p>
                     </div>
+                    {/* Buttons */}
                     <div className="flex items-center gap-3 self-start lg:self-center shrink-0">
-                        <button type="button" onClick={() => navigate('/admin/roles')} className="px-4 py-2.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-label-bold text-label-bold transition-all">
+                        <button type="button" onClick={() => navigate('/admin/roles')} className="bg-surface-container cursor-pointer font-label-bold px-8 py-2.5 rounded-xl text-on-surface transition-all hover:bg-surface-container-high">
                             Cancelar
                         </button>
-                        <button type="button" className="px-4 py-2.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-secondary font-label-bold text-label-bold transition-all flex items-center gap-2">
+                        <ButtonFormLeft type="button">
                             Guardar Borrador
-                        </button>
-                        <button type="submit" form="roleCreationForm" className="px-5 py-2.5 rounded-lg bg-primary hover:bg-primary-container text-on-primary font-label-bold text-label-bold transition-all flex items-center gap-2 shadow-md">
+                        </ButtonFormLeft>
+                        <ButtonFormRight type="submit" form="roleCreationForm">
                             Crear y Habilitar Rol
-                        </button>
+                        </ButtonFormRight>
                     </div>
                 </div>
-
                 {/* Form */}
                 <form id="roleCreationForm" onSubmit={onSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                     <div className="lg:col-span-8 flex flex-col space-y-8">
@@ -139,7 +141,6 @@ const RegisterRol = () => {
                             </div>
                         </FormSection>
                     </div>
-
                     {/* Sidebar */}
                     <div className="lg:col-span-4 flex flex-col space-y-6">
                         <div className="bg-surface-container-low rounded-lg p-4 flex flex-col gap-3">
