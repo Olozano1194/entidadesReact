@@ -1,10 +1,9 @@
 import type { UseFormRegister, FieldErrors } from 'react-hook-form';
 import { MdOutlineLocationOn, MdOutlineCorporateFare, MdAdd, MdOutlineRemove } from 'react-icons/md';
-import ErrorSpan from '../../../../components/ui/ErrorSpan';
 import type { InstitucionModel } from '../../../../types/institution.model';
 import type { MunicipalityModel } from '../../../../types/municipality.model';
-// UI
-import Select from '../../../../components/ui/Select';
+import FormField from '../../../../components/form/FormField';
+import Label from '../../../../components/ui/Label';
 
 interface LocationCapacitySectionProps {
     register: UseFormRegister<InstitucionModel>;
@@ -25,47 +24,43 @@ const LocationCapacitySection = ({ register, errors, filteredMunicipality, isDep
             </div>
             <div className='space-y-6'>
                 {/* Municipio */}
-                <div className='space-y-2'>
-                    <label htmlFor="municipio" className='font-label-bold text-label-bold text-slate-700'>
-                        Municipio
-                    </label>
-                    <div className='relative'>
-                        <Select
-                            id="municipio"
-                            className='disabled:cursor-not-allowed'
-                            {...register('idmunicipio', { required: 'Municipio requerido' })}
-                            disabled={!isDeptoSelected}
-                        >
-                            <option value="">
-                                {isDeptoSelected ? 'Seleccione municipio' : 'Primero seleccione un departamento'}
-                            </option>
-                            {filteredMunicipality.map(muni => (
-                                <option key={muni._id} value={muni._id}>
-                                    {muni.descripcion}
-                                </option>
-                            ))}
-                        </Select>                        
-                    </div>
-                    {errors.idmunicipio && <ErrorSpan>{errors.idmunicipio.message}</ErrorSpan>}
-                </div>
+                <FormField
+                    as='select'
+                    label='Municipio'
+                    required
+                    id='municipio'
+                    disabled={!isDeptoSelected}
+                    error={errors.idmunicipio?.message}
+                    className='disabled:opacity-50 disabled:cursor-not-allowed'
+                    {...register('idmunicipio', { required: 'Municipio requerido' })}
+                >
+                    <option value=''>
+                        {isDeptoSelected ? 'Seleccione municipio' : 'Primero seleccione un departamento'}
+                    </option>
+                    {filteredMunicipality.map(muni => (
+                        <option key={muni._id} value={muni._id}>
+                            {muni.descripcion}
+                        </option>
+                    ))}
+                </FormField>
+
                 {/* Dirección */}
-                <div className='space-y-2'>
-                    <label className='font-label-bold text-label-bold text-slate-700'>
-                        Dirección física completa
-                    </label>
-                    <textarea
-                        id="direccion"
-                        className='appearance-none border border-slate-200 bg-slate-50 duration-200 mt-2 px-4 py-3 rounded-lg text-on-surface transition-all w-full focus:outline-none focus:border-emerald-700 focus:bg-white'
-                        placeholder='Nombre de la calle, número del edificio, punto de referencia...'
-                        {...register('direccion', {
-                            required: 'Dirección requerida',
-                            minLength: { value: 8, message: 'Mínimo 8 caracteres' },
-                        })}
-                    />
-                    {errors.direccion && <ErrorSpan>{errors.direccion.message}</ErrorSpan>}
-                </div>
+                <FormField
+                    as='textarea'
+                    label='Dirección física completa'
+                    required
+                    id='direccion'
+                    rows={3}
+                    placeholder='Nombre de la calle, número del edificio, punto de referencia...'
+                    error={errors.direccion?.message}
+                    {...register('direccion', {
+                        required: 'Dirección requerida',
+                        minLength: { value: 8, message: 'Mínimo 8 caracteres' },
+                    })}
+                />
             </div>
         </div>
+
         {/* Capacidad */}
         <div className='bg-emerald-900 p-8 rounded-xl shadow-lg text-white'>
             <div className='flex gap-3 items-center mb-6'>
@@ -76,18 +71,20 @@ const LocationCapacitySection = ({ register, errors, filteredMunicipality, isDep
             </div>
             <div className='space-y-6'>
                 <div className='space-y-2'>
-                    <label className='font-label-bold text-label-bold text-emerald-200'>Número de sedes</label>
-                    <div className='flex gap-4 items-center'>
-                        <button type="button" className='border border-emerald-700 bg-emerald-800 flex h-10 items-center justify-center rounded-lg transition-colors w-10 hover:bg-emerald-700'>
+                    <Label htmlFor='nosedes' className='text-emerald-200'>
+                        Número de sedes
+                    </Label>
+                    <div className='flex gap-4 items-center mt-2'>
+                        <button type='button' className='border border-emerald-700 bg-emerald-800 flex h-10 items-center justify-center rounded-lg transition-colors w-10 hover:bg-emerald-700'>
                             <MdOutlineRemove />
                         </button>
                         <input
-                            type="number"
-                            className='bg-emerald-800 border-emerald-700 font-bold rounded-lg text-center text-emerald-100 w-full focus:ring-emerald-500'
+                            type='number'
+                            className='bg-emerald-800 border border-emerald-700 font-bold px-3 py-2 rounded-lg text-center text-emerald-100 w-full focus:outline-none focus:ring-1 focus:ring-emerald-500'
                             {...register('nosedes', { required: true, min: 1 })}
                             defaultValue={1}
                         />
-                        <button type="button" className='border border-emerald-700 bg-emerald-800 flex h-10 items-center justify-center rounded-lg transition-colors w-10 hover:bg-emerald-700'>
+                        <button type='button' className='border border-emerald-700 bg-emerald-800 flex h-10 items-center justify-center rounded-lg transition-colors w-10 hover:bg-emerald-700'>
                             <MdAdd />
                         </button>
                     </div>
