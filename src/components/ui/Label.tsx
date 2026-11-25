@@ -1,4 +1,5 @@
 import type { LabelHTMLAttributes, ReactNode } from 'react';
+import { cn } from "../../lib/cn";
 
 interface LabelProps extends LabelHTMLAttributes<HTMLLabelElement> {
     children: ReactNode;
@@ -19,7 +20,7 @@ interface LabelProps extends LabelHTMLAttributes<HTMLLabelElement> {
 const Label = ({ children, required, right, className = '', ...props }: LabelProps) => (
     <div className={right ? 'flex items-center justify-between' : ''}>
         <label
-            className={`font-label-bold text-label-bold text-slate-700 inline-flex items-center gap-1 ${className}`}
+            className={cn(`font-label-bold text-label-bold text-slate-700 inline-flex items-center gap-1 ${className}`)}
             {...props}
         >
             {children}
