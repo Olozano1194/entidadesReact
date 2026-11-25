@@ -100,7 +100,7 @@ export const login = async (credentials: LoginUserDto) => {
 }
 
 // function profile
-export const getUserProfile = async (): Promise<{ user: User & { rol?: Rol } }> => {    
+export const getUserProfile = async (): Promise<{ user: User & { rol?: Rol | string; passwordChanges?: string[] } }> => {
     try {
         const token = localStorage.getItem('token');
         if (!token) {
@@ -111,10 +111,10 @@ export const getUserProfile = async (): Promise<{ user: User & { rol?: Rol } }> 
                 'Authorization': `Bearer ${token}`
             }
         });
-        //console.log('User profile response:', response.data)        
-        return response.data;        
+        const payload = response.data?.data ?? response.data?.user ?? response.data;
+        return { user: payload };
     } catch (error) {
-        throw handleApiError(error);        
+        throw handleApiError(error);
     }
 };
 
@@ -152,12 +152,23 @@ export const updateUser = async (id: string, formData: FormData): Promise<User> 
         const response = await Api.put(`/usuarios/${id}`, formData, {
             headers: {
                 'Authorization': `Bearer ${token}`,
-                // 'Content-Type': 'multipart/form-data'
             }
         });
-        
-        return response.data.usuario;
+
+        return response.data?.data ?? response.data?.usuario ?? response.data;
     } catch (error) {
         throw handleApiError(error);             
     }    
 }
+// Cambiar contrasena (con limite mensual)
+export const changePassword = async (currentPassword: string, newPassword: string): Promise<{ message: string; changesThisMonth: number; limit: number }> => {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await Api.put('/usuarios/change-password', { currentPassword, newPassword }, {
+            headers: { 'Authorization': 'Bearer ' + token }
+        });
+        return response.data?.data ?? response.data;
+    } catch (error) {
+        throw handleApiError(error);
+    }
+};

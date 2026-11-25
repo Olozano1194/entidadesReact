@@ -9,4 +9,9 @@ export interface User {
     fotoPerfil?: { url: string, publicId: string };
     idinstitucion?: number | null;
     id?: string;
+    nombre?: string;
+    apellido?: string;
+    telefono?: string;
+    cargo?: string;
+    biografia?: string;
 };

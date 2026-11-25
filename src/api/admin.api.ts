@@ -25,9 +25,39 @@ export const getAdmin = async (): Promise<AdminModel[]> => {
     }
 };
 
-//Obtener Administrador (no existe endpoint "me" en el backend, retorna null)
+//Obtener Administrador por usuario logueado
 export const getAdminById = async (): Promise<{ admin: AdminModel | null }> => {
-    return { admin: null };
+    try {
+        const token = localStorage.getItem('token');
+        if (!token) return { admin: null };
+        const response = await Api.get('/administradores/me', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const profile = response.data?.data?.profile ?? response.data?.profile ?? response.data?.data ?? null;
+        return { admin: profile };
+    } catch {
+        // Fallback por si el backend aún no está reiniciado con /me
+        try {
+            const admins = await getAdmin();
+            const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
+            const userId = storedUser?._id || storedUser?.id;
+            let found = null;
+            if (userId) {
+                found = admins.find((a) => {
+                    const adminUserId = typeof a.id_usuario === 'object' && a.id_usuario !== null
+                        ? (a.id_usuario as { _id?: string })._id
+                        : a.id_usuario;
+                    return adminUserId === userId;
+                });
+            }
+            if (!found && storedUser?.email) {
+                found = admins.find((a) => a.email === storedUser.email);
+            }
+            return { admin: found ?? null };
+        } catch {
+            return { admin: null };
+        }
+    }
 };
 
 // Actualizar un Administrador
@@ -38,7 +68,7 @@ export const updateAdmin = async (id: string, admin: UpdateAdminDto): Promise<Ad
         const response = await Api.put(`/administradores/${id}`, admin, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
-        return response.data;
+        return response.data?.data ?? response.data;
     } catch (error) {
         throw handleApiError(error);
     }
