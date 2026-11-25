@@ -1,5 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 //Mensajes
 import { toast } from 'react-hot-toast';
 //API
@@ -7,14 +8,9 @@ import { createRol } from '../../../api/roles.api';
 //Model
 import type { CreateRolDto } from '../../../types/dto/rol.dto';
 import type { Rol } from '../../../types/rol.models';
-// Icons
-import { MdOutlineArrowBack } from "react-icons/md";
 // Components
 import FormField from '../../../components/form/FormField';
 import FormSection from '../../../components/form/FormSection';
-// UI
-import ButtonFormLeft from '../../../components/ui/btn/ButtonFormLeft';
-import ButtonFormRight from '../../../components/ui/btn/ButtonFormRight';
 
 const NIVELES = [
     { value: '1', label: 'Nivel 1 - Super Admin (Control Total)' },
@@ -23,6 +19,22 @@ const NIVELES = [
     { value: '4', label: 'Nivel 4 - Apoyo Operativo / Secretaría' },
     { value: '5', label: 'Nivel 5 - Estudiante / Tutor Legal' },
 ];
+
+const PERMISOS_DISPONIBLES = [
+    { value: 'crear', label: 'Crear' },
+    { value: 'leer', label: 'Leer' },
+    { value: 'actualizar', label: 'Actualizar' },
+    { value: 'eliminar', label: 'Eliminar' },
+];
+
+// Permisos por defecto según el nivel jerárquico
+const PERMISOS_POR_NIVEL: Record<string, string[]> = {
+    '1': ['crear', 'leer', 'actualizar', 'eliminar'],
+    '2': ['crear', 'leer', 'actualizar', 'eliminar'],
+    '3': ['leer', 'actualizar'],
+    '4': ['leer', 'crear'],
+    '5': ['leer'],
+};
 
 const slugify = (value: string) =>
     value
@@ -34,17 +46,38 @@ const slugify = (value: string) =>
         .toUpperCase();
 
 const RegisterRol = () => {
-    const { register, handleSubmit, watch, formState: { errors } } = useForm<Rol>();
+    const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm<Rol>();
     const navigate = useNavigate();
     const nombre = watch('nombre') ?? '';
+    const nivel = watch('nivel') ?? '5';
     const slug = nombre ? `ROLE_${slugify(nombre)}` : '';
+
+    // Permisos seleccionados (se inicializan según el nivel)
+    const [permisos, setPermisos] = useState<string[]>(PERMISOS_POR_NIVEL[nivel] ?? ['leer']);
+
+    // Cuando cambia el nivel, se actualizan los permisos por defecto
+    useEffect(() => {
+        const nuevos = PERMISOS_POR_NIVEL[nivel] ?? ['leer'];
+        setPermisos(nuevos);
+        setValue('permisos', nuevos);
+    }, [nivel, setValue]);
+
+    const togglePermiso = (permiso: string) => {
+        setPermisos((prev) => {
+            const next = prev.includes(permiso)
+                ? prev.filter((p) => p !== permiso)
+                : [...prev, permiso];
+            setValue('permisos', next);
+            return next;
+        });
+    };
 
     const onSubmit = handleSubmit(async (data: Rol) => {
         try {
             const requestData: CreateRolDto = {
                 nombre: data.nombre,
                 descripcion: data.descripcion,
-                permisos: data.permisos || [],
+                permisos: permisos,
                 activo: true,
                 nivel: data.nivel,
             };
@@ -70,6 +103,7 @@ const RegisterRol = () => {
                     <span className="text-outline-variant">›</span>
                     <span className="text-primary font-semibold">Crear Nuevo Rol</span>
                 </nav>
+
                 {/* Header */}
                 <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-6 border-b border-surface-container-highest">
                     <div className="space-y-1.5 max-w-3xl">
@@ -80,26 +114,25 @@ const RegisterRol = () => {
                             Define un nuevo perfil de acceso, jerarquía operativa y descripción institucional.
                         </p>
                     </div>
-                    {/* Buttons */}
                     <div className="flex items-center gap-3 self-start lg:self-center shrink-0">
-                        <button type="button" onClick={() => navigate('/admin/roles')} className="bg-surface-container cursor-pointer font-label-bold px-8 py-2.5 rounded-xl text-on-surface transition-all hover:bg-surface-container-high">
+                        <button type="button" onClick={() => navigate('/admin/roles')} className="px-4 py-2.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-label-bold text-label-bold transition-all">
                             Cancelar
                         </button>
-                        <ButtonFormLeft type="button">
+                        <button type="button" className="px-4 py-2.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-secondary font-label-bold text-label-bold transition-all flex items-center gap-2">
                             Guardar Borrador
-                        </ButtonFormLeft>
-                        <ButtonFormRight type="submit" form="roleCreationForm">
+                        </button>
+                        <button type="submit" form="roleCreationForm" className="px-5 py-2.5 rounded-lg bg-primary hover:bg-primary-container text-on-primary font-label-bold text-label-bold transition-all flex items-center gap-2 shadow-md">
                             Crear y Habilitar Rol
-                        </ButtonFormRight>
+                        </button>
                     </div>
                 </div>
+
                 {/* Form */}
                 <form id="roleCreationForm" onSubmit={onSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                     <div className="lg:col-span-8 flex flex-col space-y-8">
                         <FormSection
                             title="Información Básica del Rol"
                             description="Parámetros de identificación institucional y clasificación jerárquica"
-                            icon={<MdOutlineArrowBack className="text-[22px]" />}
                             badge="Requerido"
                         >
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -139,8 +172,37 @@ const RegisterRol = () => {
                                     {...register('descripcion', { required: 'Descripción requerida' })}
                                 />
                             </div>
+
+                            {/* Permisos */}
+                            <div className="flex flex-col gap-2">
+                                <label className="font-label-bold text-label-bold text-on-surface">
+                                    Permisos <span className="text-error">*</span>
+                                </label>
+                                <p className="font-label-sm text-label-sm text-on-surface-variant">
+                                    Se preseleccionan según el nivel. Podés ajustarlos manualmente.
+                                </p>
+                                <div className="grid grid-cols-2 gap-2 mt-2">
+                                    {PERMISOS_DISPONIBLES.map((permiso) => (
+                                        <label
+                                            key={permiso.value}
+                                            className="flex items-center gap-2 cursor-pointer bg-surface-container-low px-3 py-2 rounded-lg hover:bg-surface-container transition-colors"
+                                        >
+                                            <input
+                                                type="checkbox"
+                                                value={permiso.value}
+                                                checked={permisos.includes(permiso.value)}
+                                                onChange={() => togglePermiso(permiso.value)}
+                                                className="h-4 w-4 text-primary border-slate-300 rounded focus:ring-primary"
+                                            />
+                                            <span className="font-label-sm text-label-sm text-on-surface">{permiso.label}</span>
+                                        </label>
+                                    ))}
+                                </div>
+                                <input type="hidden" {...register('permisos')} value={permisos} />
+                            </div>
                         </FormSection>
                     </div>
+
                     {/* Sidebar */}
                     <div className="lg:col-span-4 flex flex-col space-y-6">
                         <div className="bg-surface-container-low rounded-lg p-4 flex flex-col gap-3">
@@ -166,4 +228,5 @@ const RegisterRol = () => {
         </main>
     );
 };
+
 export default RegisterRol;

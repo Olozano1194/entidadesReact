@@ -18,11 +18,10 @@ const AssignmentSection = ({ register }: AssignmentSectionProps) => (
                 <h3 className='font-headline-md text-headline-md text-emerald-900'>Asignación y periodos académicos</h3>
             </div>
             <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
-                {/* Checkbox estudiantes */}
                 <div className='flex items-center gap-3'>
                     <input
-                        type='checkbox'
-                        id='asignarTodosStudent'
+                        type="checkbox"
+                        id="asignarTodosStudent"
                         {...register('asignarTodosStudent')}
                         className='h-5 w-5 accent-emerald-700'
                     />
@@ -30,11 +29,10 @@ const AssignmentSection = ({ register }: AssignmentSectionProps) => (
                         Asignar todos los estudiantes
                     </Label>
                 </div>
-                {/* Checkbox profesores */}
                 <div className='flex items-center gap-3'>
                     <input
-                        type='checkbox'
-                        id='asignarTodosTeacher'
+                        type="checkbox"
+                        id="asignarTodosTeacher"
                         {...register('asignarTodosTeacher')}
                         className='h-5 w-5 accent-emerald-700'
                     />
@@ -42,27 +40,38 @@ const AssignmentSection = ({ register }: AssignmentSectionProps) => (
                         Asignar todos los profesores
                     </Label>
                 </div>
-                {/* Secretaría */}
                 <FormField
-                    label='Secretaría'
-                    id='secretaria'
-                    type='text'
-                    placeholder='Nombre de la secretaría'
-                    {...register('secretaria')}
-                />
-                {/* Periodos */}
+                    as='select'
+                    label='Modalidad'
+                    id='modalidad'
+                    {...register('modalidad')}
+                >
+                    <option value=''>Escoge una modalidad</option>
+                    <option value='academico'>Académico</option>
+                    <option value='bilingue'>Bilingüe Internacional</option>
+                    <option value='tecnico'>Media Técnica SENA</option>
+                </FormField>
                 <FormField
                     as='select'
                     label='Número de periodos'
                     id='periodos'
-                    defaultValue='4'
                     {...register('periodos')}
+                    defaultValue="4"
                 >
                     <option value='1'>1 periodo</option>
                     <option value='2'>2 periodos</option>
                     <option value='3'>3 periodos</option>
                     <option value='4'>4 periodos</option>
                 </FormField>
+                <div className='col-span-2'>
+                    <FormField
+                        label='Secretaría'
+                        id='secretaria'
+                        type='text'
+                        placeholder='Nombre de la secretaría'
+                        {...register('secretaria')}
+                    />
+                </div>
             </div>
         </div>
     </section>

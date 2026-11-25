@@ -14,4 +14,5 @@ export interface InstitucionModel {
     asignarTodosTeacher?: boolean;
     secretaria?: string;
     periodos?: string;
+    modalidad?:string;    
 }
