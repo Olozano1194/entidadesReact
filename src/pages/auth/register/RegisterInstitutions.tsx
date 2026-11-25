@@ -86,8 +86,8 @@ const RegisterInstitutions = () => {
             const numPeriodos = parseInt(data.periodos ?? '4') || 4;
             const periodos = Array.from({ length: numPeriodos }, (_, i) => ({
                 nombre: `Periodo ${i + 1}`,
-            }));
-
+            }));  
+            
             const requestData: CreateInstitucionDto = {
                 nombre: data.nombre.trim(),
                 direccion: data.direccion.trim(),
@@ -96,13 +96,14 @@ const RegisterInstitutions = () => {
                 director: data.director,
                 iddepartamento: data.iddepartamento,
                 idmunicipio: data.idmunicipio,
-                idsecretaria: data.secretaria || undefined,
+                secretaria: data.secretaria || undefined,
                 nosedes: parseInt(data.nosedes),
                 estudiantes: studentIds,
                 profesores: teacherIds,
                 periodos,
+                modalidad: data.modalidad,
             };
-
+            
             if (params.id) {
                 await updateInstitution(params.id, requestData);
                 toast.success('Institución actualizada', { duration: 3000, position: 'bottom-right' });
@@ -144,7 +145,6 @@ const RegisterInstitutions = () => {
                     </ButtonFormRight>
                 </div>
             </section>
-
             <form className='grid grid-cols-12 gap-gutter' onSubmit={onSubmit}>
                 {/* Left column: General info + Contact */}
                 <div className='col-span-12 space-y-gutter lg:col-span-8'>
@@ -156,7 +156,6 @@ const RegisterInstitutions = () => {
                     />
                     <ContactSection register={register} errors={errors} />
                 </div>
-
                 {/* Right column: Location + Capacity */}
                 <LocationCapacitySection
                     register={register}
@@ -164,10 +163,8 @@ const RegisterInstitutions = () => {
                     filteredMunicipality={filteredMunicipality}
                     isDeptoSelected={!!selectedDepto}
                 />
-
                 {/* Full width: Assignment + periods */}
                 <AssignmentSection register={register} />
-
                 {/* Submit */}
                 <section className='col-span-12 flex flex-col items-center justify-center py-section-gap'>
                     <div className='bg-white border border-slate-100 p-8 rounded-2xl shadow-xl space-y-6 text-center w-full lg:max-w-2xl'>

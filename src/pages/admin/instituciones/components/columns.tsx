@@ -89,14 +89,14 @@ export const getInstitutionColumns = () => [
             );
         },
     }),
-    columnHelper.accessor(() => 'Académico', {
+    columnHelper.accessor((row) => row.modalidad, {
         id: 'modalidad',
         header: 'Modalidad',
         cell: ({ row }) => {
             const inst = row.original;
             return (
                 <div className="flex flex-col">
-                    <span className="font-label-bold text-label-bold text-on-surface">Modalidad</span>
+                    <span className="font-label-bold text-label-bold text-on-surface">{inst.modalidad ?? '—'}</span>
                     <span className="font-label-sm text-label-sm text-outline">{inst.direccion}</span>
                 </div>
             );

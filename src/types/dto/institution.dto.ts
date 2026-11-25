@@ -9,9 +9,11 @@ export interface CreateInstitucionDto {
     nosedes: number;
     estudiantes: string[];
     profesores: string[];
-    idsecretaria?: string;
-    periodos?: Array<{ nombre: string; fechainicio?: Date; fechafin?: Date }>;
     secretaria?: string;
+    asignarTodosStudent?: boolean;
+    asignarTodosTeacher?: boolean;
+    periodos?: Array<{ nombre: string; fechainicio?: Date; fechafin?: Date }>;    
+    modalidad?: string;    
 }
 
 export interface ListInstitucionDto {
@@ -43,4 +45,5 @@ export interface ListInstitucionDto {
     }>
     asignarTodosStudent?: boolean;
     asignarTodosTeacher?: boolean;
+    modalidad?: string;
 }

@@ -109,7 +109,7 @@ const ListInstitutions = () => {
                             key: 'modalidad',
                             label: 'Modalidad: Todas',
                             value: modalidad,
-                            onChange: setModalidad,
+                            onChange: setModalidad,                            
                             options: [
                                 { value: 'academico', label: 'Académico' },
                                 { value: 'bilingue', label: 'Bilingüe Internacional' },
