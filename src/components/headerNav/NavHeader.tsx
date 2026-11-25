@@ -25,7 +25,6 @@ import type { AdminModel } from "../../types/admin.model";
 function NavHeader() {
     const navigate = useNavigate();
     const [user, setUser] = useState({ email: '', fotoPerfil: ''});
-    const [userRole, setUserRole] = useState<string>('');
     const [ student, setStudent ] = useState< Student | null>(null);
     const [ teacher, setTeacher ] = useState< Teacher | null>(null);
     const [ admin, setAdmin ] = useState< AdminModel | null>(null);
@@ -46,20 +45,27 @@ function NavHeader() {
                 let rolNombre = '';
                 if (userData.user.rol && typeof userData.user.rol === 'object' && 'nombre' in userData.user.rol) {
                     rolNombre = (userData.user.rol as Rol).nombre.toLowerCase();
-                    setUserRole((userData.user.rol as Rol).nombre);
+                    // userRole set below
                 } else if (typeof userData.user.rol === 'string') {
                     const rolStr = userData.user.rol.toLowerCase();
                     if (rolStr === 'admin' || rolStr === 'estudiante' || rolStr === 'docente') {
                         rolNombre = rolStr;
-                        setUserRole(userData.user.rol);
                     } else {
                         const rol = await getRoleById(userData.user.rol);
                         rolNombre = rol.nombre.toLowerCase();
-                        setUserRole(rol.nombre);
                     }
                 }
 
                 // llamada condicional segun el rol
+                // fallback: si no se pudo determinar el rol, intentar desde localStorage
+                if (!rolNombre) {
+                    try {
+                        const stored = JSON.parse(localStorage.getItem('user') || '{}');
+                        if (stored?.rol) {
+                            rolNombre = (typeof stored.rol === 'string' ? stored.rol : stored.rol?.nombre || '').toLowerCase();
+                        }
+                    } catch { /* ignore */ }
+                }
                 // let profileData = null;
 
                 if (rolNombre === 'estudiante') {
@@ -112,6 +118,13 @@ function NavHeader() {
                     fotoPerfil: avatarUrl
                 });
             }catch (error) {
+                // Fallback: intentar con localStorage.user
+                try {
+                    const stored = JSON.parse(localStorage.getItem('user') || '{}');
+                    if (stored?.email) {
+                        setUser({ email: stored.email, fotoPerfil: stored.fotoPerfil?.url || '' });
+                    }
+                } catch { /* ignore */ }
                 const errorMessage = error instanceof Error ? error.message : 'Error al mostrar el miembro';
                 toast.error(errorMessage, {
                     duration: 3000,
@@ -143,21 +156,25 @@ function NavHeader() {
             <Menu>
                 <MenuButton className="flex cursor-pointer items-center gap-x-2 hover:bg-emerald-800/40 p-2 rounded-lg transition-colors">
                 <img 
-                    src={user.fotoPerfil || defaultAvatar } alt="img-user"
+                    src={user.fotoPerfil || defaultAvatar}
+                    alt="img-user"
+                    onError={(e) => { e.currentTarget.src = defaultAvatar; }}
                     className="w-10 h-10 object-cover rounded-full border-2 border-emerald-900"
                 />
-                <span className="text-white font-bold">{student?.nombre || teacher?.nombre || admin?.nombre || userRole.charAt(0).toUpperCase() + userRole.slice(1)} {student?.apellido || teacher?.apellido || admin?.apellido}</span>
+                <span className="text-outline font-bold">{student?.nombre || teacher?.nombre || admin?.nombre || user.email?.split('@')[0] || 'Usuario'} {student?.apellido || teacher?.apellido || admin?.apellido}</span>
                 <RiArrowDownSLine className="text-2xl text-emerald-400" />
                 </MenuButton>
                 <MenuItems anchor='bottom' className='bg-emerald-950 border border-emerald-900 mt-1 p-4 rounded-xl shadow-2xl'>
                     <MenuItem as='div' className='p-0'>
                             <section className="rounded-lg transition-colors text-white flex items-center gap-x-4 py-2 px-4">
                                 <img 
-                                    src={user.fotoPerfil || defaultAvatar } alt="img-user"
+                                    src={user.fotoPerfil || defaultAvatar}
+                                    alt="img-user"
+                                    onError={(e) => { e.currentTarget.src = defaultAvatar; }}
                                     className="w-10 h-10 object-cover rounded-full"
                                 />
                                 <div className="flex flex-col gap-1 text-sm">
-                                    <span className="text-white text-sm">{student?.nombre || teacher?.nombre || admin?.nombre || userRole.charAt(0).toUpperCase() + userRole.slice(1)} {student?.apellido || teacher?.apellido || admin?.apellido}</span>
+                                    <span className="text-white text-sm">{student?.nombre || teacher?.nombre || admin?.nombre || user.email?.split('@')[0] || 'Usuario'} {student?.apellido || teacher?.apellido || admin?.apellido}</span>
                                     <span className="text-emerald-100/60 text-xs">{user.email}</span>
                                 </div>
                             </section>

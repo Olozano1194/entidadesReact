@@ -51,7 +51,9 @@ const Profile = () => {
                                 formData={admin.formData}
                                 roles={admin.roles}
                                 editingUser={admin.editingUser}
+                                isSuperAdmin={admin.isSuperAdmin}
                                 onChange={admin.handleChanges}
+                                onSubmit={admin.handleSave}
                             />
                         </section>
                         <section className="lg:col-span-4">

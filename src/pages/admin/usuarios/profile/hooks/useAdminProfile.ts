@@ -17,7 +17,30 @@ export interface AdminFormData {
     apellido: string;
     telefono: string;
     cargo: string;
+    biografia: string;
 }
+
+const DEFAULT_AVATAR =
+    'https://img.freepik.com/foto-gratis/negocios-finanzas-empleo-concepto-mujeres-emprendedoras-exitosas-joven-empresaria-segura-anteojos-mostrando-gesto-pulga-arriba-sostenga-computadora-portatil-garantice-mejor-calidad-servicio_1258-59118.jpg';
+
+const resolveAvatarUrl = (url?: string): string => {
+    if (!url) return '';
+    return url.startsWith('http') ? url : `http://localhost:5000${url}`;
+};
+
+const resolveRolId = (rolField: User['rol'] | undefined, rolesData: Rol[]): string => {
+    if (!rolField) return '';
+    if (typeof rolField === 'string') {
+        const found = rolesData.find(
+            (r) => r._id === rolField || r.nombre?.toLowerCase() === rolField.toLowerCase()
+        );
+        return found ? found._id : rolField;
+    }
+    if (typeof rolField === 'object') {
+        return (rolField as { _id?: string })._id || '';
+    }
+    return '';
+};
 
 export const useAdminProfile = () => {
     const navigate = useNavigate();
@@ -34,6 +57,7 @@ export const useAdminProfile = () => {
         id: '',
         telefono: '',
         cargo: '',
+        biografia: '',
     });
     const [loading, setLoading] = useState(true);
 
@@ -50,37 +74,28 @@ export const useAdminProfile = () => {
                 setRoles(rolesData);
                 setUser(userData.user);
 
-                let adminData = null;
+                let adminData: AdminModel | null = null;
                 try {
                     const response = await getAdminById();
                     adminData = response?.admin ?? null;
                     setAdmin(adminData);
                 } catch (error) {
-                    const errorMessage = error instanceof Error ? error.message : 'Error al actualizar el administrador';
-                    toast.error(errorMessage, { duration: 3000, position: 'bottom-right' });
+                    console.warn('No se encontró perfil de admin, usando datos del usuario', error);
                 }
 
-                let rolId = '';
-                const rolField = userData?.user?.rol;
-                if (rolField) {
-                    if (typeof rolField === 'string') rolId = rolField;
-                    else if (typeof rolField === 'object') rolId = rolField._id;
-                }
+                const rolId = resolveRolId(userData?.user?.rol, rolesData);
                 const userId = userData.user._id || userData.user.id;
                 if (!userId) throw new Error('No se encontró el Id del usuario');
 
                 setFormData({
-                    nombre: adminData?.nombre || '',
-                    apellido: adminData?.apellido || '',
+                    nombre: adminData?.nombre || userData.user?.nombre || '',
+                    apellido: adminData?.apellido || userData.user?.apellido || '',
                     rol: rolId,
                     id: userId,
-                    telefono: adminData?.telefono || '',
-                    cargo: adminData?.cargo || '',
+                    telefono: adminData?.telefono || userData.user?.telefono || '',
+                    cargo: adminData?.cargo || userData.user?.cargo || '',
+                    biografia: adminData?.biografia || userData.user?.biografia || '',
                 });
-
-                if (userData.user.fotoPerfil?.url) {
-                    setPreviewUrl(userData.user.fotoPerfil.url);
-                }
             } catch (error) {
                 const errorMessage = error instanceof Error ? error.message : 'Error al mostrar el perfil del administrador';
                 toast.error(errorMessage, { duration: 3000, position: 'bottom-right' });
@@ -91,8 +106,17 @@ export const useAdminProfile = () => {
         fetchData();
     }, [navigate]);
 
-    const handleChanges = (data: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>): void => {
+    // Solo el superAdmin puede modificar el rol
+    const currentRoleName = typeof user?.rol === 'string'
+        ? user.rol
+        : user?.rol?.nombre ?? '';
+    const isSuperAdmin = currentRoleName.toLowerCase().replace(/[\s_-]/g, '') === 'superadmin';
+
+    const handleChanges = (
+        data: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+    ): void => {
         const { name, value } = data.target;
+        if (name === 'rol' && !isSuperAdmin) return;
         setFormData((prevData) => ({ ...prevData, [name]: value }));
     };
 
@@ -109,32 +133,36 @@ export const useAdminProfile = () => {
 
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!formData.id) { console.error('ID de usuario no definido'); return; }
+        const userId = formData.id || user?._id || user?.id;
+        if (!userId) {
+            toast.error('No se pudo identificar el usuario');
+            return;
+        }
         setLoading(true);
         try {
-            const data = new FormData();
-            data.append('nombre', formData.nombre);
-            data.append('apellido', formData.apellido);
-            data.append('rol', formData.rol);
-            if (selectedFile) data.append('fotoPerfil', selectedFile, selectedFile.name);
-
-            const updatedUser = await updateUser(formData.id, data);
-            if (admin) {
+            let updatedUser = user;
+            if (selectedFile) {
+                const data = new FormData();
+                data.append('fotoPerfil', selectedFile, selectedFile.name);
+                updatedUser = await updateUser(userId, data);
+            }
+            if (admin?._id) {
                 const adminUpdates: Partial<UpdateAdminDto> = {
-                    nombre: formData.nombre,
-                    apellido: formData.apellido,
-                    telefono: formData.telefono,
-                    cargo: formData.cargo
+                    nombre: formData.nombre.trim(),
+                    apellido: formData.apellido.trim(),
+                    telefono: formData.telefono.trim(),
+                    cargo: formData.cargo.trim(),
+                    biografia: formData.biografia.trim(),
                 };
-                const updatedAdmin = await updateAdmin(admin._id!, adminUpdates);
+                const updatedAdmin = await updateAdmin(admin._id, adminUpdates);
                 setAdmin(updatedAdmin);
             }
-            setUser(updatedUser);
-            setSelectedFile(null);
-            setEditingUser(false);
-            if (updatedUser.fotoPerfil?.url) {
-                setPreviewUrl(updatedUser.fotoPerfil.url.includes('http') ? updatedUser.fotoPerfil.url : `http://localhost:5000${updatedUser.fotoPerfil.url}`);
+            if (updatedUser) {
+                setUser(updatedUser);
             }
+            setSelectedFile(null);
+            setPreviewUrl(null);
+            setEditingUser(false);
             toast.success('Usuario actualizado con éxito');
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error al actualizar el Usuario';
@@ -146,28 +174,27 @@ export const useAdminProfile = () => {
 
     const resetForm = () => {
         if (user || admin) {
-            const rolId = typeof user?.rol === 'string' ? user.rol : user?.rol._id ?? '';
+            const rolId = resolveRolId(user?.rol, roles);
             setFormData({
-                nombre: admin?.nombre ?? '',
-                apellido: admin?.apellido ?? '',
+                nombre: admin?.nombre || user?.nombre || '',
+                apellido: admin?.apellido || user?.apellido || '',
                 rol: rolId,
-                id: user?._id ?? '',
-                telefono: admin?.telefono ?? '',
-                cargo: admin?.cargo ?? ''
+                id: user?._id || user?.id || '',
+                telefono: admin?.telefono || user?.telefono || '',
+                cargo: admin?.cargo || user?.cargo || '',
+                biografia: admin?.biografia || user?.biografia || '',
             });
             setSelectedFile(null);
+            setPreviewUrl(null);
             setEditingUser(false);
         }
     };
 
-    const defaultAvatar = 'https://img.freepik.com/foto-gratis/negocios-finanzas-empleo-concepto-mujeres-emprendedoras-exitosas-joven-empresaria-segura-anteojos-mostrando-gesto-pulga-arriba-sostenga-computadora-portatil-garantice-mejor-calidad-servicio_1258-59118.jpg';
-    const avatarSrc = user?.fotoPerfil?.url
-        ? `http://localhost:5000${user.fotoPerfil.url}`
-        : defaultAvatar;
+    const avatarSrc = previewUrl || resolveAvatarUrl(user?.fotoPerfil?.url) || DEFAULT_AVATAR;
 
     return {
         user, roles, admin, editingUser, setEditingUser, selectedFile, previewUrl,
-        formData, loading, handleChanges, handleFileChange, handleSave, resetForm,
-        defaultAvatar, avatarSrc,
+        formData, loading, isSuperAdmin, handleChanges, handleFileChange, handleSave, resetForm,
+        defaultAvatar: DEFAULT_AVATAR, avatarSrc,
     };
 };
